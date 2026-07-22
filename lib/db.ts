@@ -1,11 +1,11 @@
-import { PrismaClient } from '../app/generated/prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-const getPrismaInstance = () => {
+const createPrisma = () => {
   const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.DATABASE_URL!,
   });
   return new PrismaClient({
     adapter,
@@ -13,8 +13,10 @@ const getPrismaInstance = () => {
   });
 };
 
-export const prisma = globalForPrisma.prisma || getPrismaInstance();
+export const prisma = globalForPrisma.prisma || createPrisma();
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+
 
 

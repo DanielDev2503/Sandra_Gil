@@ -1,13 +1,12 @@
 import { PrismaClient } from './app/generated/prisma/client';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import path from 'path';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-// Instantiate Prisma for local dev.db
-const dbPath = path.resolve(process.cwd(), 'dev.db');
-const adapter = new PrismaBetterSqlite3({
-  url: `file:${dbPath}`,
+// Instantiate Prisma for Supabase PostgreSQL
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
 });
 const prisma = new PrismaClient({ adapter });
+
 
 async function runTest() {
   console.log('🧪 Iniciando prueba de verificación de webhook de Wompi...');

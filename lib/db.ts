@@ -5,11 +5,21 @@ import { PrismaPg } from '@prisma/adapter-pg';
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 const getPrismaInstance = () => {
-  const connectionString = process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL;
+  // 1. Damos prioridad a DATABASE_URL (la que creaste manualmente)
+  let connectionString = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
 
+  // 2. Garantizamos que el parámetro sslmode=no-verify esté presente si no viene en la URL
+  if (connectionString && !connectionString.includes('sslmode=')) {
+    const separator = connectionString.includes('?') ? '&' : '?';
+    connectionString += `${separator}sslmode=no-verify`;
+  }
+
+  // 3. Instanciamos el Pool asegurando que pg no reindexe el certificado de la CA
   const pool = new Pool({
     connectionString,
-    ssl: { rejectUnauthorized: false }, // Disable strict TLS verification for Supabase connection pool on Vercel
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
 
   const adapter = new PrismaPg(pool);

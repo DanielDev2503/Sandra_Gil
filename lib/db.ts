@@ -9,7 +9,7 @@ const getPrismaInstance = () => {
 
   const pool = new Pool({
     connectionString,
-    ssl: { rejectUnauthorized: false }, // Ignora el error de certificado TLS en Vercel
+    ssl: { rejectUnauthorized: false }, // Disable strict TLS verification for Supabase connection pool on Vercel
   });
 
   const adapter = new PrismaPg(pool);

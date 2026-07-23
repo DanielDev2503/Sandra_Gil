@@ -18,6 +18,7 @@ interface Product {
   precio: number;
   stock: number;
   url_imagen: string;
+  imagenes?: string[];
   activo: boolean;
 }
 
@@ -57,6 +58,14 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>('aroma');
 
+  // Build gallery images: use `imagenes` array if available, else fallback to single `url_imagen`
+  const galleryImages: string[] =
+    product.imagenes && product.imagenes.length > 0
+      ? product.imagenes
+      : [product.url_imagen];
+
+  const [selectedImage, setSelectedImage] = useState(0);
+
   const isLowStock = product.stock > 0 && product.stock <= 15;
   const isOutOfStock = product.stock <= 0;
 
@@ -95,17 +104,27 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
-          {/* Left Column: Gallery */}
+          {/* Left Column: Interactive Gallery */}
           <div className="lg:col-span-6 space-y-4">
+            {/* Main Image Display */}
             <div className="aspect-square bg-white rounded-lg overflow-hidden border border-stone-200/60 shadow-xs relative">
-              <SkeletonImage
-                src={product.url_imagen}
-                alt={product.nombre}
-                className="w-full h-full object-cover"
-              />
+              {/* Render all gallery images stacked; only the selected one is visible via opacity */}
+              {galleryImages.map((imgUrl, idx) => (
+                <div
+                  key={idx}
+                  className="absolute inset-0 transition-opacity duration-500 ease-in-out"
+                  style={{ opacity: selectedImage === idx ? 1 : 0, zIndex: selectedImage === idx ? 10 : 1 }}
+                >
+                  <SkeletonImage
+                    src={imgUrl}
+                    alt={`${product.nombre} – imagen ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
               
               {/* Handcrafted Badge */}
-              <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
+              <div className="absolute top-4 left-4 z-20 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-[#A68F81]" />
                 <span className="text-[10px] font-bold text-stone-700 uppercase tracking-widest font-sans">
                   Hecho a Mano en Bogotá
@@ -113,30 +132,34 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
               </div>
             </div>
 
-            {/* Sub-images for gallery */}
-            <div className="flex sm:grid sm:grid-cols-3 gap-4 overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 snap-x snap-mandatory scrollbar-none">
-              <div className="aspect-square rounded-md overflow-hidden bg-white border border-stone-200/50 shrink-0 w-[45%] sm:w-auto snap-start">
-                <img
-                  src="https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&q=80&w=350"
-                  alt="Ingredientes botánicos aromaterapia"
-                  className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                />
+            {/* Thumbnail Gallery */}
+            {galleryImages.length > 1 && (
+              <div className="flex sm:grid sm:grid-cols-3 gap-4 overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 snap-x snap-mandatory scrollbar-none">
+                {galleryImages.map((imgUrl, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedImage(idx)}
+                    className={`aspect-square rounded-md overflow-hidden bg-white shrink-0 w-[45%] sm:w-auto snap-start transition-all duration-300 cursor-pointer ${
+                      selectedImage === idx
+                        ? 'ring-2 ring-[#A68F81] ring-offset-2 border-transparent shadow-md scale-[1.02]'
+                        : 'border border-stone-200/50 hover:border-stone-300 hover:shadow-sm'
+                    }`}
+                    aria-label={`Ver imagen ${idx + 1} de ${product.nombre}`}
+                  >
+                    <div className="relative w-full h-full">
+                      <SkeletonImage
+                        src={imgUrl}
+                        alt={`${product.nombre} – miniatura ${idx + 1}`}
+                        className={`w-full h-full object-cover transition-all duration-300 ${
+                          selectedImage === idx ? '' : 'hover:scale-105'
+                        }`}
+                      />
+                    </div>
+                  </button>
+                ))}
               </div>
-              <div className="aspect-square rounded-md overflow-hidden bg-white border border-stone-200/50 shrink-0 w-[45%] sm:w-auto snap-start">
-                <img
-                  src="https://images.unsplash.com/photo-1515688594390-b649af70d282?auto=format&fit=crop&q=80&w=350"
-                  alt="Cera de soya e insumos naturales"
-                  className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                />
-              </div>
-              <div className="aspect-square rounded-md overflow-hidden bg-white border border-stone-200/50 shrink-0 w-[45%] sm:w-auto snap-start">
-                <img
-                  src="https://images.unsplash.com/photo-1596435707261-05608be50720?auto=format&fit=crop&q=80&w=350"
-                  alt="Vertido de velas artesanales"
-                  className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                />
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Right Column: Conversions and Info */}

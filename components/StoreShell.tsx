@@ -18,6 +18,7 @@ interface Product {
   precio: number;
   stock: number;
   url_imagen: string;
+  imagenes?: string[];
   activo: boolean;
 }
 

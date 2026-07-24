@@ -98,12 +98,20 @@ export async function POST(req: Request) {
     // Signature format: SHA-256(reference + amountInCents + currency + integritySecret)
     const reference = pedido.id;
     const currency = 'COP';
-    
-    // Wompi SandBox default keys for fallback testing
-    const publicKey = process.env.WOMPI_PUBLIC_KEY || 'pub_test_Qz7tVj8zG1rG8zG1rG8zG1rG8zG1rG8z';
-    const integritySecret = process.env.WOMPI_INTEGRITY_SECRET || 'cos_test_integrity_secret';
+
+    // Read required env vars — fail explicitly if missing (no insecure fallbacks)
+    const publicKey = process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY;
+    const integritySecret = process.env.WOMPI_INTEGRITY_SECRET;
     const wompiUrl = process.env.WOMPI_CHECKOUT_URL || 'https://checkout.wompi.co/p/';
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+    if (!publicKey || !integritySecret) {
+      console.error('❌ Variables de entorno de Wompi no configuradas: NEXT_PUBLIC_WOMPI_PUBLIC_KEY o WOMPI_INTEGRITY_SECRET faltantes.');
+      return NextResponse.json(
+        { error: 'Error de configuración del servidor de pagos.' },
+        { status: 500 }
+      );
+    }
 
     const signatureRaw = `${reference}${amountInCents}${currency}${integritySecret}`;
     const signature = crypto

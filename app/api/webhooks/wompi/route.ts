@@ -20,40 +20,49 @@ export async function POST(req: Request) {
     const transaction = data.transaction;
     const orderId = transaction.reference;
 
-    // 1. Verify Wompi Signature
-    const webhookSecret = process.env.WOMPI_WEBHOOK_SECRET;
-    
-    if (webhookSecret) {
-      const properties = signature.properties;
-      const checksum = signature.checksum;
+    // 1. Verify Wompi Signature (MANDATORY — reject if secret is not configured)
+    const webhookSecret = process.env.WOMPI_EVENTS_SECRET;
 
-      // Concatenate the values of the properties in the order specified
-      const concatenatedValues = properties
-        .map((prop: string) => {
-          let resolvedPath = prop;
-          // Properties starting with 'transaction.' are inside 'data.transaction.'
-          if (prop.startsWith('transaction.')) {
-            resolvedPath = 'data.' + prop;
-          }
-          return getNestedValue(payload, resolvedPath);
-        })
-        .join('');
-
-      // Checksum format: SHA-255(concatenatedValues + timestamp + webhookSecret)
-      const computedChecksumRaw = `${concatenatedValues}${timestamp}${webhookSecret}`;
-      const computedChecksum = crypto
-        .createHash('sha256')
-        .update(computedChecksumRaw)
-        .digest('hex');
-
-      if (computedChecksum !== checksum) {
-        console.error('❌ Error de firma: La firma recibida no coincide con la calculada.');
-        return NextResponse.json({ error: 'Firma de webhook inválida.' }, { status: 401 });
-      }
-      console.log('✅ Firma de webhook verificada exitosamente.');
-    } else {
-      console.warn('⚠️ Advertencia: WOMPI_WEBHOOK_SECRET no configurada. Saltando verificación de firma.');
+    if (!webhookSecret) {
+      console.error('❌ WOMPI_EVENTS_SECRET no está configurada. La verificación de firma es obligatoria.');
+      return NextResponse.json(
+        { error: 'Error de configuración del servidor.' },
+        { status: 500 }
+      );
     }
+
+    const properties = signature?.properties;
+    const checksum = signature?.checksum;
+
+    if (!properties || !checksum) {
+      console.error('❌ Payload del webhook no contiene firma (signature.properties / signature.checksum).');
+      return NextResponse.json({ error: 'Firma de webhook ausente.' }, { status: 401 });
+    }
+
+    // Concatenate the values of the properties in the order specified
+    const concatenatedValues = properties
+      .map((prop: string) => {
+        let resolvedPath = prop;
+        // Properties starting with 'transaction.' are inside 'data.transaction.'
+        if (prop.startsWith('transaction.')) {
+          resolvedPath = 'data.' + prop;
+        }
+        return getNestedValue(payload, resolvedPath);
+      })
+      .join('');
+
+    // Checksum format: SHA-256(concatenatedValues + timestamp + webhookSecret)
+    const computedChecksumRaw = `${concatenatedValues}${timestamp}${webhookSecret}`;
+    const computedChecksum = crypto
+      .createHash('sha256')
+      .update(computedChecksumRaw)
+      .digest('hex');
+
+    if (computedChecksum !== checksum) {
+      console.error('❌ Error de firma: La firma recibida no coincide con la calculada.');
+      return NextResponse.json({ error: 'Firma de webhook inválida.' }, { status: 401 });
+    }
+    console.log('✅ Firma de webhook verificada exitosamente.');
 
     // 2. Fetch the corresponding order in the DB
     const pedido = await prisma.pedido.findUnique({

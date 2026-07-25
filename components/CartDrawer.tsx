@@ -113,8 +113,8 @@ export default function CartDrawer() {
                   ${cartTotal.toLocaleString('es-CO')} COP
                 </span>
               </div>
-              <p className="text-[10px] text-stone-400 leading-normal font-sans">
-                * Las tarifas de envío se calcularán al ingresar tus datos de envío en el checkout (Bogotá: $8.000 / Alrededores: $14.000).
+              <p className="text-[10px] text-emerald-700 font-medium leading-normal font-sans">
+                * ¡Envío GRATIS a Bogotá y municipios aledaños para todas tus compras!
               </p>
               
               {/* Trust Badge */}

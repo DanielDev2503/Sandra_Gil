@@ -253,9 +253,9 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
               <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
                 <Truck className="w-4.5 h-4.5 text-[#A68F81] mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-semibold text-stone-800">Garantía de Envío Local</p>
+                  <p className="font-semibold text-stone-800">Envío Gratis Garantizado</p>
                   <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">
-                    Envíos directos en Bogotá y alrededores. Empaque reforzado a prueba de impactos 📦.
+                    Envíos GRATIS en Bogotá y municipios aledaños. Empaque reforzado a prueba de impactos 📦.
                   </p>
                 </div>
               </div>

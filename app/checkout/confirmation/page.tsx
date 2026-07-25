@@ -176,7 +176,9 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
                 </div>
                 <div className="flex justify-between">
                   <span>Costo de Envío</span>
-                  <span>${pedido.costo_envio.toLocaleString('es-CO')} COP</span>
+                  <span className={pedido.costo_envio === 0 ? "font-semibold text-emerald-700" : ""}>
+                    {pedido.costo_envio === 0 ? 'GRATIS' : `$${pedido.costo_envio.toLocaleString('es-CO')} COP`}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm font-semibold text-stone-900 pt-2 border-t border-stone-200/80">
                   <span>Total Pagado</span>

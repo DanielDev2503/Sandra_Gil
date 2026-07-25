@@ -7,14 +7,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const CITIES = [
-  { name: 'Bogotá D.C.', shippingFee: 8000, value: 'Bogotá' },
-  { name: 'Chía', shippingFee: 14000, value: 'Alrededores' },
-  { name: 'Cajicá', shippingFee: 14000, value: 'Alrededores' },
-  { name: 'Cota', shippingFee: 14000, value: 'Alrededores' },
-  { name: 'La Calera', shippingFee: 14000, value: 'Alrededores' },
-  { name: 'Sopó', shippingFee: 14000, value: 'Alrededores' },
-  { name: 'Soacha', shippingFee: 14000, value: 'Alrededores' },
-  { name: 'Zipaquirá', shippingFee: 14000, value: 'Alrededores' },
+  { name: 'Bogotá D.C.', shippingFee: 0, value: 'Bogotá' },
+  { name: 'Chía', shippingFee: 0, value: 'Alrededores' },
+  { name: 'Cajicá', shippingFee: 0, value: 'Alrededores' },
+  { name: 'Cota', shippingFee: 0, value: 'Alrededores' },
+  { name: 'La Calera', shippingFee: 0, value: 'Alrededores' },
+  { name: 'Sopó', shippingFee: 0, value: 'Alrededores' },
+  { name: 'Soacha', shippingFee: 0, value: 'Alrededores' },
+  { name: 'Zipaquirá', shippingFee: 0, value: 'Alrededores' },
 ];
 
 export default function CheckoutPage() {
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
                 >
                   {CITIES.map((city, idx) => (
                     <option key={city.name} value={idx}>
-                      {city.name} ({city.value === 'Bogotá' ? 'Bogotá' : 'Municipio Aledaño'} - ${city.shippingFee.toLocaleString('es-CO')} COP)
+                      {city.name} ({city.value === 'Bogotá' ? 'Bogotá' : 'Municipio Aledaño'} - Envío GRATIS)
                     </option>
                   ))}
                 </select>
@@ -364,7 +364,7 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between text-stone-600">
                 <span className="flex items-center gap-1">Envío a {selectedCity.name}</span>
-                <span>${shippingCost.toLocaleString('es-CO')} COP</span>
+                <span className="font-semibold text-emerald-700">GRATIS</span>
               </div>
               
               <div className="pt-3 border-t border-stone-200 flex justify-between items-center text-stone-900 font-medium">

@@ -144,6 +144,7 @@ export default function CheckoutPage() {
         'customer-data:phone-number': formData.telefono.replace(/\s+/g, ''),
         'shipping-address:address-line-1': formData.direccion,
         'shipping-address:city': selectedCity.name,
+        'shipping-address:region': selectedCity.value === 'Bogotá' ? 'Bogotá D.C.' : 'Cundinamarca',
         'shipping-address:country': 'CO',
         'shipping-address:phone-number': formData.telefono.replace(/\s+/g, ''),
       };

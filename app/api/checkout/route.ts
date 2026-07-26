@@ -54,6 +54,13 @@ export async function POST(req: Request) {
         );
       }
 
+      if (dbProduct.esBajoPedido || dbProduct.precio === null) {
+        return NextResponse.json(
+          { error: `El producto ${dbProduct.nombre} es elaborado bajo pedido y requiere cotización previa por WhatsApp.` },
+          { status: 400 }
+        );
+      }
+
       if (dbProduct.stock < item.cantidad) {
         return NextResponse.json(
           { error: `Stock insuficiente para ${dbProduct.nombre}. Disponibles: ${dbProduct.stock}` },
@@ -61,11 +68,12 @@ export async function POST(req: Request) {
         );
       }
 
-      calculatedTotalProductos += dbProduct.precio * item.cantidad;
+      const unitPrice = dbProduct.precio;
+      calculatedTotalProductos += unitPrice * item.cantidad;
       orderItemsToCreate.push({
         producto_id: dbProduct.id,
         cantidad: item.cantidad,
-        precio_unitario: dbProduct.precio,
+        precio_unitario: unitPrice,
       });
     }
 

@@ -3,9 +3,10 @@
 import React from 'react';
 
 export default function WhatsAppButton() {
-  const phoneNumber = '573000000000'; // Default business support number
-  const message = encodeURIComponent('Hola, estoy viendo la página web y tengo una duda sobre las velas...');
+  const phoneNumber = '573175752029'; // Sandra Gil business number
+  const message = encodeURIComponent('Hola Sandra, estoy viendo la página web y tengo una pregunta sobre las velas...');
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+
 
   return (
     <div className="fixed bottom-6 right-6 z-50">

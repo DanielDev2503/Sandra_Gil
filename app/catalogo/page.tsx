@@ -10,7 +10,7 @@ export default async function CatalogPage() {
       activo: true,
     },
     orderBy: {
-      precio: 'asc',
+      nombre: 'asc',
     },
   });
 

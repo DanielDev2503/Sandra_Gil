@@ -364,7 +364,7 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between text-stone-600">
                 <span className="flex items-center gap-1">Envío a {selectedCity.name}</span>
-                <span className="font-semibold text-emerald-700">GRATIS</span>
+                <span className="font-semibold text-emerald-700">Envío: GRATIS</span>
               </div>
               
               <div className="pt-3 border-t border-stone-200 flex justify-between items-center text-stone-900 font-medium">

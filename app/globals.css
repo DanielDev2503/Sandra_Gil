@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FBF9F6;
+  --background: #FAF8F5;
   --foreground: #2C2A29;
+
+  /* Sandra Gil Brand Palette */
+  --brand-gold: #B88A32;
+  --brand-brown: #5C4018;
+  --brand-cream: #FAF8F5;
+  --brand-accent: #D4A359;
 }
 
 @theme inline {
@@ -10,6 +16,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), sans-serif;
   --font-serif: var(--font-playfair), serif;
+
+  /* Brand colors available as Tailwind utilities: bg-brand-gold, text-brand-brown, etc. */
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-brown: var(--brand-brown);
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-accent: var(--brand-accent);
 }
 
 body {

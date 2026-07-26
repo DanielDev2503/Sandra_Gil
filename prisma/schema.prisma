@@ -10,17 +10,18 @@ datasource db {
 }
 
 model Producto {
-  id          String   @id @default(uuid())
-  nombre      String
-  descripcion String
-  aroma       String
-  dimensiones String
-  precio      Float
-  stock       Int
-  url_imagen  String
-  imagenes    String[] @default([])
-  activo      Boolean  @default(true)
-  items       ItemPedido[]
+  id            String       @id @default(uuid())
+  nombre        String
+  descripcion   String
+  aroma         String
+  dimensiones   String
+  precio        Float?
+  esBajoPedido  Boolean      @default(false)
+  stock         Int
+  url_imagen    String
+  imagenes      String[]     @default([])
+  activo        Boolean      @default(true)
+  items         ItemPedido[]
 }
 
 model Pedido {

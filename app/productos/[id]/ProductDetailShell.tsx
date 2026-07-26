@@ -3,11 +3,14 @@
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import CartDrawer from '@/components/CartDrawer';
+import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
-import { Sparkles, MapPin, ChevronDown, ChevronUp, Star, Truck, ShieldCheck, CreditCard, Heart } from 'lucide-react';
+import { Sparkles, ChevronDown, ChevronUp, Star, Truck, ShieldCheck, CreditCard, MapPin, MessageCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SkeletonImage from '@/components/SkeletonImage';
+
+const WA_NUMBER = '573175752029';
 
 interface Product {
   id: string;
@@ -15,7 +18,8 @@ interface Product {
   descripcion: string;
   aroma: string;
   dimensiones: string;
-  precio: number;
+  precio: number | null;
+  esBajoPedido: boolean;
   stock: number;
   url_imagen: string;
   imagenes?: string[];
@@ -26,7 +30,6 @@ interface ProductDetailShellProps {
   product: Product;
 }
 
-// Mock Reviews for social proof
 const MOCK_REVIEWS = [
   {
     name: 'Carolina Restrepo',
@@ -54,11 +57,11 @@ const MOCK_REVIEWS = [
 export default function ProductDetailShell({ product }: ProductDetailShellProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
-  
+
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>('aroma');
 
-  // Build gallery images: use `imagenes` array if available, else fallback to single `url_imagen`
+  // Prefer imagenes[] from Supabase over single url_imagen
   const galleryImages: string[] =
     product.imagenes && product.imagenes.length > 0
       ? product.imagenes
@@ -68,26 +71,19 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
 
   const isLowStock = product.stock > 0 && product.stock <= 15;
   const isOutOfStock = product.stock <= 0;
+  const isBajoPedido = product.esBajoPedido;
 
-  // Scent details helper based on aroma
   const getScentNotes = (aroma: string) => {
-    const aromaLower = aroma.toLowerCase();
-    if (aromaLower.includes('lavanda')) {
-      return 'Lavanda relajante, manzanilla silvestre y toques de vainilla dulce. Ideal para meditar, aliviar el estrés y calmar la mente antes de dormir.';
-    }
-    if (aromaLower.includes('rosas')) {
-      return 'Pétalos de rosa búlgara, peonías frescas y un fondo sutil almizclado. Aroma romántico, floral e inspirador.';
-    }
-    if (aromaLower.includes('cítricos') || aromaLower.includes('citrus')) {
-      return 'Mandarina madura, cáscara de naranja, bergamota italiana y caléndula. Vibrante, refrescante, alegre y energizante.';
-    }
+    const a = aroma.toLowerCase();
+    if (a.includes('lavanda')) return 'Lavanda relajante, manzanilla silvestre y toques de vainilla dulce. Ideal para meditar, aliviar el estrés y calmar la mente antes de dormir.';
+    if (a.includes('rosas') || a.includes('rosa')) return 'Pétalos de rosa búlgara, peonías frescas y un fondo sutil almizclado. Aroma romántico, floral e inspirador.';
+    if (a.includes('cítrico') || a.includes('citrus') || a.includes('naranja')) return 'Mandarina madura, cáscara de naranja, bergamota italiana y caléndula. Vibrante, refrescante, alegre y energizante.';
     return 'Jazmín imperial, orquídea blanca y toques cremosos de vainilla. Aroma dulce, exótico, elegante y acogedor.';
   };
 
   const handleBuyNow = () => {
-    const cleanQty = Math.max(1, quantity);
     clearCart();
-    addToCart(product, cleanQty);
+    addToCart(product, Math.max(1, quantity));
     router.push('/checkout');
   };
 
@@ -95,20 +91,27 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
     setActiveAccordion(activeAccordion === section ? null : section);
   };
 
+  const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20la%20vela%20personalizada:%20${encodeURIComponent(product.nombre)}`;
+
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-[#FBF9F6]">
-      {/* Header */}
+    <div className="flex-1 flex flex-col min-h-screen bg-brand-cream">
       <Header />
 
-      {/* Main product detail section */}
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 flex-1">
+        {/* Breadcrumb */}
+        <div className="mb-8 flex items-center gap-2 text-xs text-stone-400 font-sans">
+          <Link href="/" className="hover:text-brand-brown transition">Inicio</Link>
+          <span>/</span>
+          <Link href="/catalogo" className="hover:text-brand-brown transition">Catálogo</Link>
+          <span>/</span>
+          <span className="text-stone-600 truncate max-w-[200px]">{product.nombre}</span>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
-          {/* Left Column: Interactive Gallery */}
+
+          {/* Gallery */}
           <div className="lg:col-span-6 space-y-4">
-            {/* Main Image Display */}
             <div className="aspect-square bg-white rounded-lg overflow-hidden border border-stone-200/60 shadow-xs relative">
-              {/* Render all gallery images stacked; only the selected one is visible via opacity */}
               {galleryImages.map((imgUrl, idx) => (
                 <div
                   key={idx}
@@ -122,17 +125,17 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
                   />
                 </div>
               ))}
-              
-              {/* Handcrafted Badge */}
+
+              {/* Badge */}
               <div className="absolute top-4 left-4 z-20 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-[#A68F81]" />
+                <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
                 <span className="text-[10px] font-bold text-stone-700 uppercase tracking-widest font-sans">
-                  Hecho a Mano en Bogotá
+                  {isBajoPedido ? 'Elaboración Bajo Pedido' : 'Hecho a Mano en Bogotá'}
                 </span>
               </div>
             </div>
 
-            {/* Thumbnail Gallery */}
+            {/* Thumbnails */}
             {galleryImages.length > 1 && (
               <div className="flex sm:grid sm:grid-cols-3 gap-4 overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 snap-x snap-mandatory scrollbar-none">
                 {galleryImages.map((imgUrl, idx) => (
@@ -142,41 +145,42 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
                     onClick={() => setSelectedImage(idx)}
                     className={`aspect-square rounded-md overflow-hidden bg-white shrink-0 w-[45%] sm:w-auto snap-start transition-all duration-300 cursor-pointer ${
                       selectedImage === idx
-                        ? 'ring-2 ring-[#A68F81] ring-offset-2 border-transparent shadow-md scale-[1.02]'
+                        ? 'ring-2 ring-brand-gold ring-offset-2 border-transparent shadow-md scale-[1.02]'
                         : 'border border-stone-200/50 hover:border-stone-300 hover:shadow-sm'
                     }`}
                     aria-label={`Ver imagen ${idx + 1} de ${product.nombre}`}
                   >
-                    <div className="relative w-full h-full">
-                      <SkeletonImage
-                        src={imgUrl}
-                        alt={`${product.nombre} – miniatura ${idx + 1}`}
-                        className={`w-full h-full object-cover transition-all duration-300 ${
-                          selectedImage === idx ? '' : 'hover:scale-105'
-                        }`}
-                      />
-                    </div>
+                    <SkeletonImage
+                      src={imgUrl}
+                      alt={`${product.nombre} – miniatura ${idx + 1}`}
+                      className={`w-full h-full object-cover transition-all duration-300 ${selectedImage === idx ? '' : 'hover:scale-105'}`}
+                    />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Right Column: Conversions and Info */}
+          {/* Product Info */}
           <div className="lg:col-span-6 space-y-6">
             <div>
-              <span className="text-xs uppercase tracking-widest text-[#A68F81] font-bold font-sans">
-                Colección Botánica Exclusiva
+              <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">
+                {isBajoPedido ? 'Vela Personalizada · Bajo Pedido' : 'Colección Botánica Exclusiva'}
               </span>
-              <h1 className="text-3xl font-serif font-light text-stone-900 mt-1">
-                {product.nombre}
-              </h1>
-              
+              <h1 className="text-3xl font-serif font-light text-stone-900 mt-1">{product.nombre}</h1>
+
               <div className="flex items-center gap-4 mt-3">
-                <p className="text-2xl font-serif font-semibold text-[#2C2A29]">
-                  ${product.precio.toLocaleString('es-CO')} COP
-                </p>
-                <div className="bg-[#2C2A29]/80 backdrop-blur-xs text-[#FBF9F6] px-2.5 py-0.5 rounded-sm text-[9px] uppercase tracking-widest font-sans">
+                {isBajoPedido ? (
+                  <div className="inline-flex items-center gap-2 bg-[#F0FDF4] border border-[#25D366]/30 px-3 py-1.5 rounded-sm">
+                    <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                    <span className="text-sm font-semibold text-[#16a34a] font-sans">Elaboración Bajo Pedido</span>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-serif font-semibold text-brand-brown">
+                    ${product.precio?.toLocaleString('es-CO')} COP
+                  </p>
+                )}
+                <div className="bg-brand-brown/80 text-[#FAF8F5] px-2.5 py-0.5 rounded-sm text-[9px] uppercase tracking-widest font-sans">
                   {product.aroma}
                 </div>
               </div>
@@ -186,152 +190,143 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
               {product.descripcion} Elaborada individualmente con pabilo de algodón orgánico libre de plomo para asegurar una combustión uniforme y libre de toxinas.
             </p>
 
-            {/* Quantity Selector & Actions */}
+            {/* Actions */}
             <div className="space-y-4 pt-4 border-t border-stone-200">
-              <div className="flex items-center gap-4">
-                <span className="text-xs uppercase font-semibold text-stone-600 font-sans">Cantidad:</span>
-                <div className="flex items-center border border-stone-300 rounded-sm bg-white font-sans">
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    disabled={isOutOfStock}
-                    className="px-3 py-1.5 text-stone-500 hover:text-stone-900 transition disabled:opacity-50"
+              {isBajoPedido ? (
+                /* WhatsApp CTA for bajo pedido */
+                <div className="space-y-3 font-sans">
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    Esta vela es elaborada especialmente para ti. Escríbenos por WhatsApp para conocer precios, tiempos de producción y opciones de personalización.
+                  </p>
+                  <a
+                    href={waLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-4 bg-[#25D366] hover:bg-[#1da851] hover:scale-[1.02] active:scale-[0.98] text-white text-sm uppercase tracking-widest font-bold transition-all duration-300 shadow-md hover:shadow-lg text-center flex items-center justify-center gap-2 rounded-sm cursor-pointer"
                   >
-                    -
-                  </button>
-                  <span className="px-4 text-sm font-semibold text-stone-800">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity((q) => q + 1)}
-                    disabled={isOutOfStock}
-                    className="px-3 py-1.5 text-stone-500 hover:text-stone-900 transition disabled:opacity-50"
-                  >
-                    +
-                  </button>
+                    <MessageCircle className="w-5 h-5" />
+                    Cotizar por WhatsApp
+                  </a>
                 </div>
+              ) : (
+                /* Normal purchase flow */
+                <>
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs uppercase font-semibold text-stone-600 font-sans">Cantidad:</span>
+                    <div className="flex items-center border border-stone-300 rounded-sm bg-white font-sans">
+                      <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        disabled={isOutOfStock}
+                        className="px-3 py-1.5 text-stone-500 hover:text-stone-900 transition disabled:opacity-50"
+                      >
+                        -
+                      </button>
+                      <span className="px-4 text-sm font-semibold text-stone-800">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity((q) => q + 1)}
+                        disabled={isOutOfStock}
+                        className="px-3 py-1.5 text-stone-500 hover:text-stone-900 transition disabled:opacity-50"
+                      >
+                        +
+                      </button>
+                    </div>
 
-                {/* Stock Tag */}
-                {isOutOfStock ? (
-                  <span className="text-xs text-red-500 font-bold uppercase tracking-wider font-sans">Agotado</span>
-                ) : isLowStock ? (
-                  <span className="text-xs text-amber-600 font-medium uppercase tracking-wider font-sans animate-pulse">Últimas {product.stock} unidades</span>
-                ) : (
-                  <span className="text-xs text-emerald-600 font-medium uppercase tracking-wider font-sans">Disponible</span>
-                )}
-              </div>
+                    {isOutOfStock ? (
+                      <span className="text-xs text-red-500 font-bold uppercase tracking-wider font-sans">Agotado</span>
+                    ) : isLowStock ? (
+                      <span className="text-xs text-amber-600 font-medium uppercase tracking-wider font-sans animate-pulse">Últimas {product.stock} unidades</span>
+                    ) : (
+                      <span className="text-xs text-emerald-600 font-medium uppercase tracking-wider font-sans">Disponible</span>
+                    )}
+                  </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-sans">
-                <button
-                  onClick={handleBuyNow}
-                  disabled={isOutOfStock}
-                  className="py-3.5 bg-[#A68F81] hover:bg-[#927d70] hover:scale-[1.02] active:scale-[0.98] text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed disabled:scale-100"
-                >
-                  Comprar Ahora (Envío Directo)
-                </button>
-                <button
-                  onClick={() => addToCart(product, Math.max(1, quantity))}
-                  disabled={isOutOfStock}
-                  className="py-3.5 bg-white hover:bg-stone-50 hover:scale-[1.02] active:scale-[0.98] border border-stone-700 text-[#2C2A29] text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 ease-in-out cursor-pointer disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed disabled:scale-100"
-                >
-                  Añadir al Carrito
-                </button>
-              </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-sans">
+                    <button
+                      onClick={handleBuyNow}
+                      disabled={isOutOfStock}
+                      className="py-3.5 bg-brand-gold hover:bg-brand-brown hover:scale-[1.02] active:scale-[0.98] text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed disabled:scale-100"
+                    >
+                      Comprar Ahora
+                    </button>
+                    <button
+                      onClick={() => addToCart(product, Math.max(1, quantity))}
+                      disabled={isOutOfStock}
+                      className="py-3.5 bg-white hover:bg-stone-50 hover:scale-[1.02] active:scale-[0.98] border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 cursor-pointer disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed disabled:scale-100"
+                    >
+                      Añadir al Carrito
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* CRO Trust Badges */}
+            {/* Trust badges */}
             <div className="space-y-3 pt-4 border-t border-stone-200 font-sans text-xs">
-              {/* Payment Security */}
               <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
-                <CreditCard className="w-4.5 h-4.5 text-[#A68F81] mt-0.5 shrink-0" />
+                <CreditCard className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-stone-800">Transacción 100% Segura</p>
-                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">
-                    Procesado de forma segura por Wompi (Bancolombia) 🔒. Aceptamos Nequi, PSE y Tarjetas de Crédito.
-                  </p>
+                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Procesado por Wompi (Bancolombia) 🔒. Aceptamos Nequi, PSE y Tarjetas de Crédito.</p>
                 </div>
               </div>
-
-              {/* Delivery Guarantee */}
               <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
-                <Truck className="w-4.5 h-4.5 text-[#A68F81] mt-0.5 shrink-0" />
+                <Truck className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-stone-800">Envío Gratis Garantizado</p>
-                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">
-                    Envíos GRATIS en Bogotá y municipios aledaños. Empaque reforzado a prueba de impactos 📦.
-                  </p>
+                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Envíos GRATIS en Bogotá y municipios aledaños. Empaque reforzado a prueba de impactos 📦.</p>
                 </div>
               </div>
             </div>
 
-            {/* Accordion Block */}
-            <div className="border border-stone-250 rounded-sm overflow-hidden bg-white divide-y divide-stone-200 font-sans text-sm">
-              {/* Accordion 1: Aroma Notes */}
-              <div>
-                <button
-                  onClick={() => toggleAccordion('aroma')}
-                  className="w-full px-5 py-4 flex items-center justify-between font-semibold text-stone-800 hover:bg-stone-50/50 transition text-left"
-                >
-                  <span>Notas del Aroma & Aromaterapia</span>
-                  {activeAccordion === 'aroma' ? <ChevronUp className="w-4 h-4 text-stone-500" /> : <ChevronDown className="w-4 h-4 text-stone-500" />}
-                </button>
-                {activeAccordion === 'aroma' && (
-                  <div className="px-5 pb-5 text-xs text-stone-500 leading-relaxed font-light">
-                    {getScentNotes(product.aroma)}
-                  </div>
-                )}
-              </div>
-
-              {/* Accordion 2: Dimensions & Burn Time */}
-              <div>
-                <button
-                  onClick={() => toggleAccordion('specs')}
-                  className="w-full px-5 py-4 flex items-center justify-between font-semibold text-stone-800 hover:bg-stone-50/50 transition text-left"
-                >
-                  <span>Dimensiones & Duración de Luz</span>
-                  {activeAccordion === 'specs' ? <ChevronUp className="w-4 h-4 text-stone-500" /> : <ChevronDown className="w-4 h-4 text-stone-500" />}
-                </button>
-                {activeAccordion === 'specs' && (
-                  <div className="px-5 pb-5 text-xs text-stone-500 leading-relaxed font-light space-y-2">
-                    <p><strong>Dimensiones:</strong> {product.dimensiones}</p>
-                    <p><strong>Duración estimada:</strong> ~40 a 45 horas de encendido continuo.</p>
-                    <p><strong>Contenedor:</strong> Envase de vidrio grueso premium de grado cosmetológico, ideal para reutilizar como florero o portarobjetos después del uso.</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Accordion 3: Candle Care Tips */}
-              <div>
-                <button
-                  onClick={() => toggleAccordion('care')}
-                  className="w-full px-5 py-4 flex items-center justify-between font-semibold text-stone-800 hover:bg-stone-50/50 transition text-left"
-                >
-                  <span>Consejos de Cuidado & Seguridad</span>
-                  {activeAccordion === 'care' ? <ChevronUp className="w-4 h-4 text-stone-500" /> : <ChevronDown className="w-4 h-4 text-stone-500" />}
-                </button>
-                {activeAccordion === 'care' && (
-                  <div className="px-5 pb-5 text-xs text-stone-500 leading-relaxed font-light space-y-2.5">
-                    <p>Para aprovechar al máximo tu vela artesanal, sigue estas recomendaciones básicas:</p>
-                    <ul className="list-disc pl-4 space-y-1">
-                      <li><strong>Pabilo Corto:</strong> Recorta el pabilo a 5 mm antes de cada encendido. Esto evita el humo negro y mantiene la llama estable.</li>
-                      <li><strong>Memoria de Cera:</strong> En el primer encendido, deja que la cera se derrita por completo hasta los bordes del vidrio. Esto evita que se forme un "túnel" en el centro.</li>
-                      <li><strong>Tiempo Máximo:</strong> No dejes encendida la vela por más de 4 horas seguidas.</li>
-                      <li><strong>Seguridad:</strong> Colócala sobre una superficie resistente al calor y nunca la dejes sin supervisión. Mantén fuera del alcance de niños y mascotas.</li>
-                    </ul>
-                  </div>
-                )}
-              </div>
+            {/* Accordion */}
+            <div className="border border-stone-200 rounded-sm overflow-hidden bg-white divide-y divide-stone-200 font-sans text-sm">
+              {[
+                { key: 'aroma', label: 'Notas del Aroma & Aromaterapia', content: <p className="text-xs text-stone-500 leading-relaxed font-light">{getScentNotes(product.aroma)}</p> },
+                {
+                  key: 'specs', label: 'Dimensiones & Duración de Luz', content: (
+                    <div className="text-xs text-stone-500 leading-relaxed font-light space-y-2">
+                      <p><strong>Dimensiones:</strong> {product.dimensiones}</p>
+                      <p><strong>Duración estimada:</strong> ~40 a 45 horas de encendido continuo.</p>
+                      <p><strong>Contenedor:</strong> Envase de vidrio premium, ideal para reutilizar como florero.</p>
+                    </div>
+                  )
+                },
+                {
+                  key: 'care', label: 'Consejos de Cuidado & Seguridad', content: (
+                    <div className="text-xs text-stone-500 leading-relaxed font-light space-y-2.5">
+                      <p>Para aprovechar al máximo tu vela artesanal:</p>
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li><strong>Pabilo Corto:</strong> Recorta a 5 mm antes de cada encendido.</li>
+                        <li><strong>Memoria de Cera:</strong> En el primer encendido, deja que la cera llegue a los bordes del vidrio.</li>
+                        <li><strong>Tiempo Máximo:</strong> No dejes encendida por más de 4 horas seguidas.</li>
+                        <li><strong>Seguridad:</strong> Sobre superficie resistente al calor. Fuera del alcance de niños y mascotas.</li>
+                      </ul>
+                    </div>
+                  )
+                },
+              ].map(({ key, label, content }) => (
+                <div key={key}>
+                  <button
+                    onClick={() => toggleAccordion(key)}
+                    className="w-full px-5 py-4 flex items-center justify-between font-semibold text-stone-800 hover:bg-stone-50/50 transition text-left"
+                  >
+                    <span>{label}</span>
+                    {activeAccordion === key ? <ChevronUp className="w-4 h-4 text-stone-500" /> : <ChevronDown className="w-4 h-4 text-stone-500" />}
+                  </button>
+                  {activeAccordion === key && <div className="px-5 pb-5">{content}</div>}
+                </div>
+              ))}
             </div>
-
           </div>
         </div>
 
-        {/* Social Proof: Customer Reviews */}
+        {/* Reviews */}
         <section className="mt-20 pt-10 border-t border-stone-200">
           <div className="text-center mb-10">
-            <span className="text-xs uppercase tracking-widest text-[#A68F81] font-bold font-sans">Opiniones de Clientes</span>
+            <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">Opiniones de Clientes</span>
             <h2 className="text-2xl font-serif text-stone-900 mt-1">Lo Que Dicen de Sandra Gil</h2>
             <div className="flex items-center justify-center gap-1 mt-2">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4.5 h-4.5 text-amber-400 fill-current" />
-              ))}
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />)}
               <span className="text-xs font-semibold text-stone-700 ml-2">5.0 / 5.0 Estrellas</span>
             </div>
           </div>
@@ -342,21 +337,17 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-stone-850">{review.name}</p>
+                      <p className="text-sm font-semibold text-stone-800">{review.name}</p>
                       <p className="text-[10px] text-stone-400 flex items-center gap-0.5">
-                        <MapPin className="w-3 h-3 text-stone-400 shrink-0" /> {review.location}
+                        <MapPin className="w-3 h-3 shrink-0" /> {review.location}
                       </p>
                     </div>
                     <span className="text-[10px] text-stone-400">{review.date}</span>
                   </div>
                   <div className="flex gap-0.5">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-current" />
-                    ))}
+                    {[...Array(review.rating)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-current" />)}
                   </div>
-                  <p className="text-xs text-stone-600 leading-relaxed font-light italic">
-                    "{review.comment}"
-                  </p>
+                  <p className="text-xs text-stone-600 leading-relaxed font-light italic">"{review.comment}"</p>
                 </div>
               </div>
             ))}
@@ -364,75 +355,8 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
         </section>
       </main>
 
-      {/* Cart Drawer */}
       <CartDrawer />
-
-      {/* Footer */}
-      <footer className="bg-[#2C2A29] text-[#FBF9F6] border-t border-stone-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-stone-800">
-            <div className="space-y-4">
-              <h3 className="font-serif text-xl font-light tracking-widest">SANDRA GIL</h3>
-              <p className="text-xs text-stone-400 max-w-sm leading-relaxed font-light">
-                Creación artesanal de velas decorativas y aromáticas premium. Diseñadas para armonizar tus sentidos y transformar tus espacios con elegancia natural.
-              </p>
-              <div className="flex items-center gap-2 text-xs text-stone-400">
-                <MapPin className="w-4 h-4 text-[#A68F81]" />
-                <span>Bogotá, Colombia (Envíos locales)</span>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#A68F81]">Enlaces Rápidos</h4>
-              <ul className="space-y-2 text-xs text-stone-400">
-                <li><Link href="/" className="hover:text-white transition">Inicio</Link></li>
-                <li><Link href="/catalogo" className="hover:text-white transition">Catálogo Completo</Link></li>
-                <li><Link href="/checkout" className="hover:text-white transition">Checkout / Pago</Link></li>
-              </ul>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#A68F81]">Conecta con Nosotros</h4>
-              <p className="text-xs text-stone-400 font-light">
-                Síguenos en redes sociales para ver el proceso de vertido de velas y lanzamientos de nuevas colecciones.
-              </p>
-              <div className="flex space-x-4">
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-stone-800 text-stone-300 hover:text-white hover:bg-[#A68F81] transition flex items-center justify-center"
-                  aria-label="Instagram"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-4 h-4"
-                  >
-                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
-            <p>© {new Date().getFullYear()} Sandra Gil Velas. Todos los derechos reservados.</p>
-            <p className="flex items-center gap-1">
-              Hecho con <Heart className="w-3.5 h-3.5 text-red-400 fill-current" /> en Bogotá.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

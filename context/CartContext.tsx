@@ -13,7 +13,7 @@ export interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: { id: string; nombre: string; precio: number; url_imagen: string; aroma: string }, cantidad?: number) => void;
+  addToCart: (product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma: string }, cantidad?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, cantidad: number) => void;
   clearCart: () => void;
@@ -55,9 +55,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeCart = () => setIsCartOpen(false);
 
   const addToCart = (
-    product: { id: string; nombre: string; precio: number; url_imagen: string; aroma: string },
+    product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma: string },
     cantidad = 1
   ) => {
+    if (product.precio === null) return;
+    const validPrecio = product.precio;
+
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
@@ -65,9 +68,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           item.id === product.id ? { ...item, cantidad: item.cantidad + cantidad } : item
         );
       }
-      return [...prevCart, { ...product, cantidad }];
+      return [...prevCart, { ...product, precio: validPrecio, cantidad }];
     });
-    
+
     // Automatically trigger cart drawer opening for micro-interaction feedback
     openCart();
   };

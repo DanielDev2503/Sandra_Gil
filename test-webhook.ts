@@ -23,6 +23,8 @@ async function runTest() {
   const quantityToBuy = 2;
   console.log(`📦 Producto seleccionado: "${product.nombre}" | Stock inicial: ${initialStock}`);
 
+  const productPrice = product.precio ?? 45000;
+
   // 2. Create a pending Pedido
   const pedido = await prisma.pedido.create({
     data: {
@@ -32,16 +34,16 @@ async function runTest() {
       ciudad: 'Bogotá (Bogotá)',
       direccion_envio: 'Calle Ficticia 123',
       notas_entrega: 'Test notes',
-      total_productos: product.precio * quantityToBuy,
+      total_productos: productPrice * quantityToBuy,
       costo_envio: 8000,
-      total_pagado: product.precio * quantityToBuy + 8000,
+      total_pagado: productPrice * quantityToBuy + 8000,
       estado_pago: 'pendiente',
       items: {
         create: [
           {
             producto_id: product.id,
             cantidad: quantityToBuy,
-            precio_unitario: product.precio,
+            precio_unitario: productPrice,
           },
         ],
       },

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface SkeletonImageProps {
   src: string;
@@ -15,6 +15,13 @@ interface SkeletonImageProps {
  */
 export default function SkeletonImage({ src, alt, className = '' }: SkeletonImageProps) {
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      setLoaded(true);
+    }
+  }, [src]);
 
   return (
     <>
@@ -23,6 +30,7 @@ export default function SkeletonImage({ src, alt, className = '' }: SkeletonImag
         <div className="absolute inset-0 bg-stone-200 animate-pulse" />
       )}
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         className={`${className} transition-opacity duration-500 ease-in-out ${loaded ? 'opacity-100' : 'opacity-0'}`}
@@ -31,3 +39,4 @@ export default function SkeletonImage({ src, alt, className = '' }: SkeletonImag
     </>
   );
 }
+

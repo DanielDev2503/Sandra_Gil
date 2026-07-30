@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db';
 import CatalogShell from './CatalogShell';
+import { Suspense } from 'react';
 
 export const revalidate = 0; // Dynamic rendering for real-time stock levels
 
@@ -14,5 +15,9 @@ export default async function CatalogPage() {
     },
   });
 
-  return <CatalogShell products={products} />;
+  return (
+    <Suspense>
+      <CatalogShell products={products} />
+    </Suspense>
+  );
 }

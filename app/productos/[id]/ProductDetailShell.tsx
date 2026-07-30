@@ -17,6 +17,7 @@ interface Product {
   nombre: string;
   descripcion: string;
   aroma: string;
+  material?: string | null;
   dimensiones: string;
   precio: number | null;
   esBajoPedido: boolean;

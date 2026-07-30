@@ -13,6 +13,7 @@ interface Product {
   nombre: string;
   descripcion: string;
   aroma: string;
+  material?: string | null;
   dimensiones: string;
   precio: number | null;
   esBajoPedido: boolean;
@@ -124,9 +125,16 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                   </span>
                 </div>
 
-                {/* Aroma badge */}
-                <div className="absolute bottom-3 left-3 bg-brand-brown/80 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest">
-                  {product.aroma}
+                {/* Aroma & Material badges */}
+                <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+                  <span className="bg-brand-brown/80 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest">
+                    {product.aroma}
+                  </span>
+                  {product.material && (
+                    <span className="bg-brand-gold/80 backdrop-blur-xs text-white px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest">
+                      {product.material}
+                    </span>
+                  )}
                 </div>
 
                 {/* Hover overlay */}
@@ -151,7 +159,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                   <div className="flex items-center gap-2 mt-1.5 text-xs text-stone-400">
                     <span>Tamaño: {product.dimensiones}</span>
                     <span>•</span>
-                    <span>Cera de Soya</span>
+                    <span>{product.material || 'Cera de Soya'}</span>
                   </div>
 
                   <p className="text-xs text-stone-500 mt-2.5 line-clamp-3 leading-relaxed">

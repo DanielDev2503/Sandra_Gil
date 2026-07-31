@@ -176,7 +176,7 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
                     alt="Sandra Gil Velas Artesanales"
                     width={200}
                     height={200}
-                    className="rounded-full object-cover opacity-60"
+                    className="object-contain opacity-60"
                   />
                 </div>
               )}

@@ -69,7 +69,7 @@ export default function Header() {
                 width={56}
                 height={56}
                 priority
-                className="rounded-full object-cover ring-2 ring-brand-gold/50 group-hover:ring-brand-gold transition duration-300 shadow-sm"
+                className="object-contain"
               />
             </Link>
           </div>
@@ -135,7 +135,7 @@ export default function Header() {
                 alt="Sandra Gil"
                 width={40}
                 height={40}
-                className="rounded-full object-cover ring-1 ring-brand-gold/40"
+                className="object-contain"
               />
               <button
                 onClick={closeMobileMenu}

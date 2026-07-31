@@ -76,7 +76,7 @@ export default function NosotrosPage() {
                 alt="Sandra Gil Velas Artesanales"
                 width={120}
                 height={120}
-                className="rounded-full object-cover ring-4 ring-brand-gold/30 shadow-lg"
+                className="object-contain"
               />
             </div>
           </div>

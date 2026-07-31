@@ -20,7 +20,7 @@ export default function Footer() {
                 alt="Sandra Gil Velas Artesanales"
                 width={100}
                 height={100}
-                className="rounded-full object-cover ring-2 ring-brand-gold/40"
+                className="object-contain"
               />
             </Link>
             <p className="text-xs text-stone-400 max-w-xs leading-relaxed">

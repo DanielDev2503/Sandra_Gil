@@ -39,3 +39,13 @@ body {
   display: none;
 }
 
+/* Mobile menu drawer slide-in animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+

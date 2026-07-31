@@ -172,7 +172,7 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-brand-cream">
                   <Image
-                    src="/logo sandra.jpeg"
+                    src="/logo-sandra.png"
                     alt="Sandra Gil Velas Artesanales"
                     width={200}
                     height={200}

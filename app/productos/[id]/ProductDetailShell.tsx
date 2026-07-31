@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
-import { Sparkles, ChevronDown, ChevronUp, Star, Truck, ShieldCheck, CreditCard, MapPin, MessageCircle } from 'lucide-react';
+import { Sparkles, ChevronDown, ChevronUp, Star, Truck, ShieldCheck, CreditCard, MessageCircle, Send } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SkeletonImage from '@/components/SkeletonImage';
@@ -27,40 +27,102 @@ interface Product {
   activo: boolean;
 }
 
-interface ProductDetailShellProps {
-  product: Product;
+interface Resena {
+  id: string;
+  producto_id: string;
+  autor: string;
+  calificacion: number;
+  comentario: string;
+  creado_en: string | Date;
 }
 
-const MOCK_REVIEWS = [
-  {
-    name: 'Carolina Restrepo',
-    location: 'Cedritos, Bogotá',
-    rating: 5,
-    date: 'Hace 3 días',
-    comment: '¡Las flores preservadas se ven hermosas! El aroma a lavanda inunda toda mi sala incluso estando apagada. El empaque llegó impecable.',
-  },
-  {
-    name: 'Felipe Gómez',
-    location: 'Chapinero, Bogotá',
-    rating: 5,
-    date: 'Hace 1 semana',
-    comment: 'Compré la vela de Jazmín con cuarzo y es de otro mundo. La combustión es súper limpia y se nota que es cera de soya 100% natural. Recomendado.',
-  },
-  {
-    name: 'Amalia Díaz',
-    location: 'Colina Campestre, Bogotá',
-    rating: 5,
-    date: 'Hace 2 semanas',
-    comment: 'Excelente servicio. El despacho llegó a tiempo y la vela viene en una caja rígida muy segura. El aroma a cítricos y caléndula es súper energizante.',
-  },
-];
+interface ProductDetailShellProps {
+  product: Product;
+  resenas: Resena[];
+}
 
-export default function ProductDetailShell({ product }: ProductDetailShellProps) {
+// ── Star Rating Input Component ────────────────────────
+function StarRatingInput({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (rating: number) => void;
+}) {
+  const [hovered, setHovered] = useState(0);
+
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          onClick={() => onChange(star)}
+          onMouseEnter={() => setHovered(star)}
+          onMouseLeave={() => setHovered(0)}
+          className="p-0.5 transition-transform duration-150 hover:scale-110 cursor-pointer"
+          aria-label={`${star} estrella${star > 1 ? 's' : ''}`}
+        >
+          <Star
+            className={`w-6 h-6 transition-colors duration-150 ${
+              star <= (hovered || value)
+                ? 'text-amber-400 fill-current'
+                : 'text-stone-300'
+            }`}
+          />
+        </button>
+      ))}
+      {value > 0 && (
+        <span className="ml-2 text-xs text-stone-500 font-sans">
+          {value === 1
+            ? 'Mala'
+            : value === 2
+              ? 'Regular'
+              : value === 3
+                ? 'Buena'
+                : value === 4
+                  ? 'Muy buena'
+                  : 'Excelente'}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ── Star Rating Display Component ──────────────────────
+function StarRatingDisplay({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md' }) {
+  const sizeClass = size === 'md' ? 'w-4 h-4' : 'w-3.5 h-3.5';
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          className={`${sizeClass} ${
+            star <= Math.round(rating)
+              ? 'text-amber-400 fill-current'
+              : 'text-stone-300'
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
+export default function ProductDetailShell({ product, resenas: initialResenas }: ProductDetailShellProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
 
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>('aroma');
+  const [resenas, setResenas] = useState<Resena[]>(initialResenas);
+
+  // Review form state
+  const [reviewAutor, setReviewAutor] = useState('');
+  const [reviewCalificacion, setReviewCalificacion] = useState(0);
+  const [reviewComentario, setReviewComentario] = useState('');
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+  const [reviewSuccess, setReviewSuccess] = useState(false);
 
   // Prefer imagenes[] from Supabase over single url_imagen
   const galleryImages: string[] =
@@ -73,6 +135,12 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
   const isLowStock = product.stock > 0 && product.stock <= 15;
   const isOutOfStock = product.stock <= 0;
   const isBajoPedido = product.esBajoPedido;
+
+  // Computed average rating
+  const avgRating =
+    resenas.length > 0
+      ? resenas.reduce((sum, r) => sum + r.calificacion, 0) / resenas.length
+      : 0;
 
   const getScentNotes = (aroma: string) => {
     const a = aroma.toLowerCase();
@@ -90,6 +158,75 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
 
   const toggleAccordion = (section: string) => {
     setActiveAccordion(activeAccordion === section ? null : section);
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReviewError('');
+    setReviewSuccess(false);
+
+    if (!reviewAutor.trim()) {
+      setReviewError('Ingresa tu nombre.');
+      return;
+    }
+    if (reviewCalificacion < 1 || reviewCalificacion > 5) {
+      setReviewError('Selecciona una calificación de 1 a 5 estrellas.');
+      return;
+    }
+    if (!reviewComentario.trim()) {
+      setReviewError('Escribe un comentario.');
+      return;
+    }
+
+    setReviewSubmitting(true);
+
+    try {
+      const res = await fetch('/api/resenas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          producto_id: product.id,
+          autor: reviewAutor.trim(),
+          calificacion: reviewCalificacion,
+          comentario: reviewComentario.trim(),
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Error al enviar la reseña.');
+      }
+
+      const newResena = await res.json();
+
+      // Add to local state immediately
+      setResenas((prev) => [newResena, ...prev]);
+      setReviewAutor('');
+      setReviewCalificacion(0);
+      setReviewComentario('');
+      setReviewSuccess(true);
+
+      // Hide success message after 4 seconds
+      setTimeout(() => setReviewSuccess(false), 4000);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error inesperado.';
+      setReviewError(message);
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
+
+  const formatDate = (dateStr: string | Date) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Hoy';
+    if (diffDays === 1) return 'Ayer';
+    if (diffDays < 7) return `Hace ${diffDays} días`;
+    if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} semana${Math.floor(diffDays / 7) > 1 ? 's' : ''}`;
+    return date.toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
   const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20la%20vela%20personalizada:%20${encodeURIComponent(product.nombre)}`;
@@ -185,6 +322,16 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
                   {product.aroma}
                 </div>
               </div>
+
+              {/* Average rating inline */}
+              {resenas.length > 0 && (
+                <div className="flex items-center gap-2 mt-2">
+                  <StarRatingDisplay rating={avgRating} size="sm" />
+                  <span className="text-xs text-stone-500 font-sans">
+                    {avgRating.toFixed(1)} / 5.0 · {resenas.length} opinión{resenas.length !== 1 ? 'es' : ''}
+                  </span>
+                </div>
+              )}
             </div>
 
             <p className="text-stone-600 text-sm leading-relaxed font-sans font-light">
@@ -321,38 +468,119 @@ export default function ProductDetailShell({ product }: ProductDetailShellProps)
           </div>
         </div>
 
-        {/* Reviews */}
+        {/* ── REVIEWS SECTION ──────────────────────────────── */}
         <section className="mt-20 pt-10 border-t border-stone-200">
           <div className="text-center mb-10">
             <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">Opiniones de Clientes</span>
-            <h2 className="text-2xl font-serif text-stone-900 mt-1">Lo Que Dicen de Sandra Gil</h2>
-            <div className="flex items-center justify-center gap-1 mt-2">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />)}
-              <span className="text-xs font-semibold text-stone-700 ml-2">5.0 / 5.0 Estrellas</span>
+            <h2 className="text-2xl font-serif text-stone-900 mt-1">Lo Que Dicen de Este Producto</h2>
+            {resenas.length > 0 ? (
+              <div className="flex items-center justify-center gap-1 mt-2">
+                <StarRatingDisplay rating={avgRating} size="md" />
+                <span className="text-xs font-semibold text-stone-700 ml-2">
+                  {avgRating.toFixed(1)} / 5.0 · {resenas.length} opinión{resenas.length !== 1 ? 'es' : ''}
+                </span>
+              </div>
+            ) : (
+              <p className="text-sm text-stone-400 mt-2 font-sans">Aún no hay opiniones para este producto.</p>
+            )}
+          </div>
+
+          {/* Review Form */}
+          <div className="max-w-xl mx-auto mb-12">
+            <div className="bg-white rounded-lg border border-stone-200/60 p-6 shadow-xs">
+              <h3 className="text-sm font-semibold text-stone-800 font-sans mb-4">
+                {resenas.length === 0 ? '✨ Sé el primero en compartir tu experiencia' : 'Deja tu opinión'}
+              </h3>
+
+              <form onSubmit={handleSubmitReview} className="space-y-4">
+                <div>
+                  <label htmlFor="review-autor" className="block text-xs font-medium text-stone-600 mb-1 font-sans">
+                    Tu nombre
+                  </label>
+                  <input
+                    id="review-autor"
+                    type="text"
+                    value={reviewAutor}
+                    onChange={(e) => setReviewAutor(e.target.value)}
+                    placeholder="Ej: María García"
+                    className="w-full px-4 py-2.5 border border-stone-300 rounded-sm text-sm font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-stone-600 mb-1 font-sans">
+                    Calificación
+                  </label>
+                  <StarRatingInput value={reviewCalificacion} onChange={setReviewCalificacion} />
+                </div>
+
+                <div>
+                  <label htmlFor="review-comentario" className="block text-xs font-medium text-stone-600 mb-1 font-sans">
+                    Tu comentario
+                  </label>
+                  <textarea
+                    id="review-comentario"
+                    value={reviewComentario}
+                    onChange={(e) => setReviewComentario(e.target.value)}
+                    placeholder="¿Qué te pareció el producto? Cuéntanos tu experiencia..."
+                    rows={3}
+                    className="w-full px-4 py-2.5 border border-stone-300 rounded-sm text-sm font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition bg-white resize-none"
+                  />
+                </div>
+
+                {reviewError && (
+                  <p className="text-xs text-red-500 font-sans">{reviewError}</p>
+                )}
+
+                {reviewSuccess && (
+                  <p className="text-xs text-emerald-600 font-sans font-medium">
+                    ¡Gracias por tu opinión! Tu reseña ha sido publicada.
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={reviewSubmitting}
+                  className="w-full py-3 bg-brand-brown hover:bg-brand-gold hover:scale-[1.01] active:scale-[0.99] text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  {reviewSubmitting ? 'Enviando...' : 'Publicar Opinión'}
+                </button>
+              </form>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
-            {MOCK_REVIEWS.map((review, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-lg border border-stone-200/50 shadow-xs flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-stone-800">{review.name}</p>
-                      <p className="text-[10px] text-stone-400 flex items-center gap-0.5">
-                        <MapPin className="w-3 h-3 shrink-0" /> {review.location}
-                      </p>
+          {/* Reviews List */}
+          {resenas.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-sans">
+              {resenas.map((review) => (
+                <div key={review.id} className="bg-white p-6 rounded-lg border border-stone-200/50 shadow-xs flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-stone-800">{review.autor}</p>
+                      </div>
+                      <span className="text-[10px] text-stone-400">{formatDate(review.creado_en)}</span>
                     </div>
-                    <span className="text-[10px] text-stone-400">{review.date}</span>
+                    <StarRatingDisplay rating={review.calificacion} size="sm" />
+                    <p className="text-xs text-stone-600 leading-relaxed font-light italic">&ldquo;{review.comentario}&rdquo;</p>
                   </div>
-                  <div className="flex gap-0.5">
-                    {[...Array(review.rating)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-current" />)}
-                  </div>
-                  <p className="text-xs text-stone-600 leading-relaxed font-light italic">"{review.comment}"</p>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-4">
+                <Star className="w-7 h-7 text-brand-gold" />
               </div>
-            ))}
-          </div>
+              <p className="text-sm text-stone-500 font-sans">
+                Este producto aún no tiene opiniones.
+              </p>
+              <p className="text-xs text-stone-400 font-sans mt-1">
+                ¡Sé el primero en compartir tu experiencia con esta vela!
+              </p>
+            </div>
+          )}
         </section>
       </main>
 

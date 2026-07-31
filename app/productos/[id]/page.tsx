@@ -12,14 +12,21 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const resolvedParams = await params;
   const id = resolvedParams.id;
 
-  // Query database for product
+  // Query database for product with reviews
   const product = await prisma.producto.findUnique({
     where: { id: id },
+    include: {
+      resenas: {
+        orderBy: { creado_en: 'desc' },
+      },
+    },
   });
 
   if (!product || !product.activo) {
     redirect('/');
   }
 
-  return <ProductDetailShell product={product} />;
+  const { resenas, ...productData } = product;
+
+  return <ProductDetailShell product={productData} resenas={resenas} />;
 }

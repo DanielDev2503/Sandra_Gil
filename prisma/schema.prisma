@@ -23,6 +23,7 @@ model Producto {
   imagenes      String[]     @default([])
   activo        Boolean      @default(true)
   items         ItemPedido[]
+  resenas       Resena[]
 }
 
 model Pedido {
@@ -53,5 +54,15 @@ model ItemPedido {
   producto        Producto @relation(fields: [producto_id], references: [id])
   cantidad        Int
   precio_unitario Float
+}
+
+model Resena {
+  id           String   @id @default(uuid())
+  producto_id  String
+  producto     Producto @relation(fields: [producto_id], references: [id], onDelete: Cascade)
+  autor        String
+  calificacion Int      // Valor de 1 a 5
+  comentario   String
+  creado_en    DateTime @default(now())
 }
 

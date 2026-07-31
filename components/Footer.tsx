@@ -16,7 +16,7 @@ export default function Footer() {
           <div className="space-y-4 md:col-span-1">
             <Link href="/" className="inline-block">
               <Image
-                src="/logo sandra.jpeg"
+                src="/logo-sandra.png"
                 alt="Sandra Gil Velas Artesanales"
                 width={100}
                 height={100}
@@ -39,6 +39,7 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-white transition">Inicio</Link></li>
               <li><Link href="/catalogo" className="hover:text-white transition">Catálogo</Link></li>
               <li><Link href="/personalizadas" className="hover:text-white transition">Velas Bajo Pedido</Link></li>
+              <li><Link href="/nosotros" className="hover:text-white transition">Sobre Nosotros</Link></li>
               <li><Link href="/checkout" className="hover:text-white transition">Checkout / Pago</Link></li>
             </ul>
           </div>

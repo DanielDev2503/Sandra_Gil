@@ -254,6 +254,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                       src={displayImage}
                       alt={product.nombre}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
                       <Sparkles className="w-3 h-3 text-brand-gold" />

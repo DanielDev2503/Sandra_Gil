@@ -294,6 +294,9 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                     src={imgUrl}
                     alt={`${product.nombre} – imagen ${idx + 1}`}
                     className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={idx === 0}
                   />
                 </div>
               ))}
@@ -315,7 +318,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImage(idx)}
-                    className={`aspect-square rounded-md overflow-hidden bg-white shrink-0 w-[45%] sm:w-auto snap-start transition-all duration-300 cursor-pointer ${
+                    className={`relative aspect-square rounded-md overflow-hidden bg-white shrink-0 w-[45%] sm:w-auto snap-start transition-all duration-300 cursor-pointer ${
                       selectedImage === idx
                         ? 'ring-2 ring-brand-gold ring-offset-2 border-transparent shadow-md scale-[1.02]'
                         : 'border border-stone-200/50 hover:border-stone-300 hover:shadow-sm'
@@ -326,6 +329,8 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                       src={imgUrl}
                       alt={`${product.nombre} – miniatura ${idx + 1}`}
                       className={`w-full h-full object-cover transition-all duration-300 ${selectedImage === idx ? '' : 'hover:scale-105'}`}
+                      fill
+                      sizes="(max-width: 768px) 25vw, 15vw"
                     />
                   </button>
                 ))}

@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import Link from 'next/link';
+import SkeletonImage from './SkeletonImage';
 
 interface Product {
   id: string;
@@ -164,10 +165,12 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
           <div className="lg:col-span-6 relative flex justify-center">
             <div className="relative w-full max-w-md aspect-square sm:aspect-4/3 rounded-lg overflow-hidden shadow-2xl border border-brand-gold/20 bg-stone-100">
               {heroImage ? (
-                <img
+                <SkeletonImage
                   src={heroImage}
                   alt={heroProduct?.nombre ?? 'Vela artesanal Sandra Gil'}
                   className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-brand-cream">
@@ -180,7 +183,7 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
                   />
                 </div>
               )}
-              <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent flex items-end p-6">
+              <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent flex items-end p-6 z-10">
                 <div className="text-white">
                   <p className="font-serif text-lg">{heroProduct?.nombre ?? 'Colección Botánica'}</p>
                   <p className="text-xs text-white/80 mt-1">Flores preservadas · Aromas selectos</p>
@@ -204,22 +207,26 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               {/* Gallery */}
               <div className="lg:col-span-6 space-y-4">
-                <div className="aspect-square bg-stone-100 rounded-lg overflow-hidden border border-stone-200/40 shadow-xs">
-                  <img
+                <div className="relative aspect-square bg-stone-100 rounded-lg overflow-hidden border border-stone-200/40 shadow-xs">
+                  <SkeletonImage
                     src={heroImage ?? heroProduct.url_imagen}
                     alt={heroProduct.nombre}
                     className="w-full h-full object-cover hover:scale-102 transition duration-500"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </div>
                 {/* Additional gallery images from Supabase */}
                 {heroProduct.imagenes && heroProduct.imagenes.length > 1 && (
                   <div className="grid grid-cols-3 gap-4">
                     {heroProduct.imagenes.slice(1, 4).map((img, i) => (
-                      <div key={i} className="aspect-square rounded-md overflow-hidden bg-stone-100 border border-stone-200/30">
-                        <img
+                      <div key={i} className="relative aspect-square rounded-md overflow-hidden bg-stone-100 border border-stone-200/30">
+                        <SkeletonImage
                           src={img}
                           alt={`${heroProduct.nombre} – vista ${i + 2}`}
                           className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                          fill
+                          sizes="(max-width: 768px) 33vw, 15vw"
                         />
                       </div>
                     ))}

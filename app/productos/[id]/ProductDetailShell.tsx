@@ -231,8 +231,42 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
 
   const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20la%20vela%20personalizada:%20${encodeURIComponent(product.nombre)}`;
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.nombre,
+    image: galleryImages,
+    description: product.descripcion,
+    sku: product.id,
+    brand: {
+      '@type': 'Brand',
+      name: 'Sandra Gil',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://sgvelas.com/productos/${product.id}`,
+      priceCurrency: 'COP',
+      price: product.precio || 0,
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+    },
+    ...(resenas.length > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: avgRating.toFixed(1),
+            reviewCount: resenas.length,
+          },
+        }
+      : {}),
+  };
+
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-brand-cream">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <Header />
 
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 flex-1">

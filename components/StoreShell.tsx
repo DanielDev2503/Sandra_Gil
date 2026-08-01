@@ -122,11 +122,11 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
               </span>
             </div>
 
-            <h2 className="text-4xl sm:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
-              Luz que Inspira,{' '}
+            <h1 className="text-4xl sm:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
+              Velas Artesanales y Aromáticas{' '}
               <br />
-              <span className="font-normal italic text-brand-gold">Aromas</span> que Cautivan
-            </h2>
+              <span className="font-normal italic text-brand-gold">de Cera de Soya en Bogotá</span>
+            </h1>
 
             <p className="text-stone-600 text-sm sm:text-base max-w-lg mx-auto lg:mx-0 leading-relaxed font-sans font-light">
               Velas decorativas moldeadas y vertidas a mano con flores preservadas, cera de soya pura y aromas exclusivos. Un toque de elegancia natural para tus espacios en Bogotá.

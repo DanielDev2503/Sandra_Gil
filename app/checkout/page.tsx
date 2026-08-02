@@ -2,20 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
-import { ArrowLeft, CreditCard, ShoppingBag, Truck } from 'lucide-react';
+import { ArrowLeft, CreditCard, ShoppingBag, Truck, Clock, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
-const CITIES = [
-  { name: 'Bogotá D.C.', shippingFee: 0, value: 'Bogotá' },
-  { name: 'Chía', shippingFee: 0, value: 'Alrededores' },
-  { name: 'Cajicá', shippingFee: 0, value: 'Alrededores' },
-  { name: 'Cota', shippingFee: 0, value: 'Alrededores' },
-  { name: 'La Calera', shippingFee: 0, value: 'Alrededores' },
-  { name: 'Sopó', shippingFee: 0, value: 'Alrededores' },
-  { name: 'Soacha', shippingFee: 0, value: 'Alrededores' },
-  { name: 'Zipaquirá', shippingFee: 0, value: 'Alrededores' },
-];
+import {
+  COLOMBIA_CITIES,
+  getCityById,
+  SHIPPING_ZONES,
+  getEstimatedDeliveryInfo,
+} from '@/lib/colombia-cities';
 
 export default function CheckoutPage() {
   const { cart, cartTotal, cartCount } = useCart();
@@ -26,7 +21,7 @@ export default function CheckoutPage() {
     nombre: '',
     email: '',
     telefono: '',
-    ciudadIndex: '0', // Defaults to Bogota
+    ciudadId: 'bogota', // Default to Bogota D.C.
     direccion: '',
     notas: '',
   });
@@ -58,9 +53,10 @@ export default function CheckoutPage() {
     );
   }
 
-  const selectedCity = CITIES[parseInt(formData.ciudadIndex)];
-  const shippingCost = selectedCity.shippingFee;
+  const selectedCity = getCityById(formData.ciudadId);
+  const shippingCost = SHIPPING_ZONES[selectedCity.zone].cost;
   const grandTotal = cartTotal + shippingCost;
+  const deliveryInfo = getEstimatedDeliveryInfo(selectedCity);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -109,7 +105,8 @@ export default function CheckoutPage() {
           cliente_email: formData.email,
           cliente_telefono: formData.telefono.replace(/\s+/g, ''),
           ciudad: selectedCity.name,
-          region: selectedCity.value, // 'Bogotá' o 'Alrededores'
+          departamento: selectedCity.departamento,
+          region: selectedCity.departamento,
           direccion_envio: formData.direccion,
           notas_entrega: formData.notas,
           costo_envio: shippingCost,
@@ -144,7 +141,7 @@ export default function CheckoutPage() {
         'customer-data:phone-number': formData.telefono.replace(/\s+/g, ''),
         'shipping-address:address-line-1': formData.direccion,
         'shipping-address:city': selectedCity.name,
-        'shipping-address:region': selectedCity.value === 'Bogotá' ? 'Bogotá D.C.' : 'Cundinamarca',
+        'shipping-address:region': selectedCity.departamento,
         'shipping-address:country': 'CO',
         'shipping-address:phone-number': formData.telefono.replace(/\s+/g, ''),
       };
@@ -249,23 +246,39 @@ export default function CheckoutPage() {
 
               {/* City Selection */}
               <div>
-                <label htmlFor="ciudadIndex" className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5 flex items-center justify-between">
-                  <span>Ciudad o Municipio *</span>
-                  <span className="text-[10px] text-stone-400 font-normal">Bogotá y Sabana</span>
+                <label htmlFor="ciudadId" className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5 flex items-center justify-between">
+                  <span>Ciudad o Municipio de Destino *</span>
+                  <span className="text-[10px] text-stone-400 font-normal">Aliado Servientrega</span>
                 </label>
                 <select
-                  id="ciudadIndex"
-                  name="ciudadIndex"
-                  value={formData.ciudadIndex}
+                  id="ciudadId"
+                  name="ciudadId"
+                  value={formData.ciudadId}
                   onChange={handleChange}
                   className="w-full p-3 sm:p-3.5 text-base sm:text-sm min-h-[44px] bg-stone-50 border border-stone-300 rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] cursor-pointer"
                 >
-                  {CITIES.map((city, idx) => (
-                    <option key={city.name} value={idx}>
-                      {city.name} ({city.value === 'Bogotá' ? 'Bogotá' : 'Municipio Aledaño'} - Envío GRATIS)
+                  {COLOMBIA_CITIES.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name} ({city.departamento})
                     </option>
                   ))}
                 </select>
+
+                {/* Dynamic Delivery Time & Shipping Fee Alert Card below select */}
+                <div className="mt-3 bg-amber-50/70 border border-amber-200/80 rounded-md p-3.5 text-xs text-amber-950 space-y-1.5">
+                  <div className="flex items-center justify-between font-semibold">
+                    <span className="flex items-center gap-1.5">
+                      <Truck className="w-4 h-4 text-amber-700 shrink-0" />
+                      <span>Zona: {SHIPPING_ZONES[selectedCity.zone].name}</span>
+                    </span>
+                    <span className={shippingCost === 0 ? 'text-emerald-700 font-bold' : 'text-amber-900 font-bold'}>
+                      {shippingCost === 0 ? 'Envío GRATIS ($0 COP)' : `$${shippingCost.toLocaleString('es-CO')} COP`}
+                    </span>
+                  </div>
+                  <p className="text-stone-600 text-[11px] leading-relaxed">
+                    ⏱️ <strong>Tiempo estimado de entrega:</strong> {deliveryInfo.totalRangeText} ({deliveryInfo.breakdownText}).
+                  </p>
+                </div>
               </div>
 
               {/* Shipping Address */}
@@ -320,7 +333,7 @@ export default function CheckoutPage() {
                   </>
                 ) : (
                   <>
-                    <CreditCard className="w-4 h-4 shrink-0" /> Proceder al pago seguro con Wompi
+                    <CreditCard className="w-4 h-4 shrink-0" /> Proceder al pago seguro con Wompi (${grandTotal.toLocaleString('es-CO')} COP)
                   </>
                 )}
               </button>
@@ -356,15 +369,31 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {/* Servientrega Shipping Summary Explanatory Card */}
+            <div className="bg-white p-3.5 rounded-md border border-amber-200/80 space-y-1.5 text-xs font-sans">
+              <div className="flex items-center gap-2 text-stone-900 font-semibold">
+                <Truck className="w-4 h-4 text-brand-gold shrink-0" />
+                <span>Aliado Oficial de Envíos: Servientrega</span>
+              </div>
+              <p className="text-stone-600 text-[11px] leading-relaxed">
+                <strong>Tiempo total estimado:</strong> {deliveryInfo.totalRangeText} <br />
+                <span className="text-stone-500">(1-2 días elaboración artesanal + {selectedCity.transitDaysText} transporte)</span>
+              </p>
+            </div>
+
             {/* Price Calculations */}
             <div className="pt-3.5 border-t border-stone-200 space-y-2.5 text-xs sm:text-sm">
               <div className="flex justify-between text-stone-600">
                 <span>Productos ({cartCount})</span>
                 <span>${cartTotal.toLocaleString('es-CO')} COP</span>
               </div>
-              <div className="flex justify-between text-stone-600">
+              <div className="flex justify-between text-stone-600 items-center">
                 <span className="flex items-center gap-1">Envío a {selectedCity.name}</span>
-                <span className="font-semibold text-emerald-700">Envío: GRATIS</span>
+                {shippingCost === 0 ? (
+                  <span className="font-bold text-emerald-700">GRATIS ($0 COP)</span>
+                ) : (
+                  <span className="font-semibold text-stone-900">${shippingCost.toLocaleString('es-CO')} COP</span>
+                )}
               </div>
               
               <div className="pt-3 border-t border-stone-200 flex justify-between items-center text-stone-900 font-medium">
@@ -388,11 +417,11 @@ export default function CheckoutPage() {
 
             {/* Delivery Guarantee Info */}
             <div className="bg-[#F5F2EC] p-3.5 sm:p-4 rounded-sm border border-[#A68F81]/40 flex gap-2.5 sm:gap-3 items-start font-sans">
-              <span className="text-base sm:text-lg shrink-0">📦</span>
+              <ShieldCheck className="w-5 h-5 text-amber-700 mt-0.5 shrink-0" />
               <div>
                 <p className="text-xs font-semibold text-stone-850">Garantía de Entrega Perfecta</p>
                 <p className="text-[11px] text-stone-600 mt-1 leading-relaxed">
-                  Despachos protegidos contra impactos en Bogotá y Sabana 📦. Garantía de entrega perfecta.
+                  Despachos protegidos con embalaje especial en alianzas con Servientrega 📦. Garantía de entrega impecable.
                 </p>
               </div>
             </div>
@@ -403,4 +432,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-

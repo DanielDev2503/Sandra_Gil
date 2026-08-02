@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCart } from '@/context/CartContext';
-import { ShoppingBag, Menu, X, MessageCircle } from 'lucide-react';
+import { ShoppingBag, Menu, X, MessageCircle, Zap } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -12,6 +12,7 @@ const WA_NUMBER = '573175752029';
 const NAV_LINKS = [
   { href: '/', label: 'Inicio' },
   { href: '/catalogo', label: 'Catálogo' },
+  { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
   { href: '/nosotros', label: 'Sobre Nosotros' },
   { href: '/personalizadas', label: 'Velas Personalizadas', highlight: true },
   {
@@ -100,15 +101,19 @@ export default function Header() {
                   </a>
                 );
               }
+              const LinkIcon = link.icon;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`hover:text-brand-brown transition duration-200 min-h-[44px] inline-flex items-center ${
-                    link.highlight ? 'text-brand-gold font-semibold' : ''
-                  } ${pathname === link.href ? 'text-brand-brown font-bold' : ''}`}
+                  className={`hover:text-brand-brown transition duration-200 min-h-[44px] inline-flex items-center gap-1.5 ${
+                    link.isExpress ? 'text-amber-700 font-semibold hover:text-amber-800' : ''
+                  } ${link.highlight ? 'text-brand-gold font-semibold' : ''} ${
+                    pathname === link.href ? 'text-brand-brown font-bold' : ''
+                  }`}
                 >
-                  {link.label}
+                  {LinkIcon && <LinkIcon className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />}
+                  <span>{link.label}</span>
                 </Link>
               );
             })}
@@ -193,18 +198,22 @@ export default function Header() {
                   );
                 }
 
+                const LinkIcon = link.icon;
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={closeMobileMenu}
-                    className={`flex items-center px-4 py-3.5 min-h-[44px] rounded-lg text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-2.5 px-4 py-3.5 min-h-[44px] rounded-lg text-sm font-medium transition-all duration-200 ${
                       pathname === link.href
                         ? 'bg-brand-gold/15 text-brand-brown font-bold'
                         : 'text-stone-700 hover:bg-stone-100 hover:text-brand-brown'
-                    } ${link.highlight && pathname !== link.href ? 'text-brand-gold font-semibold' : ''}`}
+                    } ${link.isExpress && pathname !== link.href ? 'text-amber-800 font-semibold' : ''} ${
+                      link.highlight && pathname !== link.href ? 'text-brand-gold font-semibold' : ''
+                    }`}
                   >
-                    {link.label}
+                    {LinkIcon && <LinkIcon className="w-4 h-4 text-amber-500 fill-amber-400 shrink-0" />}
+                    <span>{link.label}</span>
                   </Link>
                 );
               })}

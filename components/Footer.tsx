@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Heart } from 'lucide-react';
+import { MapPin, Heart, Zap } from 'lucide-react';
 
 const WA_NUMBER = '573175752029';
 const WA_LINK = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20obtener%20informaci%C3%B3n%20sobre%20tus%20velas%20artesanales`;
@@ -38,6 +38,12 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs text-stone-400">
               <li><Link href="/" className="hover:text-white transition">Inicio</Link></li>
               <li><Link href="/catalogo" className="hover:text-white transition">Catálogo</Link></li>
+              <li>
+                <Link href="/envio-express" className="hover:text-amber-300 text-amber-400/90 font-medium transition inline-flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
+                  <span>Envío Express (Bogotá)</span>
+                </Link>
+              </li>
               <li><Link href="/personalizadas" className="hover:text-white transition">Velas Bajo Pedido</Link></li>
               <li><Link href="/nosotros" className="hover:text-white transition">Sobre Nosotros</Link></li>
               <li><Link href="/checkout" className="hover:text-white transition">Checkout / Pago</Link></li>

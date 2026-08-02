@@ -169,26 +169,26 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col font-sans">
       {/* Mini Header */}
-      <header className="py-6 border-b border-stone-200 bg-white">
+      <header className="py-4 sm:py-6 border-b border-stone-200 bg-white sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-stone-600 hover:text-stone-900 transition text-sm font-medium">
-            <ArrowLeft className="w-4 h-4" /> Volver al catálogo
+          <Link href="/" className="flex items-center gap-1.5 text-stone-600 hover:text-stone-900 transition text-xs sm:text-sm font-medium min-h-[44px] py-2">
+            <ArrowLeft className="w-4 h-4 shrink-0" /> <span className="truncate">Volver al catálogo</span>
           </Link>
-          <span className="font-serif tracking-widest text-lg font-light">SANDRA GIL</span>
+          <span className="font-serif tracking-widest text-base sm:text-lg font-light text-stone-900">SANDRA GIL</span>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           
           {/* Left Column: Form */}
-          <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-lg border border-stone-200/60 shadow-xs">
-            <h2 className="text-xl font-serif font-medium text-stone-900 mb-6 flex items-center gap-2">
-              <Truck className="w-5 h-5 text-[#A68F81]" /> Datos de Envío y Contacto
+          <div className="lg:col-span-7 bg-white p-4 sm:p-8 rounded-lg border border-stone-200/60 shadow-xs">
+            <h2 className="text-lg sm:text-xl font-serif font-medium text-stone-900 mb-5 sm:mb-6 flex items-center gap-2">
+              <Truck className="w-5 h-5 text-[#A68F81] shrink-0" /> Datos de Envío y Contacto
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               {/* Full Name */}
               <div>
                 <label htmlFor="nombre" className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5">
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
                   name="nombre"
                   value={formData.nombre}
                   onChange={handleChange}
-                  className={`w-full p-3 text-sm bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
+                  className={`w-full p-3 sm:p-3.5 text-base sm:text-sm min-h-[44px] bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
                     errors.nombre ? 'border-red-400' : 'border-stone-300'
                   }`}
                   placeholder="Ej: Carolina Restrepo"
@@ -208,7 +208,7 @@ export default function CheckoutPage() {
                 {errors.nombre && <p className="text-xs text-red-500 mt-1">{errors.nombre}</p>}
               </div>
 
-              {/* Email & Phone */}
+              {/* Email & Phone (stacked on mobile, 2 columns on sm+) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5">
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`w-full p-3 text-sm bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
+                    className={`w-full p-3 sm:p-3.5 text-base sm:text-sm min-h-[44px] bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
                       errors.email ? 'border-red-400' : 'border-stone-300'
                     }`}
                     placeholder="ejemplo@correo.com"
@@ -229,8 +229,8 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label htmlFor="telefono" className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5 flex items-center justify-between">
-                    Teléfono Celular *
-                    <span className="text-[10px] lowercase text-stone-400 font-normal">Requerido por Wompi</span>
+                    <span>Teléfono Celular *</span>
+                    <span className="text-[10px] lowercase text-stone-400 font-normal">Requerido Wompi</span>
                   </label>
                   <input
                     type="tel"
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
                     name="telefono"
                     value={formData.telefono}
                     onChange={handleChange}
-                    className={`w-full p-3 text-sm bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
+                    className={`w-full p-3 sm:p-3.5 text-base sm:text-sm min-h-[44px] bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
                       errors.telefono ? 'border-red-400' : 'border-stone-300'
                     }`}
                     placeholder="Ej: 3123456789"
@@ -250,15 +250,15 @@ export default function CheckoutPage() {
               {/* City Selection */}
               <div>
                 <label htmlFor="ciudadIndex" className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5 flex items-center justify-between">
-                  Ciudad o Municipio *
-                  <span className="text-[10px] text-stone-400 font-normal">Cobertura Bogotá y Alrededores</span>
+                  <span>Ciudad o Municipio *</span>
+                  <span className="text-[10px] text-stone-400 font-normal">Bogotá y Sabana</span>
                 </label>
                 <select
                   id="ciudadIndex"
                   name="ciudadIndex"
                   value={formData.ciudadIndex}
                   onChange={handleChange}
-                  className="w-full p-3 text-sm bg-stone-50 border border-stone-300 rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81]"
+                  className="w-full p-3 sm:p-3.5 text-base sm:text-sm min-h-[44px] bg-stone-50 border border-stone-300 rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] cursor-pointer"
                 >
                   {CITIES.map((city, idx) => (
                     <option key={city.name} value={idx}>
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
                   name="direccion"
                   value={formData.direccion}
                   onChange={handleChange}
-                  className={`w-full p-3 text-sm bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
+                  className={`w-full p-3 sm:p-3.5 text-base sm:text-sm min-h-[44px] bg-stone-50 border rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] ${
                     errors.direccion ? 'border-red-400' : 'border-stone-300'
                   }`}
                   placeholder="Ej: Calle 127 # 45 - 20, Apto 402"
@@ -298,16 +298,16 @@ export default function CheckoutPage() {
                   value={formData.notas}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full p-3 text-sm bg-stone-50 border border-stone-300 rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] resize-none"
+                  className="w-full p-3 sm:p-3.5 text-base sm:text-sm bg-stone-50 border border-stone-300 rounded-sm outline-hidden transition focus:bg-white focus:border-[#A68F81] resize-none"
                   placeholder="Ej: Dejar en portería. Timbrar en el apto 402."
                 />
               </div>
 
-              {/* Pay Button */}
+              {/* Pay Button: Full width w-full with min-h-[44px] */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-4 mt-6 text-sm uppercase tracking-widest font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`w-full py-4 min-h-[44px] mt-6 text-xs sm:text-sm uppercase tracking-widest font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 rounded-sm cursor-pointer active:scale-98 ${
                   isLoading
                     ? 'bg-[#A68F81] cursor-not-allowed'
                     : 'bg-[#2C2A29] hover:bg-[#A68F81] shadow-md hover:shadow-lg'
@@ -320,7 +320,7 @@ export default function CheckoutPage() {
                   </>
                 ) : (
                   <>
-                    <CreditCard className="w-4 h-4" /> Proceder al pago seguro con Wompi
+                    <CreditCard className="w-4 h-4 shrink-0" /> Proceder al pago seguro con Wompi
                   </>
                 )}
               </button>
@@ -328,24 +328,24 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right Column: Order Summary */}
-          <div className="lg:col-span-5 bg-stone-100/60 p-6 sm:p-8 rounded-lg border border-stone-200/50 space-y-6">
-            <h2 className="text-lg font-serif font-medium text-stone-900 flex items-center gap-2 pb-4 border-b border-stone-200">
-              <ShoppingBag className="w-5 h-5 text-stone-700" /> Resumen del Pedido
+          <div className="lg:col-span-5 bg-stone-100/70 p-4 sm:p-8 rounded-lg border border-stone-200/60 space-y-5 sm:space-y-6">
+            <h2 className="text-base sm:text-lg font-serif font-medium text-stone-900 flex items-center gap-2 pb-3.5 border-b border-stone-200">
+              <ShoppingBag className="w-5 h-5 text-stone-700 shrink-0" /> Resumen del Pedido
             </h2>
 
             {/* Cart Items */}
             <div className="divide-y divide-stone-200/70 max-h-80 overflow-y-auto pr-1">
               {cart.map((item) => (
-                <div key={item.id} className="flex gap-4 py-3 first:pt-0 last:pb-0">
+                <div key={item.id} className="flex gap-3 sm:gap-4 py-3 first:pt-0 last:pb-0">
                   <img
                     src={item.url_imagen}
                     alt={item.nombre}
-                    className="w-16 h-16 object-cover bg-stone-200 rounded-xs"
+                    className="w-14 h-14 sm:w-16 sm:h-16 object-cover bg-stone-200 rounded-xs shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-medium text-stone-900 truncate">{item.nombre}</h4>
                     <p className="text-[10px] text-[#A68F81] mt-0.5">{item.aroma}</p>
-                    <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center justify-between mt-1.5">
                       <span className="text-xs text-stone-500">Cant: {item.cantidad}</span>
                       <span className="text-xs font-semibold text-stone-900">
                         ${(item.precio * item.cantidad).toLocaleString('es-CO')} COP
@@ -357,7 +357,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Price Calculations */}
-            <div className="pt-4 border-t border-stone-200 space-y-3 text-sm">
+            <div className="pt-3.5 border-t border-stone-200 space-y-2.5 text-xs sm:text-sm">
               <div className="flex justify-between text-stone-600">
                 <span>Productos ({cartCount})</span>
                 <span>${cartTotal.toLocaleString('es-CO')} COP</span>
@@ -368,15 +368,15 @@ export default function CheckoutPage() {
               </div>
               
               <div className="pt-3 border-t border-stone-200 flex justify-between items-center text-stone-900 font-medium">
-                <span className="text-base font-serif">Total a Pagar</span>
-                <span className="text-lg font-serif font-bold text-[#2C2A29]">
+                <span className="text-sm sm:text-base font-serif">Total a Pagar</span>
+                <span className="text-base sm:text-lg font-serif font-bold text-[#2C2A29]">
                   ${grandTotal.toLocaleString('es-CO')} COP
                 </span>
               </div>
             </div>
 
             {/* Payment security info */}
-            <div className="bg-white p-4 rounded-sm border border-stone-200/50 flex gap-3 items-start font-sans">
+            <div className="bg-white p-3.5 sm:p-4 rounded-sm border border-stone-200/50 flex gap-2.5 sm:gap-3 items-start font-sans">
               <CreditCard className="w-5 h-5 text-[#A68F81] mt-0.5 shrink-0" />
               <div>
                 <p className="text-xs font-semibold text-stone-850">Transacción 100% Protegida</p>
@@ -387,8 +387,8 @@ export default function CheckoutPage() {
             </div>
 
             {/* Delivery Guarantee Info */}
-            <div className="bg-[#F5F2EC] p-4 rounded-sm border border-[#A68F81]/40 flex gap-3 items-start font-sans">
-              <span className="text-lg shrink-0">📦</span>
+            <div className="bg-[#F5F2EC] p-3.5 sm:p-4 rounded-sm border border-[#A68F81]/40 flex gap-2.5 sm:gap-3 items-start font-sans">
+              <span className="text-base sm:text-lg shrink-0">📦</span>
               <div>
                 <p className="text-xs font-semibold text-stone-850">Garantía de Entrega Perfecta</p>
                 <p className="text-[11px] text-stone-600 mt-1 leading-relaxed">
@@ -403,3 +403,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

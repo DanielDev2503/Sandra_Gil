@@ -26,35 +26,35 @@ export default async function PersonalizadasPage() {
 
       <main className="flex-1">
         {/* Hero section */}
-        <section className="bg-gradient-to-b from-[#F5EDD8] to-brand-cream py-20 border-b border-brand-gold/20">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 border border-brand-gold/30 rounded-full shadow-xs">
-              <Sparkles className="w-4 h-4 text-brand-gold" />
-              <span className="text-xs font-bold text-brand-brown uppercase tracking-widest">Elaboración Artesanal Exclusiva</span>
+        <section className="bg-gradient-to-b from-[#F5EDD8] to-brand-cream py-10 sm:py-20 border-b border-brand-gold/20">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4 sm:space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/80 border border-brand-gold/30 rounded-full shadow-xs">
+              <Sparkles className="w-4 h-4 text-brand-gold shrink-0" />
+              <span className="text-[10px] sm:text-xs font-bold text-brand-brown uppercase tracking-widest">Elaboración Artesanal Exclusiva</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl font-serif font-light text-stone-900 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 leading-tight">
               Velas{' '}
               <span className="italic font-normal text-brand-gold">Bajo Pedido</span>
             </h1>
 
-            <p className="text-stone-600 text-base max-w-2xl mx-auto leading-relaxed font-light">
+            <p className="text-stone-600 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-light">
               Creamos velas únicas y completamente personalizadas para ti: elige el aroma, el tamaño, las flores botánicas y el mensaje. Cada pieza es una obra artesanal irrepetible, elaborada con cera de soya pura 100% natural.
             </p>
 
-            {/* Process steps */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 text-left">
+            {/* Process steps: grid-cols-1 on mobile, sm:grid-cols-3 on tablet/desktop */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 sm:pt-6 text-left">
               {[
                 { icon: MessageCircle, step: '1', title: 'Escríbenos', desc: 'Cuéntanos tu visión por WhatsApp: aroma, flores, tamaño y ocasión.' },
                 { icon: Palette, step: '2', title: 'Diseñamos', desc: 'Sandra crea una propuesta personalizada según tus preferencias.' },
                 { icon: Clock, step: '3', title: 'Elaboramos', desc: 'Tiempo de producción: 3 a 7 días hábiles según la complejidad.' },
               ].map(({ icon: Icon, step, title, desc }) => (
-                <div key={step} className="bg-white/80 border border-brand-gold/20 rounded-md p-5 space-y-2">
+                <div key={step} className="bg-white/80 border border-brand-gold/20 rounded-md p-4 sm:p-5 space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-full bg-brand-gold text-white text-xs font-bold flex items-center justify-center shrink-0">
                       {step}
                     </div>
-                    <Icon className="w-4 h-4 text-brand-brown" />
+                    <Icon className="w-4 h-4 text-brand-brown shrink-0" />
                     <h3 className="font-semibold text-stone-800 text-sm">{title}</h3>
                   </div>
                   <p className="text-xs text-stone-500 leading-relaxed pl-9">{desc}</p>
@@ -65,38 +65,38 @@ export default async function PersonalizadasPage() {
         </section>
 
         {/* Products grid */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
           {products.length === 0 ? (
-            <div className="text-center py-24 space-y-6">
-              <div className="w-20 h-20 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto">
-                <Sparkles className="w-10 h-10 text-brand-gold" />
+            <div className="text-center py-16 sm:py-24 space-y-5 sm:space-y-6">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto">
+                <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-brand-gold" />
               </div>
-              <h2 className="text-2xl font-serif text-stone-800">Próximamente</h2>
-              <p className="text-stone-500 text-sm max-w-md mx-auto">
+              <h2 className="text-xl sm:text-2xl font-serif text-stone-800">Próximamente</h2>
+              <p className="text-stone-500 text-xs sm:text-sm max-w-md mx-auto">
                 Estamos preparando nuestra colección de velas bajo pedido. Mientras tanto, escríbenos directamente por WhatsApp para cotizar tu vela personalizada.
               </p>
               <a
                 href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20una%20vela%20personalizada`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#25D366] hover:bg-[#1da851] text-white text-xs uppercase tracking-widest font-bold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] text-white text-xs uppercase tracking-widest font-bold transition-all duration-300 shadow-md active:scale-98"
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-4 h-4 shrink-0" />
                 Cotizar por WhatsApp
               </a>
             </div>
           ) : (
             <>
-              <div className="text-center mb-12">
+              <div className="text-center mb-8 sm:mb-12">
                 <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">Catálogo Personalizado</span>
-                <h2 className="text-3xl font-serif font-light text-stone-900 mt-2">Diseños Disponibles</h2>
-                <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-4"></div>
-                <p className="text-stone-500 text-sm max-w-lg mx-auto mt-4">
+                <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">Diseños Disponibles</h2>
+                <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4"></div>
+                <p className="text-stone-500 text-xs sm:text-sm max-w-lg mx-auto mt-3 sm:mt-4">
                   Cada diseño puede adaptarse a tus preferencias. Escríbenos para cotizar y personalizar.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {products.map((product) => {
                   const displayImage =
                     product.imagenes && product.imagenes.length > 0
@@ -105,7 +105,7 @@ export default async function PersonalizadasPage() {
                   const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20la%20vela%20personalizada:%20${encodeURIComponent(product.nombre)}`;
 
                   return (
-                    <div key={product.id} className="bg-white rounded-lg border border-brand-gold/20 overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01]">
+                    <div key={product.id} className="bg-white rounded-lg border border-brand-gold/20 overflow-hidden flex flex-col shadow-xs hover:shadow-md transition-all duration-300">
                       <Link href={`/productos/${product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                         <img
                           src={displayImage}
@@ -113,7 +113,7 @@ export default async function PersonalizadasPage() {
                           className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                         />
                         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-brand-gold/20 flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 text-brand-gold" />
+                          <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                           <span className="text-[10px] font-bold text-brand-brown uppercase tracking-wider">Bajo Pedido</span>
                         </div>
                         <div className="absolute bottom-3 left-3 bg-brand-brown/80 text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest">
@@ -121,24 +121,24 @@ export default async function PersonalizadasPage() {
                         </div>
                       </Link>
 
-                      <div className="p-6 flex flex-col flex-1">
+                      <div className="p-5 sm:p-6 flex flex-col flex-1">
                         <Link href={`/productos/${product.id}`}>
-                          <h3 className="font-serif font-medium text-stone-900 text-lg hover:text-brand-gold transition">{product.nombre}</h3>
+                          <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg hover:text-brand-gold transition">{product.nombre}</h3>
                         </Link>
                         <p className="text-xs text-stone-500 mt-2 leading-relaxed flex-1 line-clamp-3">{product.descripcion}</p>
 
                         <div className="mt-4 pt-4 border-t border-stone-100 space-y-3">
                           <div className="flex items-center gap-2">
-                            <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                            <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
                             <span className="text-xs font-semibold text-stone-700">Elaboración Bajo Pedido</span>
                           </div>
                           <a
                             href={waLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full py-3 bg-[#25D366] hover:bg-[#1da851] text-white text-xs uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+                            className="w-full py-3.5 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] text-white text-xs uppercase tracking-wider font-bold transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-98"
                           >
-                            <MessageCircle className="w-3.5 h-3.5" />
+                            <MessageCircle className="w-4 h-4 shrink-0" />
                             Cotizar por WhatsApp
                           </a>
                         </div>
@@ -151,18 +151,18 @@ export default async function PersonalizadasPage() {
           )}
 
           {/* General WhatsApp CTA */}
-          <div className="mt-16 bg-gradient-to-r from-brand-brown to-brand-gold rounded-lg p-8 text-center text-white space-y-4">
-            <h3 className="text-2xl font-serif">¿Tienes una idea especial?</h3>
-            <p className="text-sm text-white/80 max-w-lg mx-auto">
+          <div className="mt-12 sm:mt-16 bg-gradient-to-r from-brand-brown to-brand-gold rounded-lg p-6 sm:p-8 text-center text-white space-y-4 shadow-lg">
+            <h3 className="text-xl sm:text-2xl font-serif">¿Tienes una idea especial?</h3>
+            <p className="text-xs sm:text-sm text-white/90 max-w-lg mx-auto">
               Podemos crear la vela de tus sueños: cumpleaños, bodas, recuerdos corporativos, o simplemente para ti. Sin límites en creatividad.
             </p>
             <a
               href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20tengo%20una%20idea%20especial%20para%20una%20vela%20personalizada`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-brand-brown text-xs uppercase tracking-widest font-bold transition-all duration-300 hover:bg-brand-cream hover:scale-[1.02] active:scale-[0.98] shadow-md"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-white text-brand-brown text-xs uppercase tracking-widest font-bold transition-all duration-300 hover:bg-brand-cream shadow-md active:scale-98"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4 shrink-0 text-[#25D366]" />
               Enviar Mensaje a Sandra
             </a>
           </div>

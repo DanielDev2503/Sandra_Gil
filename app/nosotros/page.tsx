@@ -45,37 +45,38 @@ export default function NosotrosPage() {
 
       <main className="flex-1">
         {/* ── HERO ────────────────────────────────────────── */}
-        <section className="relative overflow-hidden bg-brand-cream py-20 sm:py-28 border-b border-stone-200/40">
+        <section className="relative overflow-hidden bg-brand-cream py-12 sm:py-24 border-b border-stone-200/40">
           {/* Decorative background circles */}
           <div className="absolute -top-24 -right-24 w-80 h-80 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-gold/5 rounded-full blur-2xl pointer-events-none" />
 
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-xs rounded-full border border-brand-gold/30 shadow-xs mb-6">
-              <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-xs rounded-full border border-brand-gold/30 shadow-xs mb-4 sm:mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
               <span className="text-[10px] font-bold text-brand-brown uppercase tracking-widest">
                 Nuestra Historia
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
               Del Corazón de Bogotá,{' '}
+              <br className="hidden sm:inline" />
               <span className="font-normal italic text-brand-gold">Luz Natural</span> para Tu Hogar
             </h1>
 
-            <p className="mt-6 text-stone-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-sans font-light">
+            <p className="mt-4 sm:mt-6 text-stone-600 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-sans font-light">
               Sandra Gil Velas Artesanales nació de la pasión por los aromas, la naturaleza y el
               diseño consciente. Desde nuestro taller en Bogotá, transformamos cera de soya pura en
               piezas decorativas que combinan belleza, bienestar y un compromiso real con el medio
               ambiente.
             </p>
 
-            <div className="mt-8 flex justify-center">
+            <div className="mt-6 sm:mt-8 flex justify-center">
               <Image
                 src="/logo-sandra.png"
                 alt="Sandra Gil Velas Artesanales"
-                width={120}
-                height={120}
+                width={100}
+                height={100}
                 className="object-contain"
               />
             </div>
@@ -83,19 +84,19 @@ export default function NosotrosPage() {
         </section>
 
         {/* ── OUR STORY ──────────────────────────────────── */}
-        <section className="py-16 sm:py-20 bg-white border-b border-stone-200/30">
+        <section className="py-10 sm:py-16 md:py-20 bg-white border-b border-stone-200/30">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 sm:mb-12">
               <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
                 Nuestra Esencia
               </span>
-              <h2 className="text-3xl font-serif font-light text-stone-900 mt-2">
+              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">
                 Un Taller con Alma
               </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-4" />
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4" />
             </div>
 
-            <div className="space-y-6 text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light max-w-3xl mx-auto">
+            <div className="space-y-4 sm:space-y-6 text-stone-600 text-xs sm:text-sm md:text-base leading-relaxed font-sans font-light max-w-3xl mx-auto">
               <p>
                 Todo comenzó con una búsqueda sencilla: crear atmósferas que invitaran a la calma.
                 Después de experimentar con distintos materiales y técnicas, descubrimos que la cera
@@ -119,30 +120,30 @@ export default function NosotrosPage() {
         </section>
 
         {/* ── PILLARS ────────────────────────────────────── */}
-        <section className="py-16 sm:py-20 bg-brand-cream border-b border-stone-200/30">
+        <section className="py-10 sm:py-16 md:py-20 bg-brand-cream border-b border-stone-200/30">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 sm:mb-12">
               <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
                 Lo que Nos Define
               </span>
-              <h2 className="text-3xl font-serif font-light text-stone-900 mt-2">
+              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">
                 Nuestros Pilares
               </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-4" />
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4" />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {PILLARS.map((pillar) => {
                 const Icon = pillar.icon;
                 return (
                   <div
                     key={pillar.title}
-                    className="bg-white p-6 rounded-lg border border-brand-gold/15 shadow-xs hover:shadow-md transition-shadow duration-300 text-center"
+                    className="bg-white p-5 sm:p-6 rounded-lg border border-brand-gold/15 shadow-xs hover:shadow-md transition-shadow duration-300 text-center"
                   >
-                    <div className="w-12 h-12 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
                       <Icon className="w-5 h-5 text-brand-gold" />
                     </div>
-                    <h3 className="font-serif text-base font-medium text-stone-800 mb-2">
+                    <h3 className="font-serif text-base font-medium text-stone-800 mb-1 sm:mb-2">
                       {pillar.title}
                     </h3>
                     <p className="text-xs text-stone-500 leading-relaxed font-sans">
@@ -156,29 +157,29 @@ export default function NosotrosPage() {
         </section>
 
         {/* ── TALLER DIDÁCTICO — BANNER DESTACADO ────────── */}
-        <section className="py-16 sm:py-20 bg-white">
+        <section className="py-10 sm:py-16 md:py-20 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-brown via-[#6B4D22] to-[#3E2A0F] p-8 sm:p-12 text-center shadow-2xl">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-brown via-[#6B4D22] to-[#3E2A0F] p-6 sm:p-10 lg:p-12 text-center shadow-xl sm:shadow-2xl">
               {/* Decorative glow */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-brand-gold/20 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 right-0 w-48 h-48 bg-brand-gold/10 rounded-full blur-2xl pointer-events-none" />
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-gold/20 backdrop-blur-xs rounded-full border border-brand-gold/40 mb-6">
-                  <GraduationCap className="w-4 h-4 text-brand-gold" />
-                  <span className="text-[11px] font-bold text-brand-gold uppercase tracking-widest">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/20 backdrop-blur-xs rounded-full border border-brand-gold/40 mb-4 sm:mb-6">
+                  <GraduationCap className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span className="text-[10px] sm:text-[11px] font-bold text-brand-gold uppercase tracking-widest">
                     Experiencia Exclusiva
                   </span>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-light text-[#FAF8F5] leading-tight max-w-2xl mx-auto">
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-light text-[#FAF8F5] leading-tight max-w-2xl mx-auto">
                   ¡Vive la Experiencia Artesanal!{' '}
                   <span className="italic text-brand-gold font-normal">
                     Taller Didáctico de Creación de Velas y Aromaterapia
                   </span>
                 </h2>
 
-                <p className="mt-6 text-sm sm:text-base text-stone-300 max-w-xl mx-auto leading-relaxed font-sans font-light">
+                <p className="mt-4 sm:mt-6 text-xs sm:text-sm md:text-base text-stone-300 max-w-xl mx-auto leading-relaxed font-sans font-light">
                   Aprende a crear tu propia vela aromática de cera de soya con flores preservadas.
                   Una experiencia sensorial guiada por Sandra Gil donde descubrirás las técnicas
                   artesanales, el arte de la aromaterapia y te llevarás una pieza única hecha por
@@ -186,12 +187,12 @@ export default function NosotrosPage() {
                   creativa con amigas.
                 </p>
 
-                <div className="mt-8">
+                <div className="mt-6 sm:mt-8 w-full flex justify-center">
                   <a
                     href="https://wa.me/573175752029?text=Hola%20Sandra,%20estoy%20interesado%20en%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20curso/taller%20did%C3%A1ctico%20de%20velas"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#25D366] hover:bg-[#1da851] hover:scale-[1.03] active:scale-[0.97] text-white text-sm uppercase tracking-widest font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] active:scale-98 text-white text-xs sm:text-sm uppercase tracking-widest font-bold rounded-lg transition-all duration-300 shadow-lg"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +200,7 @@ export default function NosotrosPage() {
                       height="20"
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      className="w-5 h-5"
+                      className="w-5 h-5 shrink-0"
                     >
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                       <path d="M11.999 2.001C6.476 2.001 2.001 6.476 2.001 12c0 1.763.463 3.414 1.272 4.848L2 22l5.306-1.243A9.954 9.954 0 0 0 12 22c5.523 0 9.999-4.477 9.999-10S17.523 2.001 12 2.001zm0 1.8A8.197 8.197 0 0 1 20.2 12c0 4.52-3.678 8.2-8.2 8.2a8.163 8.163 0 0 1-4.167-1.137l-.299-.181-3.101.727.766-2.999-.197-.31A8.163 8.163 0 0 1 3.8 12C3.8 7.48 7.478 3.8 12 3.8z" />

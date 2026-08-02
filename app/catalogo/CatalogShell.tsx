@@ -121,10 +121,10 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       <Header />
 
       {/* Catalog Title Banner */}
-      <section className="bg-[#F0E9DB]/60 py-12 border-b border-stone-200/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+      <section className="bg-[#F0E9DB]/60 py-8 sm:py-12 border-b border-stone-200/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2 sm:space-y-3">
           <span className="text-xs uppercase tracking-[0.25em] text-brand-gold font-bold">Colección Completa</span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-light text-stone-900">Nuestras Velas Decorativas</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900">Nuestras Velas Decorativas</h1>
           <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-2"></div>
           <p className="text-stone-500 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
             Explora nuestra variedad de velas aromáticas con cera de soya natural, diseñadas para iluminar y armonizar cada rincón de tu hogar.
@@ -133,10 +133,10 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       </section>
 
       {/* ── FILTER PANEL ───────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 w-full">
-        <div className="bg-white rounded-lg border border-stone-200/60 p-5 shadow-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 w-full">
+        <div className="bg-white rounded-lg border border-stone-200/60 p-4 sm:p-5 shadow-xs">
           {/* Filter header */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3.5 sm:mb-4">
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-brand-gold" />
               <span className="text-xs font-semibold text-stone-700 uppercase tracking-wider">Filtros</span>
@@ -144,9 +144,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 font-medium transition-colors duration-200 cursor-pointer"
+                className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 font-medium transition-colors duration-200 cursor-pointer min-h-[44px] py-1.5 px-2"
               >
-                <X className="w-3 h-3" />
+                <X className="w-3.5 h-3.5" />
                 Limpiar filtros
               </button>
             )}
@@ -160,7 +160,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 <button
                   key={aroma}
                   onClick={() => handleAromaToggle(aroma)}
-                  className={`px-3.5 py-1.5 text-[11px] uppercase tracking-wider font-medium rounded-full transition-all duration-300 cursor-pointer ${
+                  className={`px-3.5 py-2 min-h-[44px] text-xs sm:text-[11px] uppercase tracking-wider font-medium rounded-full transition-all duration-300 cursor-pointer flex items-center justify-center ${
                     selectedAroma === aroma
                       ? 'bg-brand-gold text-white shadow-sm'
                       : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
@@ -181,7 +181,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                   <button
                     key={material}
                     onClick={() => handleMaterialToggle(material)}
-                    className={`px-3.5 py-1.5 text-[11px] uppercase tracking-wider font-medium rounded-full transition-all duration-300 cursor-pointer ${
+                    className={`px-3.5 py-2 min-h-[44px] text-xs sm:text-[11px] uppercase tracking-wider font-medium rounded-full transition-all duration-300 cursor-pointer flex items-center justify-center ${
                       selectedMaterial === material
                         ? 'bg-brand-brown text-white shadow-sm'
                         : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
@@ -200,17 +200,17 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           <div className="flex items-center gap-2 mt-3 flex-wrap">
             <span className="text-[10px] text-stone-400 uppercase tracking-wider font-medium">Activos:</span>
             {selectedAroma && (
-              <span className="inline-flex items-center gap-1 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 rounded-full px-3 py-1.5 min-h-[36px] text-[10px] font-semibold uppercase tracking-wider">
                 Aroma: {selectedAroma}
-                <button onClick={() => { setSelectedAroma(null); syncUrl(null, selectedMaterial); }} className="hover:text-brand-brown cursor-pointer">
+                <button onClick={() => { setSelectedAroma(null); syncUrl(null, selectedMaterial); }} className="hover:text-brand-brown cursor-pointer p-1">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {selectedMaterial && (
-              <span className="inline-flex items-center gap-1 bg-brand-brown/10 text-brand-brown border border-brand-brown/20 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1 bg-brand-brown/10 text-brand-brown border border-brand-brown/20 rounded-full px-3 py-1.5 min-h-[36px] text-[10px] font-semibold uppercase tracking-wider">
                 Material: {selectedMaterial}
-                <button onClick={() => { setSelectedMaterial(null); syncUrl(selectedAroma, null); }} className="hover:text-brand-gold cursor-pointer">
+                <button onClick={() => { setSelectedMaterial(null); syncUrl(selectedAroma, null); }} className="hover:text-brand-gold cursor-pointer p-1">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -222,20 +222,20 @@ export default function CatalogShell({ products }: CatalogShellProps) {
         )}
       </div>
 
-      {/* Product Grid */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
+      {/* Product Grid: mobile-first grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full">
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-stone-400 text-sm font-sans">No se encontraron productos con esos filtros.</p>
+          <div className="text-center py-16 sm:py-20">
+            <p className="text-stone-400 text-xs sm:text-sm font-sans">No se encontraron productos con esos filtros.</p>
             <button
               onClick={clearFilters}
-              className="mt-4 text-brand-gold hover:text-brand-brown text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer"
+              className="mt-4 text-brand-gold hover:text-brand-brown text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer min-h-[44px] px-4 py-2"
             >
               Ver todos los productos
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredProducts.map((product) => {
               const isLowStock = product.stock > 0 && product.stock <= 15;
               const isOutOfStock = product.stock <= 0;
@@ -245,7 +245,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               return (
                 <div
                   key={product.id}
-                  className="group bg-white rounded-lg border border-stone-200/60 overflow-hidden flex flex-col h-full hover:shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all duration-350 ease-in-out"
+                  className="group bg-white rounded-lg border border-stone-200/60 overflow-hidden flex flex-col h-full hover:shadow-md transition-all duration-350 ease-in-out"
                   onMouseEnter={() => setHoveredProduct(product.id)}
                   onMouseLeave={() => setHoveredProduct(null)}
                 >
@@ -255,29 +255,29 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                       alt={product.nombre}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                     <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-brand-gold" />
+                      <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                       <span className="text-[10px] font-semibold text-stone-700 uppercase tracking-wider">
                         {product.esBajoPedido ? 'Bajo Pedido' : 'Hecho a Mano'}
                       </span>
                     </div>
 
                     {/* Aroma & Material badges */}
-                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
-                      <span className="bg-brand-brown/80 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest">
+                    <div className="absolute bottom-3 left-3 flex flex-wrap items-center gap-1.5 max-w-[90%]">
+                      <span className="bg-brand-brown/80 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest truncate">
                         {product.aroma}
                       </span>
                       {product.material && (
-                        <span className="bg-brand-gold/80 backdrop-blur-xs text-white px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest">
+                        <span className="bg-brand-gold/80 backdrop-blur-xs text-white px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest truncate">
                           {product.material}
                         </span>
                       )}
                     </div>
 
                     {hoveredProduct === product.id && (
-                      <div className="absolute inset-0 bg-black/15 backdrop-blur-[1px] flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/15 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
                         <span className="bg-white text-stone-900 text-xs font-semibold px-4 py-2 rounded-sm shadow-md flex items-center gap-2">
                           <Eye className="w-4 h-4 text-stone-700" /> Detalles
                         </span>
@@ -285,10 +285,10 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                     )}
                   </Link>
 
-                  <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                     <div>
                       <Link href={`/productos/${product.id}`} className="block group/title">
-                        <h3 className="font-serif font-medium text-stone-900 text-base group-hover/title:text-brand-gold transition duration-200 line-clamp-1">
+                        <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-gold transition duration-200 line-clamp-1">
                           {product.nombre}
                         </h3>
                       </Link>
@@ -302,12 +302,12 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                       </p>
                     </div>
 
-                    <div className="mt-5 pt-4 border-t border-stone-100 font-sans">
+                    <div className="mt-4 sm:mt-5 pt-3.5 sm:pt-4 border-t border-stone-100 font-sans">
                       <div className="flex justify-between items-center mb-3">
                         {product.esBajoPedido ? (
                           <span className="text-xs font-semibold text-brand-brown uppercase tracking-wider">Bajo Pedido</span>
                         ) : (
-                          <span className="font-serif font-semibold text-brand-brown text-base">
+                          <span className="font-serif font-semibold text-brand-brown text-base sm:text-lg">
                             ${product.precio?.toLocaleString('es-CO')} COP
                           </span>
                         )}
@@ -327,16 +327,16 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                           href={waLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full py-2 text-center text-[10px] uppercase tracking-wider font-semibold rounded-sm bg-[#25D366] hover:bg-[#1da851] text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-1.5"
+                          className="w-full py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm bg-[#25D366] hover:bg-[#1da851] text-white transition-all duration-300 flex items-center justify-center gap-1.5 active:scale-98"
                         >
-                          <MessageCircle className="w-3 h-3" /> Cotizar
+                          <MessageCircle className="w-4 h-4" /> Cotizar
                         </a>
                       ) : (
                         <div className="grid grid-cols-2 gap-2 mt-2">
                           <button
                             onClick={() => addToCart(product)}
                             disabled={isOutOfStock}
-                            className={`py-2 text-center text-[10px] uppercase tracking-wider font-semibold rounded-sm border border-brand-brown transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
+                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm border border-brand-brown transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
                               isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed' : 'bg-white hover:bg-stone-50 text-brand-brown'
                             }`}
                           >
@@ -345,7 +345,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                           <button
                             onClick={() => handleBuyNow(product)}
                             disabled={isOutOfStock}
-                            className={`py-2 text-center text-[10px] uppercase tracking-wider font-semibold rounded-sm text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
+                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm text-white transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
                               isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed' : 'bg-brand-gold hover:bg-brand-brown'
                             }`}
                           >
@@ -367,3 +367,4 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     </div>
   );
 }
+

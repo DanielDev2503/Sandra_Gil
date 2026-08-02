@@ -269,20 +269,21 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
       />
       <Header />
 
-      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 flex-1">
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-12 flex-1">
         {/* Breadcrumb */}
-        <div className="mb-8 flex items-center gap-2 text-xs text-stone-400 font-sans">
+
+        <div className="mb-6 sm:mb-8 flex items-center gap-2 text-xs text-stone-400 font-sans overflow-x-auto whitespace-nowrap scrollbar-none">
           <Link href="/" className="hover:text-brand-brown transition">Inicio</Link>
           <span>/</span>
           <Link href="/catalogo" className="hover:text-brand-brown transition">Catálogo</Link>
           <span>/</span>
-          <span className="text-stone-600 truncate max-w-[200px]">{product.nombre}</span>
+          <span className="text-stone-600 truncate max-w-[180px] sm:max-w-[250px]">{product.nombre}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* Gallery */}
-          <div className="lg:col-span-6 space-y-4">
+          <div className="lg:col-span-6 space-y-3 sm:space-y-4">
             <div className="aspect-square bg-white rounded-lg overflow-hidden border border-stone-200/60 shadow-xs relative">
               {galleryImages.map((imgUrl, idx) => (
                 <div
@@ -302,8 +303,8 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
               ))}
 
               {/* Badge */}
-              <div className="absolute top-4 left-4 z-20 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
+              <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
                 <span className="text-[10px] font-bold text-stone-700 uppercase tracking-widest font-sans">
                   {isBajoPedido ? 'Elaboración Bajo Pedido' : 'Hecho a Mano en Bogotá'}
                 </span>
@@ -312,13 +313,13 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
 
             {/* Thumbnails */}
             {galleryImages.length > 1 && (
-              <div className="flex sm:grid sm:grid-cols-3 gap-4 overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 snap-x snap-mandatory scrollbar-none">
+              <div className="flex sm:grid sm:grid-cols-3 gap-3 overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 snap-x snap-mandatory scrollbar-none">
                 {galleryImages.map((imgUrl, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative aspect-square rounded-md overflow-hidden bg-white shrink-0 w-[45%] sm:w-auto snap-start transition-all duration-300 cursor-pointer ${
+                    className={`relative aspect-square rounded-md overflow-hidden bg-white shrink-0 w-20 sm:w-auto snap-start transition-all duration-300 cursor-pointer min-h-[44px] ${
                       selectedImage === idx
                         ? 'ring-2 ring-brand-gold ring-offset-2 border-transparent shadow-md scale-[1.02]'
                         : 'border border-stone-200/50 hover:border-stone-300 hover:shadow-sm'
@@ -330,7 +331,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                       alt={`${product.nombre} – miniatura ${idx + 1}`}
                       className={`w-full h-full object-cover transition-all duration-300 ${selectedImage === idx ? '' : 'hover:scale-105'}`}
                       fill
-                      sizes="(max-width: 768px) 25vw, 15vw"
+                      sizes="(max-width: 768px) 20vw, 15vw"
                     />
                   </button>
                 ))}
@@ -339,21 +340,21 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
           </div>
 
           {/* Product Info */}
-          <div className="lg:col-span-6 space-y-6">
+          <div className="lg:col-span-6 space-y-5 sm:space-y-6">
             <div>
               <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">
                 {isBajoPedido ? 'Vela Personalizada · Bajo Pedido' : 'Colección Botánica Exclusiva'}
               </span>
-              <h1 className="text-3xl font-serif font-light text-stone-900 mt-1">{product.nombre}</h1>
+              <h1 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1">{product.nombre}</h1>
 
-              <div className="flex items-center gap-4 mt-3">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3">
                 {isBajoPedido ? (
                   <div className="inline-flex items-center gap-2 bg-[#F0FDF4] border border-[#25D366]/30 px-3 py-1.5 rounded-sm">
-                    <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                    <span className="text-sm font-semibold text-[#16a34a] font-sans">Elaboración Bajo Pedido</span>
+                    <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
+                    <span className="text-xs sm:text-sm font-semibold text-[#16a34a] font-sans">Elaboración Bajo Pedido</span>
                   </div>
                 ) : (
-                  <p className="text-2xl font-serif font-semibold text-brand-brown">
+                  <p className="text-xl sm:text-2xl font-serif font-semibold text-brand-brown">
                     ${product.precio?.toLocaleString('es-CO')} COP
                   </p>
                 )}
@@ -373,7 +374,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
               )}
             </div>
 
-            <p className="text-stone-600 text-sm leading-relaxed font-sans font-light">
+            <p className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans font-light">
               {product.descripcion} Elaborada individualmente con pabilo de algodón orgánico libre de plomo para asegurar una combustión uniforme y libre de toxinas.
             </p>
 
@@ -389,9 +390,9 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                     href={waLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-4 bg-[#25D366] hover:bg-[#1da851] hover:scale-[1.02] active:scale-[0.98] text-white text-sm uppercase tracking-widest font-bold transition-all duration-300 shadow-md hover:shadow-lg text-center flex items-center justify-center gap-2 rounded-sm cursor-pointer"
+                    className="w-full py-3.5 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] text-white text-xs sm:text-sm uppercase tracking-widest font-bold transition-all duration-300 shadow-md hover:shadow-lg text-center flex items-center justify-center gap-2 rounded-sm cursor-pointer active:scale-98"
                   >
-                    <MessageCircle className="w-5 h-5" />
+                    <MessageCircle className="w-5 h-5 shrink-0" />
                     Cotizar por WhatsApp
                   </a>
                 </div>
@@ -400,11 +401,11 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                 <>
                   <div className="flex items-center gap-4">
                     <span className="text-xs uppercase font-semibold text-stone-600 font-sans">Cantidad:</span>
-                    <div className="flex items-center border border-stone-300 rounded-sm bg-white font-sans">
+                    <div className="flex items-center border border-stone-300 rounded-sm bg-white font-sans min-h-[44px]">
                       <button
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                         disabled={isOutOfStock}
-                        className="px-3 py-1.5 text-stone-500 hover:text-stone-900 transition disabled:opacity-50"
+                        className="px-3.5 py-2 min-h-[44px] min-w-[44px] text-stone-500 hover:text-stone-900 transition disabled:opacity-50 flex items-center justify-center cursor-pointer"
                       >
                         -
                       </button>
@@ -412,7 +413,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                       <button
                         onClick={() => setQuantity((q) => q + 1)}
                         disabled={isOutOfStock}
-                        className="px-3 py-1.5 text-stone-500 hover:text-stone-900 transition disabled:opacity-50"
+                        className="px-3.5 py-2 min-h-[44px] min-w-[44px] text-stone-500 hover:text-stone-900 transition disabled:opacity-50 flex items-center justify-center cursor-pointer"
                       >
                         +
                       </button>
@@ -427,18 +428,18 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-sans">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-sans w-full">
                     <button
                       onClick={handleBuyNow}
                       disabled={isOutOfStock}
-                      className="py-3.5 bg-brand-gold hover:bg-brand-brown hover:scale-[1.02] active:scale-[0.98] text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed disabled:scale-100"
+                      className="w-full py-3.5 min-h-[44px] bg-brand-gold hover:bg-brand-brown text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:bg-stone-300 disabled:cursor-not-allowed"
                     >
                       Comprar Ahora
                     </button>
                     <button
                       onClick={() => addToCart(product, Math.max(1, quantity))}
                       disabled={isOutOfStock}
-                      className="py-3.5 bg-white hover:bg-stone-50 hover:scale-[1.02] active:scale-[0.98] border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 cursor-pointer disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed disabled:scale-100"
+                      className="w-full py-3.5 min-h-[44px] bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed"
                     >
                       Añadir al Carrito
                     </button>
@@ -495,12 +496,12 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                 <div key={key}>
                   <button
                     onClick={() => toggleAccordion(key)}
-                    className="w-full px-5 py-4 flex items-center justify-between font-semibold text-stone-800 hover:bg-stone-50/50 transition text-left"
+                    className="w-full px-4 sm:px-5 py-3.5 sm:py-4 min-h-[44px] flex items-center justify-between font-semibold text-stone-800 hover:bg-stone-50/50 transition text-left cursor-pointer"
                   >
-                    <span>{label}</span>
-                    {activeAccordion === key ? <ChevronUp className="w-4 h-4 text-stone-500" /> : <ChevronDown className="w-4 h-4 text-stone-500" />}
+                    <span className="text-xs sm:text-sm">{label}</span>
+                    {activeAccordion === key ? <ChevronUp className="w-4 h-4 text-stone-500 shrink-0" /> : <ChevronDown className="w-4 h-4 text-stone-500 shrink-0" />}
                   </button>
-                  {activeAccordion === key && <div className="px-5 pb-5">{content}</div>}
+                  {activeAccordion === key && <div className="px-4 sm:px-5 pb-4 sm:pb-5">{content}</div>}
                 </div>
               ))}
             </div>
@@ -508,10 +509,10 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
         </div>
 
         {/* ── REVIEWS SECTION ──────────────────────────────── */}
-        <section className="mt-20 pt-10 border-t border-stone-200">
-          <div className="text-center mb-10">
+        <section className="mt-12 sm:mt-20 pt-8 sm:pt-10 border-t border-stone-200">
+          <div className="text-center mb-8 sm:mb-10">
             <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">Opiniones de Clientes</span>
-            <h2 className="text-2xl font-serif text-stone-900 mt-1">Lo Que Dicen de Este Producto</h2>
+            <h2 className="text-xl sm:text-2xl font-serif text-stone-900 mt-1">Lo Que Dicen de Este Producto</h2>
             {resenas.length > 0 ? (
               <div className="flex items-center justify-center gap-1 mt-2">
                 <StarRatingDisplay rating={avgRating} size="md" />
@@ -520,13 +521,13 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                 </span>
               </div>
             ) : (
-              <p className="text-sm text-stone-400 mt-2 font-sans">Aún no hay opiniones para este producto.</p>
+              <p className="text-xs sm:text-sm text-stone-400 mt-2 font-sans">Aún no hay opiniones para este producto.</p>
             )}
           </div>
 
           {/* Review Form */}
-          <div className="max-w-xl mx-auto mb-12">
-            <div className="bg-white rounded-lg border border-stone-200/60 p-6 shadow-xs">
+          <div className="max-w-xl mx-auto mb-10 sm:mb-12">
+            <div className="bg-white rounded-lg border border-stone-200/60 p-4 sm:p-6 shadow-xs">
               <h3 className="text-sm font-semibold text-stone-800 font-sans mb-4">
                 {resenas.length === 0 ? '✨ Sé el primero en compartir tu experiencia' : 'Deja tu opinión'}
               </h3>
@@ -542,7 +543,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                     value={reviewAutor}
                     onChange={(e) => setReviewAutor(e.target.value)}
                     placeholder="Ej: María García"
-                    className="w-full px-4 py-2.5 border border-stone-300 rounded-sm text-sm font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition bg-white"
+                    className="w-full px-3.5 py-3 border border-stone-300 rounded-sm text-base sm:text-sm min-h-[44px] font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition bg-white"
                   />
                 </div>
 
@@ -563,7 +564,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                     onChange={(e) => setReviewComentario(e.target.value)}
                     placeholder="¿Qué te pareció el producto? Cuéntanos tu experiencia..."
                     rows={3}
-                    className="w-full px-4 py-2.5 border border-stone-300 rounded-sm text-sm font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition bg-white resize-none"
+                    className="w-full px-3.5 py-3 border border-stone-300 rounded-sm text-base sm:text-sm font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition bg-white resize-none"
                   />
                 </div>
 
@@ -580,9 +581,9 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                 <button
                   type="submit"
                   disabled={reviewSubmitting}
-                  className="w-full py-3 bg-brand-brown hover:bg-brand-gold hover:scale-[1.01] active:scale-[0.99] text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 min-h-[44px] bg-brand-brown hover:bg-brand-gold text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-98"
                 >
-                  <Send className="w-3.5 h-3.5" />
+                  <Send className="w-4 h-4 shrink-0" />
                   {reviewSubmitting ? 'Enviando...' : 'Publicar Opinión'}
                 </button>
               </form>
@@ -591,9 +592,9 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
 
           {/* Reviews List */}
           {resenas.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-sans">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 font-sans">
               {resenas.map((review) => (
-                <div key={review.id} className="bg-white p-6 rounded-lg border border-stone-200/50 shadow-xs flex flex-col justify-between">
+                <div key={review.id} className="bg-white p-4 sm:p-6 rounded-lg border border-stone-200/50 shadow-xs flex flex-col justify-between">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
@@ -608,14 +609,14 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
               ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-4">
-                <Star className="w-7 h-7 text-brand-gold" />
+            <div className="text-center py-6 sm:py-8">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-3">
+                <Star className="w-6 h-6 sm:w-7 sm:h-7 text-brand-gold" />
               </div>
-              <p className="text-sm text-stone-500 font-sans">
+              <p className="text-xs sm:text-sm text-stone-500 font-sans">
                 Este producto aún no tiene opiniones.
               </p>
-              <p className="text-xs text-stone-400 font-sans mt-1">
+              <p className="text-[11px] sm:text-xs text-stone-400 font-sans mt-1">
                 ¡Sé el primero en compartir tu experiencia con esta vela!
               </p>
             </div>
@@ -628,3 +629,4 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
     </div>
   );
 }
+

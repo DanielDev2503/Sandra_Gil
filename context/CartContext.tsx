@@ -8,14 +8,18 @@ export interface CartItem {
   precio: number;
   cantidad: number;
   url_imagen: string;
-  aroma: string;
+  aroma?: string | null;
 }
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma: string }, cantidad?: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, cantidad: number) => void;
+  addToCart: (
+    product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma?: string | null },
+    cantidad?: number,
+    selectedAroma?: string
+  ) => void;
+  removeFromCart: (productId: string, aroma?: string | null) => void;
+  updateQuantity: (productId: string, cantidad: number, aroma?: string | null) => void;
   clearCart: () => void;
   cartCount: number;
   cartTotal: number;
@@ -55,37 +59,59 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeCart = () => setIsCartOpen(false);
 
   const addToCart = (
-    product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma: string },
-    cantidad = 1
+    product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma?: string | null },
+    cantidad = 1,
+    selectedAroma?: string
   ) => {
     if (product.precio === null) return;
     const validPrecio = product.precio;
+    const finalAroma = selectedAroma || product.aroma || 'Aroma por defecto';
 
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, cantidad: item.cantidad + cantidad } : item
-        );
+      const existingIndex = prevCart.findIndex(
+        (item) => item.id === product.id && item.aroma === finalAroma
+      );
+      if (existingIndex > -1) {
+        const updated = [...prevCart];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          cantidad: updated[existingIndex].cantidad + cantidad,
+        };
+        return updated;
       }
-      return [...prevCart, { ...product, precio: validPrecio, cantidad }];
+      return [
+        ...prevCart,
+        {
+          id: product.id,
+          nombre: product.nombre,
+          precio: validPrecio,
+          cantidad,
+          url_imagen: product.url_imagen,
+          aroma: finalAroma,
+        },
+      ];
     });
 
-    // Automatically trigger cart drawer opening for micro-interaction feedback
     openCart();
   };
 
-  const removeFromCart = (productId: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  const removeFromCart = (productId: string, aroma?: string | null) => {
+    setCart((prevCart) =>
+      prevCart.filter((item) => !(item.id === productId && (!aroma || item.aroma === aroma)))
+    );
   };
 
-  const updateQuantity = (productId: string, cantidad: number) => {
+  const updateQuantity = (productId: string, cantidad: number, aroma?: string | null) => {
     if (cantidad <= 0) {
-      removeFromCart(productId);
+      removeFromCart(productId, aroma);
       return;
     }
     setCart((prevCart) =>
-      prevCart.map((item) => (item.id === productId ? { ...item, cantidad } : item))
+      prevCart.map((item) =>
+        item.id === productId && (!aroma || item.aroma === aroma)
+          ? { ...item, cantidad }
+          : item
+      )
     );
   };
 

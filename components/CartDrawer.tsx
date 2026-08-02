@@ -54,8 +54,8 @@ export default function CartDrawer() {
                 </button>
               </div>
             ) : (
-              cart.map((item) => (
-                <div key={item.id} className="flex gap-4 pb-4 border-b border-stone-150 last:border-0 last:pb-0 font-sans">
+              cart.map((item, idx) => (
+                <div key={`${item.id}-${item.aroma}-${idx}`} className="flex gap-4 pb-4 border-b border-stone-150 last:border-0 last:pb-0 font-sans">
                   <img
                     src={item.url_imagen}
                     alt={item.nombre}
@@ -71,14 +71,14 @@ export default function CartDrawer() {
                       {/* Quantity Selector */}
                       <div className="flex items-center border border-stone-300 rounded-sm bg-white">
                         <button
-                          onClick={() => updateQuantity(item.id, item.cantidad - 1)}
+                          onClick={() => updateQuantity(item.id, item.cantidad - 1, item.aroma || undefined)}
                           className="px-2 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
                         <span className="px-2 text-xs font-semibold text-stone-800">{item.cantidad}</span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.cantidad + 1)}
+                          onClick={() => updateQuantity(item.id, item.cantidad + 1, item.aroma || undefined)}
                           className="px-2 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
@@ -91,7 +91,7 @@ export default function CartDrawer() {
                           ${(item.precio * item.cantidad).toLocaleString('es-CO')} COP
                         </span>
                         <button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => removeFromCart(item.id, item.aroma || undefined)}
                           className="text-stone-400 hover:text-red-500 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />

@@ -5,10 +5,24 @@ import Header from '@/components/Header';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
-import { Sparkles, ChevronDown, ChevronUp, Star, Truck, ShieldCheck, CreditCard, MessageCircle, Send } from 'lucide-react';
+import {
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  Star,
+  Truck,
+  ShieldCheck,
+  CreditCard,
+  MessageCircle,
+  Send,
+  Ruler,
+  Wind,
+  Check,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SkeletonImage from '@/components/SkeletonImage';
+import { isSoapProduct } from '@/app/catalogo/CatalogShell';
 
 const WA_NUMBER = '573175752029';
 
@@ -16,9 +30,9 @@ interface Product {
   id: string;
   nombre: string;
   descripcion: string;
-  aroma: string;
+  aroma?: string | null;
   material?: string | null;
-  dimensiones: string;
+  dimensiones?: string | null;
   precio: number | null;
   esBajoPedido: boolean;
   stock: number;
@@ -39,6 +53,7 @@ interface Resena {
 interface ProductDetailShellProps {
   product: Product;
   resenas: Resena[];
+  availableAromas?: string[];
 }
 
 // ── Star Rating Input Component ────────────────────────
@@ -108,12 +123,21 @@ function StarRatingDisplay({ rating, size = 'sm' }: { rating: number; size?: 'sm
   );
 }
 
-export default function ProductDetailShell({ product, resenas: initialResenas }: ProductDetailShellProps) {
+export default function ProductDetailShell({
+  product,
+  resenas: initialResenas,
+  availableAromas = [],
+}: ProductDetailShellProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
 
+  const isSoap = isSoapProduct(product);
+
+  const aromasList: string[] = availableAromas.length > 0 ? availableAromas : (product.aroma ? [product.aroma] : ['Aroma por defecto']);
+  const [selectedAroma, setSelectedAroma] = useState<string>(product.aroma || aromasList[0] || 'Aroma por defecto');
+
   const [quantity, setQuantity] = useState(1);
-  const [activeAccordion, setActiveAccordion] = useState<string | null>('aroma');
+  const [activeAccordion, setActiveAccordion] = useState<string | null>('care');
   const [resenas, setResenas] = useState<Resena[]>(initialResenas);
 
   // Review form state
@@ -124,7 +148,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
   const [reviewError, setReviewError] = useState('');
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
-  // Prefer imagenes[] from Supabase over single url_imagen
+  // Gallery images
   const galleryImages: string[] =
     product.imagenes && product.imagenes.length > 0
       ? product.imagenes
@@ -142,18 +166,14 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
       ? resenas.reduce((sum, r) => sum + r.calificacion, 0) / resenas.length
       : 0;
 
-  const getScentNotes = (aroma: string) => {
-    const a = aroma.toLowerCase();
-    if (a.includes('lavanda')) return 'Lavanda relajante, manzanilla silvestre y toques de vainilla dulce. Ideal para meditar, aliviar el estrés y calmar la mente antes de dormir.';
-    if (a.includes('rosas') || a.includes('rosa')) return 'Pétalos de rosa búlgara, peonías frescas y un fondo sutil almizclado. Aroma romántico, floral e inspirador.';
-    if (a.includes('cítrico') || a.includes('citrus') || a.includes('naranja')) return 'Mandarina madura, cáscara de naranja, bergamota italiana y caléndula. Vibrante, refrescante, alegre y energizante.';
-    return 'Jazmín imperial, orquídea blanca y toques cremosos de vainilla. Aroma dulce, exótico, elegante y acogedor.';
-  };
-
   const handleBuyNow = () => {
     clearCart();
-    addToCart(product, Math.max(1, quantity));
+    addToCart(product, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma);
     router.push('/checkout');
+  };
+
+  const handleAddToCart = () => {
+    addToCart(product, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma);
   };
 
   const toggleAccordion = (section: string) => {
@@ -198,15 +218,11 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
       }
 
       const newResena = await res.json();
-
-      // Add to local state immediately
       setResenas((prev) => [newResena, ...prev]);
       setReviewAutor('');
       setReviewCalificacion(0);
       setReviewComentario('');
       setReviewSuccess(true);
-
-      // Hide success message after 4 seconds
       setTimeout(() => setReviewSuccess(false), 4000);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Error inesperado.';
@@ -229,49 +245,14 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
     return date.toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
-  const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20la%20vela%20personalizada:%20${encodeURIComponent(product.nombre)}`;
-
-  const productJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.nombre,
-    image: galleryImages,
-    description: product.descripcion,
-    sku: product.id,
-    brand: {
-      '@type': 'Brand',
-      name: 'Sandra Gil',
-    },
-    offers: {
-      '@type': 'Offer',
-      url: `https://sgvelas.com/productos/${product.id}`,
-      priceCurrency: 'COP',
-      price: product.precio || 0,
-      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      itemCondition: 'https://schema.org/NewCondition',
-    },
-    ...(resenas.length > 0
-      ? {
-          aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: avgRating.toFixed(1),
-            reviewCount: resenas.length,
-          },
-        }
-      : {}),
-  };
+  const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20el%20producto:%20${encodeURIComponent(product.nombre)}`;
 
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-brand-cream">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-      />
       <Header />
 
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-12 flex-1">
         {/* Breadcrumb */}
-
         <div className="mb-6 sm:mb-8 flex items-center gap-2 text-xs text-stone-400 font-sans overflow-x-auto whitespace-nowrap scrollbar-none">
           <Link href="/" className="hover:text-brand-brown transition">Inicio</Link>
           <span>/</span>
@@ -281,7 +262,6 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-
           {/* Gallery */}
           <div className="lg:col-span-6 space-y-3 sm:space-y-4">
             <div className="aspect-square bg-white rounded-lg overflow-hidden border border-stone-200/60 shadow-xs relative">
@@ -306,7 +286,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
               <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
                 <span className="text-[10px] font-bold text-stone-700 uppercase tracking-widest font-sans">
-                  {isBajoPedido ? 'Elaboración Bajo Pedido' : 'Hecho a Mano en Bogotá'}
+                  {isSoap ? 'Jabón Artesanal' : isBajoPedido ? 'Elaboración Bajo Pedido' : 'Hecho a Mano en Bogotá'}
                 </span>
               </div>
             </div>
@@ -343,7 +323,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
           <div className="lg:col-span-6 space-y-5 sm:space-y-6">
             <div>
               <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">
-                {isBajoPedido ? 'Vela Personalizada · Bajo Pedido' : 'Colección Botánica Exclusiva'}
+                {isSoap ? 'Cosmética Artesanal Natural' : isBajoPedido ? 'Vela Personalizada · Bajo Pedido' : 'Colección Artesanal Exclusiva'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1">{product.nombre}</h1>
 
@@ -358,9 +338,13 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                     ${product.precio?.toLocaleString('es-CO')} COP
                   </p>
                 )}
-                <div className="bg-brand-brown/80 text-[#FAF8F5] px-2.5 py-0.5 rounded-sm text-[9px] uppercase tracking-widest font-sans">
-                  {product.aroma}
-                </div>
+
+                {/* Show material badge if present AND not a soap */}
+                {!isSoap && product.material && (
+                  <div className="bg-brand-brown/80 text-[#FAF8F5] px-2.5 py-0.5 rounded-sm text-[9px] uppercase tracking-widest font-sans">
+                    {product.material}
+                  </div>
+                )}
               </div>
 
               {/* Average rating inline */}
@@ -375,8 +359,63 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
             </div>
 
             <p className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans font-light">
-              {product.descripcion} Elaborada individualmente con pabilo de algodón orgánico libre de plomo para asegurar una combustión uniforme y libre de toxinas.
+              {product.descripcion}
             </p>
+
+            {/* ── AROMA SELECTOR (For VELAS only - Hidden for JABON) ── */}
+            {!isSoap && (
+              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-3 shadow-xs font-sans">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
+                    <Wind className="w-4 h-4 text-brand-gold shrink-0" />
+                    <span>Selecciona el Aroma de tu Vela:</span>
+                  </label>
+                  <span className="text-[11px] font-semibold text-brand-gold bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200/60">
+                    {selectedAroma}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  {aromasList.map((aroma) => {
+                    const isSelected = selectedAroma === aroma;
+                    return (
+                      <button
+                        key={aroma}
+                        type="button"
+                        onClick={() => setSelectedAroma(aroma)}
+                        className={`px-3.5 py-2.5 min-h-[44px] rounded-lg border text-left text-xs transition-all duration-200 flex items-center justify-between cursor-pointer ${
+                          isSelected
+                            ? 'bg-amber-50 border-brand-gold text-brand-brown font-semibold shadow-xs'
+                            : 'bg-stone-50/70 border-stone-200 text-stone-700 hover:bg-stone-100 hover:border-stone-300'
+                        }`}
+                      >
+                        <span className="truncate pr-2">{aroma}</span>
+                        {isSelected && (
+                          <div className="w-4 h-4 rounded-full bg-brand-gold text-white flex items-center justify-center shrink-0">
+                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── INDEPENDENT DIMENSIONS CARD ── */}
+            <div className="bg-white p-4 rounded-xl border border-stone-200/80 shadow-xs flex items-center gap-3 font-sans">
+              <div className="p-2.5 rounded-lg bg-amber-50 text-brand-gold shrink-0">
+                <Ruler className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
+                  Dimensiones del Producto
+                </span>
+                <span className="text-sm font-semibold text-stone-900">
+                  {product.dimensiones || 'Tamaño Estándar Artesanal'}
+                </span>
+              </div>
+            </div>
 
             {/* Actions */}
             <div className="space-y-4 pt-4 border-t border-stone-200">
@@ -384,7 +423,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                 /* WhatsApp CTA for bajo pedido */
                 <div className="space-y-3 font-sans">
                   <p className="text-xs text-stone-500 leading-relaxed">
-                    Esta vela es elaborada especialmente para ti. Escríbenos por WhatsApp para conocer precios, tiempos de producción y opciones de personalización.
+                    Este producto es elaborado especialmente bajo pedido. Escríbenos por WhatsApp para conocer precios, tiempos de producción y opciones de personalización.
                   </p>
                   <a
                     href={waLink}
@@ -437,7 +476,7 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
                       Comprar Ahora
                     </button>
                     <button
-                      onClick={() => addToCart(product, Math.max(1, quantity))}
+                      onClick={handleAddToCart}
                       disabled={isOutOfStock}
                       className="w-full py-3.5 min-h-[44px] bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed"
                     >
@@ -460,37 +499,29 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
               <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
                 <Truck className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-semibold text-stone-800">Envío Gratis Garantizado</p>
-                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Envíos GRATIS en Bogotá y municipios aledaños. Empaque reforzado a prueba de impactos 📦.</p>
+                  <p className="font-semibold text-stone-800">Envíos Seguros con Servientrega</p>
+                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Despachos locales y nacionales con empaque reforzado contra impactos 📦.</p>
                 </div>
               </div>
             </div>
 
-            {/* Accordion */}
+            {/* Accordion: Consejos de Cuidado & Seguridad */}
             <div className="border border-stone-200 rounded-sm overflow-hidden bg-white divide-y divide-stone-200 font-sans text-sm">
               {[
-                { key: 'aroma', label: 'Notas del Aroma & Aromaterapia', content: <p className="text-xs text-stone-500 leading-relaxed font-light">{getScentNotes(product.aroma)}</p> },
                 {
-                  key: 'specs', label: 'Dimensiones & Duración de Luz', content: (
-                    <div className="text-xs text-stone-500 leading-relaxed font-light space-y-2">
-                      <p><strong>Dimensiones:</strong> {product.dimensiones}</p>
-                      <p><strong>Duración estimada:</strong> ~40 a 45 horas de encendido continuo.</p>
-                      <p><strong>Contenedor:</strong> Envase de vidrio premium, ideal para reutilizar como florero.</p>
-                    </div>
-                  )
-                },
-                {
-                  key: 'care', label: 'Consejos de Cuidado & Seguridad', content: (
-                    <div className="text-xs text-stone-500 leading-relaxed font-light space-y-2.5">
-                      <p>Para aprovechar al máximo tu vela artesanal:</p>
-                      <ul className="list-disc pl-4 space-y-1">
-                        <li><strong>Pabilo Corto:</strong> Recorta a 5 mm antes de cada encendido.</li>
-                        <li><strong>Memoria de Cera:</strong> En el primer encendido, deja que la cera llegue a los bordes del vidrio.</li>
-                        <li><strong>Tiempo Máximo:</strong> No dejes encendida por más de 4 horas seguidas.</li>
-                        <li><strong>Seguridad:</strong> Sobre superficie resistente al calor. Fuera del alcance de niños y mascotas.</li>
+                  key: 'care',
+                  label: 'Consejos de Cuidado & Seguridad',
+                  content: (
+                    <div className="text-xs text-stone-600 leading-relaxed font-light space-y-2.5">
+                      <p className="font-medium text-stone-800">Para aprovechar al máximo tu producto artesanal:</p>
+                      <ul className="list-disc pl-4 space-y-1.5">
+                        <li><strong>Pabilo Corto:</strong> Recorta el pabilo a 5 mm antes de cada encendido.</li>
+                        <li><strong>Tiempo Máximo:</strong> No dejar la vela encendida por más de 2 horas continuas.</li>
+                        <li><strong>Superficie Segura:</strong> Encender siempre sobre una superficie plana y resistente al calor.</li>
+                        <li><strong>Precaución:</strong> Mantener fuera del alcance de niños, mascotas y materiales inflamables.</li>
                       </ul>
                     </div>
-                  )
+                  ),
                 },
               ].map(({ key, label, content }) => (
                 <div key={key}>
@@ -616,9 +647,6 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
               <p className="text-xs sm:text-sm text-stone-500 font-sans">
                 Este producto aún no tiene opiniones.
               </p>
-              <p className="text-[11px] sm:text-xs text-stone-400 font-sans mt-1">
-                ¡Sé el primero en compartir tu experiencia con esta vela!
-              </p>
             </div>
           )}
         </section>
@@ -629,4 +657,3 @@ export default function ProductDetailShell({ product, resenas: initialResenas }:
     </div>
   );
 }
-

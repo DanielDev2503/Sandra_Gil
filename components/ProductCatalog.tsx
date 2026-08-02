@@ -12,9 +12,10 @@ interface Product {
   id: string;
   nombre: string;
   descripcion: string;
-  aroma: string;
+  tipo?: 'VELA' | 'JABON';
+  aroma?: string | null;
   material?: string | null;
-  dimensiones: string;
+  dimensiones?: string | null;
   precio: number | null;
   esBajoPedido: boolean;
   stock: number;
@@ -29,7 +30,7 @@ interface ProductCatalogProps {
 
 const ARTISAN_BADGES = [
   { icon: Leaf, label: '100% Cera de Soya Natural' },
-  { icon: Sparkles, label: 'Flores Botánicas Preservadas' },
+  { icon: Sparkles, label: 'Esencias Aromáticas Premium' },
   { icon: Flame, label: 'Combustión Limpia sin Plomo' },
   { icon: ShieldCheck, label: 'Vertido a Mano en Bogotá' },
 ];
@@ -40,7 +41,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
   const aromas = useMemo(() => {
-    const list = new Set(products.map((p) => p.aroma));
+    const list = new Set(products.map((p) => p.aroma).filter((a): a is string => Boolean(a)));
     return ['Todos', ...Array.from(list)];
   }, [products]);
 
@@ -59,7 +60,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900 mt-1 sm:mt-2">Velas con Propósito</h2>
         <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4"></div>
         <p className="text-stone-500 text-xs sm:text-sm max-w-lg mx-auto mt-3 sm:mt-4 leading-relaxed font-sans">
-          Cada vela está vertida a mano en Bogotá con cera de soya natural, enriquecida con esencias botánicas premium y decorada con flores preservadas.
+          Cada vela está vertida a mano en Bogotá con cera de soya natural, enriquecida con esencias aromáticas premium.
         </p>
       </div>
 

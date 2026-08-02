@@ -5,7 +5,7 @@ import Header from './Header';
 import ProductCatalog from './ProductCatalog';
 import CartDrawer from './CartDrawer';
 import Footer from './Footer';
-import { Sparkles, Leaf, Flame, ShieldCheck, Flower2, Citrus, Crown, Heart, Gem, Ribbon } from 'lucide-react';
+import { Sparkles, Leaf, Flame, ShieldCheck, Gem, Ribbon, Droplets } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
@@ -16,9 +16,10 @@ interface Product {
   id: string;
   nombre: string;
   descripcion: string;
-  aroma: string;
+  tipo?: 'VELA' | 'JABON';
+  aroma?: string | null;
   material?: string | null;
-  dimensiones: string;
+  dimensiones?: string | null;
   precio: number | null;
   esBajoPedido: boolean;
   stock: number;
@@ -27,52 +28,9 @@ interface Product {
   activo: boolean;
 }
 
-const AROMA_CATEGORIES = [
-  {
-    name: 'Lavanda & Manzanilla',
-    query: 'Lavanda',
-    description: 'Calma y serenidad',
-    icon: Flower2,
-    gradient: 'from-violet-50 to-purple-100/60',
-    accent: 'text-violet-700',
-    border: 'border-violet-200/50',
-    iconBg: 'bg-violet-100',
-  },
-  {
-    name: 'Cítricos & Caléndula',
-    query: 'Cítricos',
-    description: 'Energía y frescura',
-    icon: Citrus,
-    gradient: 'from-amber-50 to-orange-100/60',
-    accent: 'text-amber-700',
-    border: 'border-amber-200/50',
-    iconBg: 'bg-amber-100',
-  },
-  {
-    name: 'Jazmín Imperial',
-    query: 'Jazmín',
-    description: 'Elegancia floral',
-    icon: Crown,
-    gradient: 'from-yellow-50 to-brand-cream',
-    accent: 'text-brand-brown',
-    border: 'border-brand-gold/30',
-    iconBg: 'bg-brand-gold/10',
-  },
-  {
-    name: 'Rosas Silvestres',
-    query: 'Rosas',
-    description: 'Romance natural',
-    icon: Heart,
-    gradient: 'from-rose-50 to-pink-100/60',
-    accent: 'text-rose-700',
-    border: 'border-rose-200/50',
-    iconBg: 'bg-rose-100',
-  },
-];
-
 const MATERIAL_CATEGORIES = [
   { name: '100% Cera de Soya', query: 'Cera de Soya', icon: Leaf },
-  { name: 'Flores Preservadas', query: 'Flores Preservadas', icon: Flower2 },
+  { name: 'Aceites Esenciales', query: 'Aceites Esenciales', icon: Droplets },
   { name: 'Cristales & Cuarzos', query: 'Cristales', icon: Gem },
   { name: 'Pabilo de Algodón Orgánico', query: 'Pabilo', icon: Ribbon },
 ];
@@ -86,7 +44,7 @@ const WA_NUMBER = '573175752029';
 
 const ARTISAN_BADGES = [
   { icon: Leaf, label: '100% Cera de Soya Natural' },
-  { icon: Sparkles, label: 'Flores Botánicas Preservadas' },
+  { icon: Sparkles, label: 'Esencias Aromáticas Premium' },
   { icon: Flame, label: 'Combustión Limpia sin Plomo' },
   { icon: ShieldCheck, label: 'Vertido a Mano en Bogotá' },
 ];
@@ -130,7 +88,7 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
             </h1>
 
             <p className="text-stone-600 text-xs sm:text-sm md:text-base max-w-lg mx-auto lg:mx-0 leading-relaxed font-sans font-light">
-              Velas decorativas moldeadas y vertidas a mano con flores preservadas, cera de soya pura y aromas exclusivos. Un toque de elegancia natural para tus espacios en Bogotá.
+              Velas decorativas y aromáticas vertidas a mano con cera de soya pura y esencias exclusivas. Un toque de elegancia natural para tus espacios en Bogotá.
             </p>
 
             {/* Artisan badges strip */}
@@ -185,8 +143,8 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex items-end p-4 sm:p-6 z-10">
                 <div className="text-white">
-                  <p className="font-serif text-base sm:text-lg font-medium">{heroProduct?.nombre ?? 'Colección Botánica'}</p>
-                  <p className="text-[11px] sm:text-xs text-white/90 mt-0.5">Flores preservadas · Aromas selectos</p>
+                  <p className="font-serif text-base sm:text-lg font-medium">{heroProduct?.nombre ?? 'Colección Exclusiva'}</p>
+                  <p className="text-[11px] sm:text-xs text-white/90 mt-0.5">Vertido a mano · Aromas selectos</p>
                 </div>
               </div>
             </div>
@@ -271,8 +229,8 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
                   <div className="flex items-start gap-2.5">
                     <Sparkles className="w-4 h-4 text-brand-gold shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-xs font-semibold text-stone-800">Flores Botánicas</p>
-                      <p className="text-[11px] text-stone-500 mt-0.5">Preservadas artesanalmente</p>
+                      <p className="text-xs font-semibold text-stone-800">Esencias Seleccionadas</p>
+                      <p className="text-[11px] text-stone-500 mt-0.5">Insumos 100% artesanales</p>
                     </div>
                   </div>
                 </div>
@@ -295,7 +253,7 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
                 </div>
 
                 <p className="text-[10px] text-stone-400 text-center font-sans tracking-wide">
-                  🚚 Despachos locales desde Bogotá. Pago protegido por Wompi (Bancolombia).
+                  🚚 Despachos locales e intermunicipales. Pago protegido por Wompi (Bancolombia).
                 </p>
               </div>
             </div>
@@ -303,51 +261,18 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
         </section>
       )}
 
-      {/* ── EXPLORE BY AROMA ────────────────────────────────── */}
-      <section className="bg-white py-10 sm:py-16 border-b border-stone-200/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-10">
-            <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">Aromaterapia Natural</span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900 mt-1 sm:mt-2">Explorar por Aroma</h2>
-            <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4"></div>
-            <p className="text-stone-500 text-xs sm:text-sm max-w-md mx-auto mt-3 sm:mt-4 leading-relaxed font-sans">
-              Cada familia aromática evoca una experiencia distinta. Encuentra la que resuene con tu espacio.
-            </p>
-          </div>
+      {/* ── CATALOG ──────────────────────────────────────────── */}
+      <ProductCatalog products={products} />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {AROMA_CATEGORIES.map((aroma) => {
-              const Icon = aroma.icon;
-              return (
-                <Link
-                  key={aroma.name}
-                  href={`/catalogo?aroma=${encodeURIComponent(aroma.query)}`}
-                  className={`group relative overflow-hidden rounded-lg border ${aroma.border} bg-gradient-to-br ${aroma.gradient} p-5 sm:p-6 transition-all duration-300 hover:shadow-lg active:scale-[0.99]`}
-                >
-                  <div className={`w-10 h-10 rounded-full ${aroma.iconBg} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={`w-5 h-5 ${aroma.accent}`} />
-                  </div>
-                  <h3 className={`font-serif text-base font-medium ${aroma.accent} mb-1`}>{aroma.name}</h3>
-                  <p className="text-xs text-stone-500 font-sans">{aroma.description}</p>
-                  <div className={`mt-3 text-[10px] uppercase tracking-widest font-semibold ${aroma.accent} opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
-                    Ver colección →
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── EXPLORE BY MATERIAL ─────────────────────────────── */}
-      <section className="bg-brand-cream py-10 sm:py-16 border-b border-stone-200/30">
+      {/* ── EXPLORE BY MATERIAL (MOVED TO END OF HOME BEFORE PRE-FOOTER) ── */}
+      <section className="bg-brand-cream py-10 sm:py-16 border-t border-b border-stone-200/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10">
             <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">Insumos Naturales</span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900 mt-1 sm:mt-2">Explorar por Material</h2>
             <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4"></div>
             <p className="text-stone-500 text-xs sm:text-sm max-w-md mx-auto mt-3 sm:mt-4 leading-relaxed font-sans">
-              Nuestras velas combinan materiales premium seleccionados por su pureza y rendimiento.
+              Nuestras velas y productos combinan materiales premium seleccionados por su pureza y rendimiento.
             </p>
           </div>
 
@@ -373,9 +298,6 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
           </div>
         </div>
       </section>
-
-      {/* ── CATALOG ──────────────────────────────────────────── */}
-      <ProductCatalog products={products} />
 
       <CartDrawer />
       <Footer />

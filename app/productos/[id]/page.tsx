@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   }
 
   const title = `${product.nombre} | Sandra Gil Velas Artesanales`;
-  const rawDesc = product.descripcion || 'Vela artesanal vertida a mano con cera de soya natural y esencias botánicas exclusivas en Bogotá.';
+  const rawDesc = product.descripcion || 'Vela artesanal vertida a mano con cera de soya natural y esencias exclusivas en Bogotá.';
   const description = rawDesc.length > 155 ? `${rawDesc.substring(0, 152)}...` : rawDesc;
   const imageUrl = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : (product.url_imagen || '/logo-sandra.png');
 
@@ -80,7 +80,23 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     redirect('/');
   }
 
+  // Fetch all active aromas from DB
+  const activeProducts = await prisma.producto.findMany({
+    where: { activo: true },
+    select: { aroma: true },
+  });
+  
+  const availableAromas = Array.from(
+    new Set(activeProducts.map((p) => p.aroma).filter((a): a is string => Boolean(a)))
+  ).sort();
+
   const { resenas, ...productData } = product;
 
-  return <ProductDetailShell product={productData} resenas={resenas} />;
+  return (
+    <ProductDetailShell
+      product={productData}
+      resenas={resenas}
+      availableAromas={availableAromas}
+    />
+  );
 }

@@ -9,17 +9,22 @@ import { usePathname } from 'next/navigation';
 
 const WA_NUMBER = '573175752029';
 
-const NAV_LINKS = [
+interface NavLink {
+  href: string;
+  label: string;
+  icon?: any;
+  isExpress?: boolean;
+  highlight?: boolean;
+  isExternal?: boolean;
+}
+
+const NAV_LINKS: NavLink[] = [
   { href: '/', label: 'Inicio' },
   { href: '/catalogo', label: 'Catálogo' },
   { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
   { href: '/nosotros', label: 'Sobre Nosotros' },
   { href: '/personalizadas', label: 'Velas Personalizadas', highlight: true },
-  {
-    href: `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20contactarme%20contigo`,
-    label: 'Contacto',
-    isExternal: true,
-  },
+  { href: '/legal/aviso-legal', label: 'Legal' },
 ];
 
 export default function Header() {

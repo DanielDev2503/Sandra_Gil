@@ -8,6 +8,7 @@ const LEGAL_LINKS = [
   { href: '/legal/politica-de-privacidad', label: 'Política de Privacidad' },
   { href: '/legal/politica-de-cookies', label: 'Política de Cookies' },
   { href: '/legal/terminos-y-condiciones', label: 'Términos y Condiciones' },
+  { href: '/legal/politica-de-envios', label: 'Política de Envíos' },
 ];
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {

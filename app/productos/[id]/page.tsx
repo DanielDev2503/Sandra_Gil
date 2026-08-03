@@ -66,31 +66,58 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const resolvedParams = await params;
   const id = resolvedParams.id;
 
-  // Query database for product with reviews
-  const product = await prisma.producto.findUnique({
-    where: { id: id },
-    include: {
-      resenas: {
-        orderBy: { creado_en: 'desc' },
+  let product = null;
+  let resenas: any[] = [];
+
+  try {
+    // Query database for product with reviews
+    product = await prisma.producto.findUnique({
+      where: { id: id },
+      include: {
+        resenas: {
+          orderBy: { creado_en: 'desc' },
+        },
       },
-    },
-  });
+    });
+    if (product) {
+      resenas = product.resenas;
+    }
+  } catch (error) {
+    console.error('Error querying product with reviews:', error);
+    // Fallback: Query product without reviews
+    try {
+      product = await prisma.producto.findUnique({
+        where: { id: id },
+      });
+    } catch (fallbackError) {
+      console.error('Fallback query also failed:', fallbackError);
+    }
+  }
 
   if (!product || !product.activo) {
     redirect('/');
   }
 
   // Fetch all active aromas from DB
-  const activeProducts = await prisma.producto.findMany({
-    where: { activo: true },
-    select: { aroma: true },
-  });
-  
-  const availableAromas = Array.from(
-    new Set(activeProducts.map((p) => p.aroma).filter((a): a is string => Boolean(a)))
-  ).sort();
+  let availableAromas: string[] = [];
+  try {
+    const activeProducts = await prisma.producto.findMany({
+      where: { activo: true },
+      select: { aroma: true },
+    });
+    
+    availableAromas = Array.from(
+      new Set(activeProducts.map((p) => p.aroma).filter((a): a is string => Boolean(a)))
+    ).sort();
+  } catch (aromaError) {
+    console.error('Error fetching aromas:', aromaError);
+    if (product.aroma) {
+      availableAromas = [product.aroma];
+    }
+  }
 
-  const { resenas, ...productData } = product;
+  // Exclude resenas from product object to match expected type of ProductDetailShell
+  const { resenas: _, ...productData } = product as any;
 
   return (
     <ProductDetailShell

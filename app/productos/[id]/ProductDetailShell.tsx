@@ -54,6 +54,7 @@ interface ProductDetailShellProps {
   product: Product;
   resenas: Resena[];
   availableAromas?: string[];
+  relatedProducts?: Product[];
 }
 
 // ── Star Rating Input Component ────────────────────────
@@ -127,6 +128,7 @@ export default function ProductDetailShell({
   product,
   resenas: initialResenas,
   availableAromas = [],
+  relatedProducts = [],
 }: ProductDetailShellProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
@@ -364,41 +366,23 @@ export default function ProductDetailShell({
 
             {/* ── AROMA SELECTOR (For VELAS only - Hidden for JABON) ── */}
             {!isSoap && (
-              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-3 shadow-xs font-sans">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
-                    <Wind className="w-4 h-4 text-brand-gold shrink-0" />
-                    <span>Selecciona el Aroma de tu Vela:</span>
-                  </label>
-                  <span className="text-[11px] font-semibold text-brand-gold bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200/60">
-                    {selectedAroma}
-                  </span>
-                </div>
+              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-2.5 shadow-xs font-sans">
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5 mb-1.5">
+                  <Wind className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>Selecciona el Aroma de tu Vela:</span>
+                </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                  {aromasList.map((aroma) => {
-                    const isSelected = selectedAroma === aroma;
-                    return (
-                      <button
-                        key={aroma}
-                        type="button"
-                        onClick={() => setSelectedAroma(aroma)}
-                        className={`px-3.5 py-2.5 min-h-[44px] rounded-lg border text-left text-xs transition-all duration-200 flex items-center justify-between cursor-pointer ${
-                          isSelected
-                            ? 'bg-amber-50 border-brand-gold text-brand-brown font-semibold shadow-xs'
-                            : 'bg-stone-50/70 border-stone-200 text-stone-700 hover:bg-stone-100 hover:border-stone-300'
-                        }`}
-                      >
-                        <span className="truncate pr-2">{aroma}</span>
-                        {isSelected && (
-                          <div className="w-4 h-4 rounded-full bg-brand-gold text-white flex items-center justify-center shrink-0">
-                            <Check className="w-2.5 h-2.5 stroke-[3]" />
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
+                <select
+                  value={selectedAroma}
+                  onChange={(e) => setSelectedAroma(e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
+                >
+                  {aromasList.map((aroma) => (
+                    <option key={aroma} value={aroma}>
+                      {aroma}
+                    </option>
+                  ))}
+                </select>
               </div>
             )}
 
@@ -640,16 +624,84 @@ export default function ProductDetailShell({
               ))}
             </div>
           ) : (
-            <div className="text-center py-6 sm:py-8">
+            <div className="text-center py-6 sm:py-8 font-sans">
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-3">
                 <Star className="w-6 h-6 sm:w-7 sm:h-7 text-brand-gold" />
               </div>
-              <p className="text-xs sm:text-sm text-stone-500 font-sans">
+              <p className="text-xs sm:text-sm text-stone-500">
                 Este producto aún no tiene opiniones.
               </p>
             </div>
           )}
         </section>
+
+        {/* Related Products Section */}
+        {relatedProducts && relatedProducts.length > 0 && (
+          <section className="mt-16 sm:mt-24 pt-10 border-t border-stone-200">
+            <div className="text-center mb-8 sm:mb-12">
+              <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">Recomendado para ti</span>
+              <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mt-1">Productos que te pueden interesar</h2>
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4"></div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {relatedProducts.map((p) => {
+                const soap = isSoapProduct(p);
+                const displayImage = p.imagenes && p.imagenes.length > 0 ? p.imagenes[0] : p.url_imagen;
+
+                return (
+                  <div
+                    key={p.id}
+                    className="group bg-white rounded-lg border border-stone-200/60 overflow-hidden flex flex-col h-full hover:shadow-md transition-all duration-300"
+                  >
+                    <Link href={`/productos/${p.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
+                      <SkeletonImage
+                        src={displayImage}
+                        alt={p.nombre}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                        fill
+                        sizes="(max-width: 640px) 100vw, 25vw"
+                      />
+                      <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-sm shadow-xs border border-stone-100">
+                        <span className="text-[9px] font-bold text-stone-600 uppercase tracking-wider">
+                          {soap ? 'Jabón' : p.esBajoPedido ? 'Especial' : 'Vela'}
+                        </span>
+                      </div>
+                    </Link>
+
+                    <div className="p-4 flex-1 flex flex-col justify-between">
+                      <div>
+                        <Link href={`/productos/${p.id}`}>
+                          <h3 className="font-serif font-medium text-stone-900 text-sm hover:text-brand-gold transition duration-200 line-clamp-1">
+                            {p.nombre}
+                          </h3>
+                        </Link>
+                        <p className="text-[10px] text-stone-400 mt-1">Medida: {p.dimensiones}</p>
+                      </div>
+
+                      <div className="mt-3 pt-2.5 border-t border-stone-100 flex justify-between items-center font-sans">
+                        {p.esBajoPedido ? (
+                          <span className="text-[10px] font-bold text-brand-brown uppercase tracking-wider">Bajo Pedido</span>
+                        ) : (
+                          <span className="text-xs font-bold text-brand-brown font-serif">
+                            ${p.precio?.toLocaleString('es-CO')} COP
+                          </span>
+                        )}
+
+                        <Link
+                          href={`/productos/${p.id}`}
+                          className="text-[10px] uppercase font-bold text-brand-gold hover:text-brand-brown transition"
+                        >
+                          Ver más →
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </main>
 
       <CartDrawer />

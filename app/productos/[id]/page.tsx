@@ -101,19 +101,43 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   // Fetch all active aromas from DB
   let availableAromas: string[] = [];
   try {
+    const aromasDb = await prisma.aroma.findMany({
+      where: { activo: true },
+      select: { nombre: true },
+    });
+    availableAromas = aromasDb.map((a) => a.nombre);
+  } catch (err) {
+    console.error('Error fetching from Aroma model:', err);
+  }
+
+  try {
     const activeProducts = await prisma.producto.findMany({
       where: { activo: true },
       select: { aroma: true },
     });
-    
-    availableAromas = Array.from(
-      new Set(activeProducts.map((p) => p.aroma).filter((a): a is string => Boolean(a)))
-    ).sort();
-  } catch (aromaError) {
-    console.error('Error fetching aromas:', aromaError);
-    if (product.aroma) {
-      availableAromas = [product.aroma];
-    }
+    const productAromas = activeProducts.map((p) => p.aroma).filter((a): a is string => !!a);
+    availableAromas = Array.from(new Set([...availableAromas, ...productAromas]));
+  } catch (err) {
+    console.error('Error fetching aromas from active products:', err);
+  }
+
+  if (product.aroma && !availableAromas.includes(product.aroma)) {
+    availableAromas.push(product.aroma);
+  }
+  availableAromas = availableAromas.sort();
+
+  // Fetch up to 4 other active products for the "Productos que te pueden interesar" section
+  let relatedProducts: any[] = [];
+  try {
+    relatedProducts = await prisma.producto.findMany({
+      where: {
+        activo: true,
+        id: { not: id },
+      },
+      take: 4,
+    });
+  } catch (relatedError) {
+    console.error('Error fetching related products:', relatedError);
   }
 
   // Exclude resenas from product object to match expected type of ProductDetailShell
@@ -124,6 +148,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       product={productData}
       resenas={resenas}
       availableAromas={availableAromas}
+      relatedProducts={relatedProducts}
     />
   );
 }

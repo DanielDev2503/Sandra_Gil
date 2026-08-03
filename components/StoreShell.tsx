@@ -264,41 +264,6 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
       {/* ── CATALOG ──────────────────────────────────────────── */}
       <ProductCatalog products={products} />
 
-      {/* ── EXPLORE BY MATERIAL (MOVED TO END OF HOME BEFORE PRE-FOOTER) ── */}
-      <section className="bg-brand-cream py-10 sm:py-16 border-t border-b border-stone-200/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-10">
-            <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">Insumos Naturales</span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900 mt-1 sm:mt-2">Explorar por Material</h2>
-            <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4"></div>
-            <p className="text-stone-500 text-xs sm:text-sm max-w-md mx-auto mt-3 sm:mt-4 leading-relaxed font-sans">
-              Nuestras velas y productos combinan materiales premium seleccionados por su pureza y rendimiento.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {MATERIAL_CATEGORIES.map((mat) => {
-              const Icon = mat.icon;
-              return (
-                <Link
-                  key={mat.name}
-                  href={`/catalogo?material=${encodeURIComponent(mat.query)}`}
-                  className="group flex items-center gap-3 bg-white rounded-lg border border-brand-gold/20 px-4 sm:px-5 py-3.5 sm:py-4 shadow-xs hover:shadow-md hover:border-brand-gold/40 transition-all duration-300 min-h-[44px] active:scale-[0.99]"
-                >
-                  <div className="w-9 h-9 rounded-full bg-brand-gold/10 flex items-center justify-center shrink-0 group-hover:bg-brand-gold/20 transition-colors duration-300">
-                    <Icon className="w-4 h-4 text-brand-gold" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-xs font-semibold text-stone-800 uppercase tracking-wide block">{mat.name}</span>
-                    <span className="text-[10px] text-brand-gold font-medium opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300">Explorar →</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       <CartDrawer />
       <Footer />
     </div>

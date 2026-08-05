@@ -114,6 +114,7 @@ export default function CheckoutPage() {
             producto_id: item.id,
             cantidad: item.cantidad,
             precio_unitario: item.precio,
+            aroma: item.aroma ?? undefined,
           })),
         }),
       });

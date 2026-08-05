@@ -366,25 +366,47 @@ export default function ProductDetailShell({
 
             {/* ── AROMA SELECTOR (For VELAS only - Hidden for JABON) ── */}
             {!isSoap && (
-              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-2.5 shadow-xs font-sans">
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5 mb-1.5">
+              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-3 shadow-xs font-sans">
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
                   <Wind className="w-4 h-4 text-brand-gold shrink-0" />
                   <span>Selecciona el Aroma de tu Vela:</span>
                 </label>
 
-                <select
-                  value={selectedAroma}
-                  onChange={(e) => setSelectedAroma(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
-                >
-                  {aromasList.map((aroma) => (
-                    <option key={aroma} value={aroma}>
-                      {aroma}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex flex-wrap gap-2">
+                  {aromasList.map((aroma) => {
+                    const isActive = selectedAroma === aroma;
+                    return (
+                      <button
+                        key={aroma}
+                        type="button"
+                        onClick={() => setSelectedAroma(aroma)}
+                        className={`
+                          inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium
+                          border transition-all duration-200 cursor-pointer min-h-[38px]
+                          active:scale-95
+                          ${isActive
+                            ? 'border-[#B88A32] text-[#B88A32] bg-amber-50 shadow-sm font-semibold'
+                            : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
+                          }
+                        `}
+                        aria-pressed={isActive}
+                        aria-label={`Seleccionar aroma ${aroma}`}
+                      >
+                        {isActive && <Check className="w-3 h-3 shrink-0" />}
+                        {aroma}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {selectedAroma && (
+                  <p className="text-[10px] text-stone-400 font-sans leading-relaxed pt-0.5">
+                    ✓ Aroma seleccionado: <span className="text-[#B88A32] font-semibold">{selectedAroma}</span>
+                  </p>
+                )}
               </div>
             )}
+
 
             {/* ── INDEPENDENT DIMENSIONS CARD ── */}
             <div className="bg-white p-4 rounded-xl border border-stone-200/80 shadow-xs flex items-center gap-3 font-sans">

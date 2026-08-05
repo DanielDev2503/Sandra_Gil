@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     });
 
     let calculatedTotalProductos = 0;
-    const orderItemsToCreate: { producto_id: string; cantidad: number; precio_unitario: number }[] = [];
+    const orderItemsToCreate: { producto_id: string; cantidad: number; precio_unitario: number; aroma?: string }[] = [];
 
     for (const item of items) {
       const dbProduct = dbProducts.find((p) => p.id === item.producto_id);
@@ -75,6 +75,7 @@ export async function POST(req: Request) {
         producto_id: dbProduct.id,
         cantidad: item.cantidad,
         precio_unitario: unitPrice,
+        aroma: item.aroma ?? undefined,
       });
     }
 

@@ -77,6 +77,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         resenas: {
           orderBy: { creado_en: 'desc' },
         },
+        variaciones: {
+          where: { activo: true },
+          orderBy: { createdAt: 'asc' },
+        },
       },
     });
     if (product) {
@@ -143,12 +147,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   // Exclude resenas from product object to match expected type of ProductDetailShell
   const { resenas: _, ...productData } = product as any;
 
+  // Extract variaciones (already included in productData via query)
+  const variaciones = productData.variaciones || [];
+
   return (
     <ProductDetailShell
       product={productData}
       resenas={resenas}
       availableAromas={availableAromas}
       relatedProducts={relatedProducts}
+      variaciones={variaciones}
     />
   );
 }

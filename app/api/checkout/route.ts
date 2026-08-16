@@ -41,10 +41,23 @@ export async function POST(req: Request) {
         id: { in: productIds },
         activo: true,
       },
+      include: {
+        variaciones: {
+          where: { activo: true },
+        },
+      },
     });
 
     let calculatedTotalProductos = 0;
-    const orderItemsToCreate: { producto_id: string; cantidad: number; precio_unitario: number; aroma?: string }[] = [];
+    const orderItemsToCreate: {
+      producto_id: string;
+      cantidad: number;
+      precio_unitario: number;
+      aroma?: string;
+      variacion_id?: string;
+      variacion_nombre?: string;
+      variacion_imagen?: string;
+    }[] = [];
 
     for (const item of items) {
       const dbProduct = dbProducts.find((p) => p.id === item.producto_id);
@@ -69,13 +82,31 @@ export async function POST(req: Request) {
         );
       }
 
-      const unitPrice = dbProduct.precio;
+      // Resolve variation if specified
+      let unitPrice = dbProduct.precio;
+      let variacionDb = null;
+
+      if (item.variacion_id) {
+        variacionDb = dbProduct.variaciones.find((v) => v.id === item.variacion_id);
+        if (!variacionDb) {
+          return NextResponse.json(
+            { error: `La variación seleccionada para ${dbProduct.nombre} no está disponible.` },
+            { status: 400 }
+          );
+        }
+        // Variation price overrides product price when specified
+        unitPrice = variacionDb.precio ?? dbProduct.precio;
+      }
+
       calculatedTotalProductos += unitPrice * item.cantidad;
       orderItemsToCreate.push({
         producto_id: dbProduct.id,
         cantidad: item.cantidad,
         precio_unitario: unitPrice,
         aroma: item.aroma ?? undefined,
+        variacion_id: variacionDb?.id,
+        variacion_nombre: variacionDb?.nombre,
+        variacion_imagen: variacionDb?.imagen,
       });
     }
 

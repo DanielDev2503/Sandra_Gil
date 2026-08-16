@@ -23,7 +23,7 @@ interface Product {
   precio: number | null;
   esBajoPedido: boolean;
   stock: number;
-  url_imagen: string;
+  url_imagen: string | null;
   imagenes?: string[];
   activo: boolean;
 }
@@ -167,7 +167,7 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
               <div className="lg:col-span-6 space-y-3 sm:space-y-4">
                 <div className="relative aspect-square bg-stone-100 rounded-lg overflow-hidden border border-stone-200/40 shadow-xs">
                   <SkeletonImage
-                    src={heroImage ?? heroProduct.url_imagen}
+                    src={heroImage ?? heroProduct.url_imagen ?? ''}
                     alt={heroProduct.nombre}
                     className="w-full h-full object-cover transition duration-500 hover:scale-102"
                     fill

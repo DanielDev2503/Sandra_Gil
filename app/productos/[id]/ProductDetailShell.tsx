@@ -26,6 +26,13 @@ import { isSoapProduct } from '@/app/catalogo/CatalogShell';
 
 const WA_NUMBER = '573175752029';
 
+interface Variacion {
+  id: string;
+  nombre: string;
+  imagen: string;
+  precio: number | null;
+}
+
 interface Product {
   id: string;
   nombre: string;
@@ -36,7 +43,7 @@ interface Product {
   precio: number | null;
   esBajoPedido: boolean;
   stock: number;
-  url_imagen: string;
+  url_imagen: string | null;
   imagenes?: string[];
   activo: boolean;
 }
@@ -55,6 +62,7 @@ interface ProductDetailShellProps {
   resenas: Resena[];
   availableAromas?: string[];
   relatedProducts?: Product[];
+  variaciones?: Variacion[];
 }
 
 // ── Star Rating Input Component ────────────────────────
@@ -129,6 +137,7 @@ export default function ProductDetailShell({
   resenas: initialResenas,
   availableAromas = [],
   relatedProducts = [],
+  variaciones = [],
 }: ProductDetailShellProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
@@ -141,6 +150,7 @@ export default function ProductDetailShell({
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>('care');
   const [resenas, setResenas] = useState<Resena[]>(initialResenas);
+  const [selectedVariation, setSelectedVariation] = useState<Variacion | null>(null);
 
   // Review form state
   const [reviewAutor, setReviewAutor] = useState('');
@@ -154,13 +164,18 @@ export default function ProductDetailShell({
   const galleryImages: string[] =
     product.imagenes && product.imagenes.length > 0
       ? product.imagenes
-      : [product.url_imagen];
+      : product.url_imagen ? [product.url_imagen] : [];
 
   const [selectedImage, setSelectedImage] = useState(0);
+
+  // Derived values — no useEffect needed (React best practice)
+  const activePrice = selectedVariation?.precio ?? product.precio;
+  const activeImage = selectedVariation?.imagen || galleryImages[selectedImage] || product.url_imagen;
 
   const isLowStock = product.stock > 0 && product.stock <= 15;
   const isOutOfStock = product.stock <= 0;
   const isBajoPedido = product.esBajoPedido;
+  const hasVariaciones = variaciones.length > 0;
 
   // Computed average rating
   const avgRating =
@@ -170,12 +185,20 @@ export default function ProductDetailShell({
 
   const handleBuyNow = () => {
     clearCart();
-    addToCart(product, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma);
+    const productForCart = {
+      ...product,
+      url_imagen: activeImage || product.url_imagen,
+    };
+    addToCart(productForCart, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma, selectedVariation);
     router.push('/checkout');
   };
 
   const handleAddToCart = () => {
-    addToCart(product, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma);
+    const productForCart = {
+      ...product,
+      url_imagen: activeImage || product.url_imagen,
+    };
+    addToCart(productForCart, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma, selectedVariation);
   };
 
   const toggleAccordion = (section: string) => {
@@ -267,22 +290,35 @@ export default function ProductDetailShell({
           {/* Gallery */}
           <div className="lg:col-span-6 space-y-3 sm:space-y-4">
             <div className="aspect-square bg-white rounded-lg overflow-hidden border border-stone-200/60 shadow-xs relative">
-              {galleryImages.map((imgUrl, idx) => (
-                <div
-                  key={idx}
-                  className="absolute inset-0 transition-opacity duration-500 ease-in-out"
-                  style={{ opacity: selectedImage === idx ? 1 : 0, zIndex: selectedImage === idx ? 10 : 1 }}
-                >
+              {/* Show variation image when selected, otherwise show gallery */}
+              {selectedVariation ? (
+                <div className="absolute inset-0 transition-opacity duration-500 ease-in-out" style={{ opacity: 1, zIndex: 10 }}>
                   <SkeletonImage
-                    src={imgUrl}
-                    alt={`${product.nombre} – imagen ${idx + 1}`}
+                    src={selectedVariation.imagen}
+                    alt={`${product.nombre} – ${selectedVariation.nombre}`}
                     className="w-full h-full object-cover"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    priority={idx === 0}
                   />
                 </div>
-              ))}
+              ) : (
+                galleryImages.map((imgUrl, idx) => (
+                  <div
+                    key={idx}
+                    className="absolute inset-0 transition-opacity duration-500 ease-in-out"
+                    style={{ opacity: selectedImage === idx ? 1 : 0, zIndex: selectedImage === idx ? 10 : 1 }}
+                  >
+                    <SkeletonImage
+                      src={imgUrl}
+                      alt={`${product.nombre} – imagen ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority={idx === 0}
+                    />
+                  </div>
+                ))
+              )}
 
               {/* Badge */}
               <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
@@ -336,8 +372,8 @@ export default function ProductDetailShell({
                     <span className="text-xs sm:text-sm font-semibold text-[#16a34a] font-sans">Elaboración Bajo Pedido</span>
                   </div>
                 ) : (
-                  <p className="text-xl sm:text-2xl font-serif font-semibold text-brand-brown">
-                    ${product.precio?.toLocaleString('es-CO')} COP
+                  <p className="text-xl sm:text-2xl font-serif font-semibold text-brand-brown transition-all duration-300">
+                    ${activePrice?.toLocaleString('es-CO')} COP
                   </p>
                 )}
 
@@ -402,6 +438,83 @@ export default function ProductDetailShell({
                 {selectedAroma && (
                   <p className="text-[10px] text-stone-400 font-sans leading-relaxed pt-0.5">
                     ✓ Aroma seleccionado: <span className="text-[#B88A32] font-semibold">{selectedAroma}</span>
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* ── VARIATION SELECTOR ── */}
+            {hasVariaciones && !isBajoPedido && (
+              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-3 shadow-xs font-sans">
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-brand-gold shrink-0" />
+                  <span>Selecciona tu Variación:</span>
+                </label>
+
+                <div className="flex flex-wrap gap-2.5">
+                  {/* Original option */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedVariation(null)}
+                    className={`
+                      inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium
+                      border transition-all duration-250 cursor-pointer min-h-[44px]
+                      hover:scale-[1.02] active:scale-[0.98]
+                      ${!selectedVariation
+                        ? 'border-[#B88A32] text-[#B88A32] bg-amber-50 shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
+                        : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
+                      }
+                    `}
+                    aria-pressed={!selectedVariation}
+                  >
+                    {!selectedVariation && <Check className="w-3 h-3 shrink-0" />}
+                    Original
+                    {product.precio !== null && (
+                      <span className="text-[10px] opacity-70">${product.precio.toLocaleString('es-CO')}</span>
+                    )}
+                  </button>
+
+                  {variaciones.map((v) => {
+                    const isActive = selectedVariation?.id === v.id;
+                    const displayPrice = v.precio ?? product.precio;
+                    return (
+                      <button
+                        key={v.id}
+                        type="button"
+                        onClick={() => setSelectedVariation(v)}
+                        className={`
+                          inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium
+                          border transition-all duration-250 cursor-pointer min-h-[44px]
+                          hover:scale-[1.02] active:scale-[0.98]
+                          ${isActive
+                            ? 'border-[#B88A32] text-[#B88A32] bg-amber-50 shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
+                            : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
+                          }
+                        `}
+                        aria-pressed={isActive}
+                        aria-label={`Seleccionar variación ${v.nombre}`}
+                      >
+                        {/* Variation thumbnail */}
+                        <span className="w-7 h-7 rounded-md overflow-hidden border border-stone-200/60 shrink-0">
+                          <img
+                            src={v.imagen}
+                            alt={v.nombre}
+                            className="w-full h-full object-cover"
+                          />
+                        </span>
+                        {isActive && <Check className="w-3 h-3 shrink-0" />}
+                        <span className="truncate max-w-[120px]">{v.nombre}</span>
+                        {displayPrice !== null && (
+                          <span className="text-[10px] opacity-70">${displayPrice.toLocaleString('es-CO')}</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {selectedVariation && (
+                  <p className="text-[10px] text-stone-400 font-sans leading-relaxed pt-0.5">
+                    ✓ Variación seleccionada: <span className="text-[#B88A32] font-semibold">{selectedVariation.nombre}</span>
                   </p>
                 )}
               </div>
@@ -678,7 +791,7 @@ export default function ProductDetailShell({
                   >
                     <Link href={`/productos/${p.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                       <SkeletonImage
-                        src={displayImage}
+                        src={displayImage ?? ''}
                         alt={p.nombre}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                         fill

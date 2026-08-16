@@ -9,17 +9,20 @@ export interface CartItem {
   cantidad: number;
   url_imagen: string;
   aroma?: string | null;
+  variacionId?: string | null;
+  variacionNombre?: string | null;
 }
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (
-    product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma?: string | null },
+    product: { id: string; nombre: string; precio: number | null; url_imagen: string | null; aroma?: string | null },
     cantidad?: number,
-    selectedAroma?: string
+    selectedAroma?: string,
+    variacion?: { id: string; nombre: string; imagen: string; precio: number | null } | null
   ) => void;
-  removeFromCart: (productId: string, aroma?: string | null) => void;
-  updateQuantity: (productId: string, cantidad: number, aroma?: string | null) => void;
+  removeFromCart: (productId: string, aroma?: string | null, variacionId?: string | null) => void;
+  updateQuantity: (productId: string, cantidad: number, aroma?: string | null, variacionId?: string | null) => void;
   clearCart: () => void;
   cartCount: number;
   cartTotal: number;
@@ -29,6 +32,20 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+
+/** Identity match: same product + same aroma + same variation */
+function cartItemMatches(
+  item: CartItem,
+  productId: string,
+  aroma?: string | null,
+  variacionId?: string | null
+): boolean {
+  return (
+    item.id === productId &&
+    (item.aroma ?? null) === (aroma ?? null) &&
+    (item.variacionId ?? null) === (variacionId ?? null)
+  );
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -59,17 +76,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeCart = () => setIsCartOpen(false);
 
   const addToCart = (
-    product: { id: string; nombre: string; precio: number | null; url_imagen: string; aroma?: string | null },
+    product: { id: string; nombre: string; precio: number | null; url_imagen: string | null; aroma?: string | null },
     cantidad = 1,
-    selectedAroma?: string
+    selectedAroma?: string,
+    variacion?: { id: string; nombre: string; imagen: string; precio: number | null } | null
   ) => {
-    if (product.precio === null) return;
-    const validPrecio = product.precio;
+    // Determine the effective price: variation price > product price
+    const effectivePrice = variacion?.precio ?? product.precio;
+    if (effectivePrice === null) return;
+
     const finalAroma = selectedAroma || product.aroma || 'Aroma por defecto';
+    const finalImage = variacion?.imagen || product.url_imagen || '';
+    const finalVariacionId = variacion?.id ?? null;
+    const finalVariacionNombre = variacion?.nombre ?? null;
 
     setCart((prevCart) => {
-      const existingIndex = prevCart.findIndex(
-        (item) => item.id === product.id && item.aroma === finalAroma
+      const existingIndex = prevCart.findIndex((item) =>
+        cartItemMatches(item, product.id, finalAroma, finalVariacionId)
       );
       if (existingIndex > -1) {
         const updated = [...prevCart];
@@ -84,10 +107,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         {
           id: product.id,
           nombre: product.nombre,
-          precio: validPrecio,
+          precio: effectivePrice,
           cantidad,
-          url_imagen: product.url_imagen,
+          url_imagen: finalImage,
           aroma: finalAroma,
+          variacionId: finalVariacionId,
+          variacionNombre: finalVariacionNombre,
         },
       ];
     });
@@ -95,20 +120,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     openCart();
   };
 
-  const removeFromCart = (productId: string, aroma?: string | null) => {
+  const removeFromCart = (productId: string, aroma?: string | null, variacionId?: string | null) => {
     setCart((prevCart) =>
-      prevCart.filter((item) => !(item.id === productId && (!aroma || item.aroma === aroma)))
+      prevCart.filter((item) => !cartItemMatches(item, productId, aroma, variacionId))
     );
   };
 
-  const updateQuantity = (productId: string, cantidad: number, aroma?: string | null) => {
+  const updateQuantity = (productId: string, cantidad: number, aroma?: string | null, variacionId?: string | null) => {
     if (cantidad <= 0) {
-      removeFromCart(productId, aroma);
+      removeFromCart(productId, aroma, variacionId);
       return;
     }
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === productId && (!aroma || item.aroma === aroma)
+        cartItemMatches(item, productId, aroma, variacionId)
           ? { ...item, cantidad }
           : item
       )

@@ -151,6 +151,8 @@ export async function POST(req: Request) {
             cantidad: item.cantidad,
             precio_unitario: item.precio_unitario,
             subtotal: item.precio_unitario * item.cantidad,
+            variacion_nombre: item.variacion_nombre ?? null,
+            variacion_imagen: item.variacion_imagen ?? null,
           })),
         },
       };

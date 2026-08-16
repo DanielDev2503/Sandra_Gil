@@ -115,6 +115,8 @@ export default function CheckoutPage() {
             cantidad: item.cantidad,
             precio_unitario: item.precio,
             aroma: item.aroma ?? undefined,
+            variacion_id: item.variacionId ?? undefined,
+            variacion_nombre: item.variacionNombre ?? undefined,
           })),
         }),
       });
@@ -358,6 +360,9 @@ export default function CheckoutPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-medium text-stone-900 truncate">{item.nombre}</h4>
+                    {item.variacionNombre && (
+                      <p className="text-[10px] text-[#B88A32] font-semibold mt-0.5">{item.variacionNombre}</p>
+                    )}
                     <p className="text-[10px] text-[#A68F81] mt-0.5">{item.aroma}</p>
                     <div className="flex items-center justify-between mt-1.5">
                       <span className="text-xs text-stone-500">Cant: {item.cantidad}</span>

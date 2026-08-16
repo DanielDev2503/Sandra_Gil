@@ -108,7 +108,7 @@ export default async function PersonalizadasPage() {
                     <div key={product.id} className="bg-white rounded-lg border border-brand-gold/20 overflow-hidden flex flex-col shadow-xs hover:shadow-md transition-all duration-300">
                       <Link href={`/productos/${product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                         <img
-                          src={displayImage}
+                          src={displayImage ?? ''}
                           alt={product.nombre}
                           className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                         />

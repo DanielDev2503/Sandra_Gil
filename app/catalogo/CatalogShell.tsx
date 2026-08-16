@@ -22,7 +22,7 @@ interface Product {
   precio: number | null;
   esBajoPedido: boolean;
   stock: number;
-  url_imagen: string;
+  url_imagen: string | null;
   imagenes?: string[];
   activo: boolean;
 }
@@ -250,7 +250,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 >
                   <Link href={`/productos/${product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                     <SkeletonImage
-                      src={displayImage}
+                      src={displayImage ?? ''}
                       alt={product.nombre}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       fill

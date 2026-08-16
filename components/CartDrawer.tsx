@@ -55,7 +55,7 @@ export default function CartDrawer() {
               </div>
             ) : (
               cart.map((item, idx) => (
-                <div key={`${item.id}-${item.aroma}-${idx}`} className="flex gap-4 pb-4 border-b border-stone-150 last:border-0 last:pb-0 font-sans">
+                <div key={`${item.id}-${item.aroma}-${item.variacionId ?? 'base'}-${idx}`} className="flex gap-4 pb-4 border-b border-stone-150 last:border-0 last:pb-0 font-sans">
                   <img
                     src={item.url_imagen}
                     alt={item.nombre}
@@ -64,6 +64,9 @@ export default function CartDrawer() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <h4 className="font-serif font-medium text-stone-900 text-sm">{item.nombre}</h4>
+                      {item.variacionNombre && (
+                        <p className="text-[10px] text-[#B88A32] font-semibold uppercase tracking-wider mt-0.5">{item.variacionNombre}</p>
+                      )}
                       <p className="text-[10px] text-[#A68F81] uppercase tracking-wider mt-0.5">{item.aroma}</p>
                     </div>
                     
@@ -71,14 +74,14 @@ export default function CartDrawer() {
                       {/* Quantity Selector */}
                       <div className="flex items-center border border-stone-300 rounded-sm bg-white">
                         <button
-                          onClick={() => updateQuantity(item.id, item.cantidad - 1, item.aroma || undefined)}
+                          onClick={() => updateQuantity(item.id, item.cantidad - 1, item.aroma || undefined, item.variacionId)}
                           className="px-2 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
                         <span className="px-2 text-xs font-semibold text-stone-800">{item.cantidad}</span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.cantidad + 1, item.aroma || undefined)}
+                          onClick={() => updateQuantity(item.id, item.cantidad + 1, item.aroma || undefined, item.variacionId)}
                           className="px-2 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
@@ -91,7 +94,7 @@ export default function CartDrawer() {
                           ${(item.precio * item.cantidad).toLocaleString('es-CO')} COP
                         </span>
                         <button
-                          onClick={() => removeFromCart(item.id, item.aroma || undefined)}
+                          onClick={() => removeFromCart(item.id, item.aroma || undefined, item.variacionId)}
                           className="text-stone-400 hover:text-red-500 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />

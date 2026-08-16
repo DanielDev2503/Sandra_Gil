@@ -15,23 +15,40 @@ enum TipoProducto {
 }
 
 model Producto {
-  id            String       @id @default(uuid())
+  id            String              @id @default(uuid())
   nombre        String
   descripcion   String
-  tipo          TipoProducto @default(VELA)
+  tipo          TipoProducto        @default(VELA)
   aroma         String?
   aromaId       String?
   material      String?
   materialId    String?
   dimensiones   String?
   precio        Float?
-  esBajoPedido  Boolean      @default(false)
-  stock         Int
-  url_imagen    String
-  imagenes      String[]     @default([])
-  activo        Boolean      @default(true)
+  esBajoPedido  Boolean             @default(false)
+  stock         Int                 @default(0)
+  url_imagen    String?
+  imagenes      String[]            @default([])
+  activo        Boolean             @default(true)
+  variaciones   VariacionProducto[]
   items         ItemPedido[]
   resenas       Resena[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt @default(now())
+}
+
+model VariacionProducto {
+  id          String   @id @default(uuid())
+  productoId  String
+  producto    Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  nombre      String
+  imagen      String
+  precio      Float?   // Null = hereda el precio del producto base
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productoId])
 }
 
 model Aroma {
@@ -72,14 +89,17 @@ model Pedido {
 }
 
 model ItemPedido {
-  id              String   @id @default(uuid())
-  pedido_id       String
-  pedido          Pedido   @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
-  producto_id     String
-  producto        Producto @relation(fields: [producto_id], references: [id])
-  cantidad        Int
-  precio_unitario Float
-  aroma           String?
+  id                String   @id @default(uuid())
+  pedido_id         String
+  pedido            Pedido   @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  producto_id       String
+  producto          Producto @relation(fields: [producto_id], references: [id])
+  cantidad          Int
+  precio_unitario   Float
+  aroma             String?
+  variacion_id      String?   // ID de la variación seleccionada
+  variacion_nombre  String?   // Snapshot inmutable para historial
+  variacion_imagen  String?   // Snapshot inmutable para historial
 }
 
 model Resena {
@@ -91,4 +111,3 @@ model Resena {
   comentario   String
   creado_en    DateTime @default(now())
 }
-

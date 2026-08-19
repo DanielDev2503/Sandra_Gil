@@ -452,23 +452,32 @@ export default function ProductDetailShell({
                 </label>
 
                 <div className="flex flex-wrap gap-2.5">
-                  {/* Original option */}
+                  {/* Base product option */}
                   <button
                     type="button"
                     onClick={() => setSelectedVariation(null)}
                     className={`
-                      inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium
+                      inline-flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium
                       border transition-all duration-250 cursor-pointer min-h-[44px]
                       hover:scale-[1.02] active:scale-[0.98]
                       ${!selectedVariation
-                        ? 'border-[#B88A32] text-[#B88A32] bg-amber-50 shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
+                        ? 'border-[#B88A32] text-[#B88A32] bg-[#FAF8F5] shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
                         : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
                       }
                     `}
                     aria-pressed={!selectedVariation}
+                    aria-label={`Seleccionar variación ${product.nombre}`}
                   >
+                    {/* Product thumbnail */}
+                    <span className="w-7 h-7 rounded-lg overflow-hidden border border-amber-900/10 shrink-0">
+                      <img
+                        src={product.imagenes?.[0] || product.url_imagen || '/placeholder.png'}
+                        alt={product.nombre}
+                        className="w-full h-full object-cover"
+                      />
+                    </span>
                     {!selectedVariation && <Check className="w-3 h-3 shrink-0" />}
-                    Original
+                    <span className="truncate max-w-[120px]">{product.nombre}</span>
                     {product.precio !== null && (
                       <span className="text-[10px] opacity-70">${product.precio.toLocaleString('es-CO')}</span>
                     )}

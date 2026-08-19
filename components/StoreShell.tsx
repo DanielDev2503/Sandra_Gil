@@ -202,7 +202,10 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
                   </p>
                 </div>
 
-                <p className="text-stone-600 text-xs sm:text-sm leading-relaxed font-light font-sans">{heroProduct.descripcion}</p>
+                <div 
+                  className="text-stone-600 text-xs sm:text-sm leading-relaxed font-light font-sans space-y-2 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_small]:text-[11px] [&_small]:text-stone-500 [&_small]:block [&_small]:mt-2"
+                  dangerouslySetInnerHTML={{ __html: heroProduct.descripcion }}
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-stone-50 p-4 sm:p-5 rounded-md border border-stone-200/40 font-sans">
                   <div className="flex items-start gap-2.5">

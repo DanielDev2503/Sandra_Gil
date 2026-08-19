@@ -123,9 +123,13 @@ export default async function PersonalizadasPage() {
 
                       <div className="p-5 sm:p-6 flex flex-col flex-1">
                         <Link href={`/productos/${product.id}`}>
-                          <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg hover:text-brand-gold transition">{product.nombre}</h3>
+                          <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg hover:text-brand-gold transition line-clamp-2 min-h-[2.8rem] leading-snug">
+                            {product.nombre}
+                          </h3>
                         </Link>
-                        <p className="text-xs text-stone-500 mt-2 leading-relaxed flex-1 line-clamp-3">{product.descripcion}</p>
+                        <p className="text-xs text-stone-500 mt-2 leading-relaxed flex-1 line-clamp-3">
+                          {product.descripcion ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : ''}
+                        </p>
 
                         <div className="mt-4 pt-4 border-t border-stone-100 space-y-3">
                           <div className="flex items-center gap-2">

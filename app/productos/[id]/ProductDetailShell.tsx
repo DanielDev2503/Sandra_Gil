@@ -365,6 +365,22 @@ export default function ProductDetailShell({
               </span>
               <h1 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1">{product.nombre}</h1>
 
+              {/* Active variation subtitle indicator */}
+              {selectedVariation ? (
+                <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-[#FAF8F5] border border-[#B88A32]/40 rounded-lg shadow-2xs">
+                  <Sparkles className="w-3.5 h-3.5 text-[#B88A32] shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium text-stone-800 font-sans">
+                    Variación escogida: <strong className="text-[#B88A32] font-semibold">{selectedVariation.nombre}</strong>
+                  </span>
+                </div>
+              ) : hasVariaciones ? (
+                <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 bg-stone-50 border border-stone-200/80 rounded-lg">
+                  <span className="text-xs text-stone-500 font-sans">
+                    Presentación: <strong className="text-stone-700 font-medium">Edición Principal / Base</strong>
+                  </span>
+                </div>
+              ) : null}
+
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3">
                 {isBajoPedido ? (
                   <div className="inline-flex items-center gap-2 bg-[#F0FDF4] border border-[#25D366]/30 px-3 py-1.5 rounded-sm">
@@ -396,9 +412,10 @@ export default function ProductDetailShell({
               )}
             </div>
 
-            <p className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans font-light">
-              {product.descripcion}
-            </p>
+            <div 
+              className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans font-light space-y-2 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:my-2.5 [&_li]:text-stone-600 [&_small]:text-[11px] [&_small]:text-stone-500 [&_small]:block [&_small]:mt-3 [&_small]:pt-2.5 [&_small]:border-t [&_small]:border-stone-150"
+              dangerouslySetInnerHTML={{ __html: product.descripcion }}
+            />
 
             {/* ── AROMA SELECTOR (For VELAS only - Hidden for JABON) ── */}
             {!isSoap && (
@@ -451,15 +468,15 @@ export default function ProductDetailShell({
                   <span>Selecciona tu Variación:</span>
                 </label>
 
-                <div className="flex flex-wrap gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {/* Base product option */}
                   <button
                     type="button"
                     onClick={() => setSelectedVariation(null)}
                     className={`
-                      inline-flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium
-                      border transition-all duration-250 cursor-pointer min-h-[44px]
-                      hover:scale-[1.02] active:scale-[0.98]
+                      inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-medium
+                      border transition-all duration-250 cursor-pointer min-h-[46px] text-left
+                      hover:scale-[1.01] active:scale-[0.98]
                       ${!selectedVariation
                         ? 'border-[#B88A32] text-[#B88A32] bg-[#FAF8F5] shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
                         : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
@@ -469,17 +486,17 @@ export default function ProductDetailShell({
                     aria-label={`Seleccionar variación ${product.nombre}`}
                   >
                     {/* Product thumbnail */}
-                    <span className="w-7 h-7 rounded-lg overflow-hidden border border-amber-900/10 shrink-0">
+                    <span className="w-8 h-8 rounded-lg overflow-hidden border border-amber-900/10 shrink-0">
                       <img
                         src={product.imagenes?.[0] || product.url_imagen || '/placeholder.png'}
                         alt={product.nombre}
                         className="w-full h-full object-cover"
                       />
                     </span>
-                    {!selectedVariation && <Check className="w-3 h-3 shrink-0" />}
-                    <span className="truncate max-w-[120px]">{product.nombre}</span>
+                    {!selectedVariation && <Check className="w-3.5 h-3.5 shrink-0 text-[#B88A32]" />}
+                    <span className="flex-1 font-medium leading-tight">Edición Base ({product.nombre})</span>
                     {product.precio !== null && (
-                      <span className="text-[10px] opacity-70">${product.precio.toLocaleString('es-CO')}</span>
+                      <span className="text-[10px] opacity-75 font-semibold shrink-0">${product.precio.toLocaleString('es-CO')}</span>
                     )}
                   </button>
 
@@ -492,9 +509,9 @@ export default function ProductDetailShell({
                         type="button"
                         onClick={() => setSelectedVariation(v)}
                         className={`
-                          inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium
-                          border transition-all duration-250 cursor-pointer min-h-[44px]
-                          hover:scale-[1.02] active:scale-[0.98]
+                          inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-medium
+                          border transition-all duration-250 cursor-pointer min-h-[46px] text-left
+                          hover:scale-[1.01] active:scale-[0.98]
                           ${isActive
                             ? 'border-[#B88A32] text-[#B88A32] bg-amber-50 shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
                             : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
@@ -504,17 +521,17 @@ export default function ProductDetailShell({
                         aria-label={`Seleccionar variación ${v.nombre}`}
                       >
                         {/* Variation thumbnail */}
-                        <span className="w-7 h-7 rounded-md overflow-hidden border border-stone-200/60 shrink-0">
+                        <span className="w-8 h-8 rounded-lg overflow-hidden border border-stone-200/60 shrink-0">
                           <img
                             src={v.imagen}
                             alt={v.nombre}
                             className="w-full h-full object-cover"
                           />
                         </span>
-                        {isActive && <Check className="w-3 h-3 shrink-0" />}
-                        <span className="truncate max-w-[120px]">{v.nombre}</span>
+                        {isActive && <Check className="w-3.5 h-3.5 shrink-0 text-[#B88A32]" />}
+                        <span className="flex-1 font-medium leading-tight">{v.nombre}</span>
                         {displayPrice !== null && (
-                          <span className="text-[10px] opacity-70">${displayPrice.toLocaleString('es-CO')}</span>
+                          <span className="text-[10px] opacity-75 font-semibold shrink-0">${displayPrice.toLocaleString('es-CO')}</span>
                         )}
                       </button>
                     );

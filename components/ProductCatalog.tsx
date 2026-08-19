@@ -155,7 +155,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
               <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                 <div>
                   <Link href={`/productos/${product.id}`} className="block group/title">
-                    <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-gold transition duration-200 line-clamp-1">
+                    <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-gold transition duration-200 line-clamp-2 min-h-[2.8rem] sm:min-h-[3.2rem] leading-snug">
                       {product.nombre}
                     </h3>
                   </Link>
@@ -167,7 +167,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                   </div>
 
                   <p className="text-xs text-stone-500 mt-2.5 line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                    {product.descripcion}
+                    {product.descripcion ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : ''}
                   </p>
                 </div>
 

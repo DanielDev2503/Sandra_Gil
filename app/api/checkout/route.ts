@@ -1,10 +1,42 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import crypto from 'crypto';
+import { z } from 'zod';
+
+const CheckoutItemSchema = z.object({
+  producto_id: z.string().uuid({ message: 'ID de producto inválido' }),
+  cantidad: z.number().int().min(1, { message: 'La cantidad debe ser al menos 1' }),
+  aroma: z.string().max(100).optional().nullable(),
+  variacion_id: z.string().uuid().optional().nullable(),
+  variacion_nombre: z.string().max(100).optional().nullable(),
+  variacion_imagen: z.string().url().optional().nullable().or(z.string().max(500).optional().nullable()),
+});
+
+const CheckoutPayloadSchema = z.object({
+  cliente_nombre: z.string().trim().min(2, { message: 'Nombre muy corto' }).max(120),
+  cliente_email: z.string().trim().email({ message: 'Correo electrónico inválido' }).max(120),
+  cliente_telefono: z.string().trim().regex(/^3\d{9}$/, {
+    message: 'El teléfono debe ser un número celular colombiano válido (10 dígitos iniciando por 3)',
+  }),
+  ciudad: z.string().trim().min(2).max(100),
+  departamento: z.string().trim().max(100).optional().nullable(),
+  region: z.string().trim().max(100).optional().nullable(),
+  direccion_envio: z.string().trim().min(5, { message: 'Dirección muy corta' }).max(250),
+  notas_entrega: z.string().trim().max(500).optional().nullable(),
+  costo_envio: z.number().min(0, { message: 'Costo de envío inválido' }),
+  items: z.array(CheckoutItemSchema).min(1, { message: 'El carrito no puede estar vacío' }),
+});
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const rawBody = await req.json();
+    const parseResult = CheckoutPayloadSchema.safeParse(rawBody);
+
+    if (!parseResult.success) {
+      const errorMsg = parseResult.error.issues.map((e) => e.message).join(', ');
+      return NextResponse.json({ error: `Validación fallida: ${errorMsg}` }, { status: 400 });
+    }
+
     const {
       cliente_nombre,
       cliente_email,
@@ -16,26 +48,10 @@ export async function POST(req: Request) {
       notas_entrega,
       costo_envio,
       items,
-    } = body;
+    } = parseResult.data;
 
-    // Basic payload validation
-    if (
-      !cliente_nombre ||
-      !cliente_email ||
-      !cliente_telefono ||
-      !ciudad ||
-      !direccion_envio ||
-      !items ||
-      items.length === 0
-    ) {
-      return NextResponse.json(
-        { error: 'Todos los campos obligatorios deben ser proporcionados.' },
-        { status: 400 }
-      );
-    }
-
-    // 1. Fetch products from database to verify prices and stock
-    const productIds = items.map((i: any) => i.producto_id);
+    // 1. Fetch products from database to verify real prices and stock
+    const productIds = items.map((i) => i.producto_id);
     const dbProducts = await prisma.producto.findMany({
       where: {
         id: { in: productIds },
@@ -70,14 +86,14 @@ export async function POST(req: Request) {
 
       if (dbProduct.esBajoPedido || dbProduct.precio === null) {
         return NextResponse.json(
-          { error: `El producto ${dbProduct.nombre} es elaborado bajo pedido y requiere cotización previa por WhatsApp.` },
+          { error: `El producto "${dbProduct.nombre}" es elaborado bajo pedido y requiere cotización previa por WhatsApp.` },
           { status: 400 }
         );
       }
 
       if (dbProduct.stock < item.cantidad) {
         return NextResponse.json(
-          { error: `Stock insuficiente para ${dbProduct.nombre}. Disponibles: ${dbProduct.stock}` },
+          { error: `Stock insuficiente para "${dbProduct.nombre}". Disponibles: ${dbProduct.stock}` },
           { status: 400 }
         );
       }
@@ -90,11 +106,10 @@ export async function POST(req: Request) {
         variacionDb = dbProduct.variaciones.find((v) => v.id === item.variacion_id);
         if (!variacionDb) {
           return NextResponse.json(
-            { error: `La variación seleccionada para ${dbProduct.nombre} no está disponible.` },
+            { error: `La variación seleccionada para "${dbProduct.nombre}" no está disponible.` },
             { status: 400 }
           );
         }
-        // Variation price overrides product price when specified
         unitPrice = variacionDb.precio ?? dbProduct.precio;
       }
 
@@ -120,9 +135,9 @@ export async function POST(req: Request) {
           cliente_nombre,
           cliente_email,
           cliente_telefono,
-          ciudad: `${ciudad} (${departamento || region})`,
+          ciudad: `${ciudad} (${departamento || region || 'Colombia'})`,
           direccion_envio,
-          notas_entrega,
+          notas_entrega: notas_entrega ?? null,
           total_productos: calculatedTotalProductos,
           costo_envio,
           total_pagado: totalToPay,
@@ -136,15 +151,14 @@ export async function POST(req: Request) {
     });
 
     // 3. Generate Wompi Integrity Signature
-    // Signature format: SHA-256(reference + amountInCents + currency + integritySecret)
+    // Format: SHA-256(reference + amountInCents + currency + integritySecret)
     const reference = pedido.id;
     const currency = 'COP';
 
-    // Read required env vars — fail explicitly if missing (no insecure fallbacks)
     const publicKey = process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY;
     const integritySecret = process.env.WOMPI_INTEGRITY_SECRET;
     const wompiUrl = process.env.WOMPI_CHECKOUT_URL || 'https://checkout.wompi.co/p/';
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://sgvelas.com';
 
     if (!publicKey || !integritySecret) {
       console.error('❌ Variables de entorno de Wompi no configuradas: NEXT_PUBLIC_WOMPI_PUBLIC_KEY o WOMPI_INTEGRITY_SECRET faltantes.');
@@ -171,7 +185,7 @@ export async function POST(req: Request) {
       wompiUrl,
       redirectUrl,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Checkout error:', error);
     return NextResponse.json(
       { error: 'Error interno del servidor al procesar la orden.' },

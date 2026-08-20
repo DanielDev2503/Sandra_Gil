@@ -34,7 +34,7 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
   }
 
   // Format WhatsApp message link
-  const whatsappNumber = '573000000000'; // Default placeholder support number
+  const whatsappNumber = '573175752029'; // Official Sandra Gil support number
   const whatsappText = encodeURIComponent(
     `Hola Sandra Gil Velas, acabo de realizar un pedido. Mi ID de orden es: ${pedido.id}. Mi nombre es ${pedido.cliente_nombre}.`
   );

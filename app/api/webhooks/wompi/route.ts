@@ -1,20 +1,49 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import crypto from 'crypto';
+import { z } from 'zod';
 
-function getNestedValue(obj: any, path: string) {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+const WompiWebhookSchema = z.object({
+  event: z.string(),
+  data: z.object({
+    transaction: z.object({
+      id: z.string(),
+      reference: z.string(),
+      status: z.string(), // 'APPROVED', 'DECLINED', 'VOIDED', 'ERROR'
+      amount_in_cents: z.number().optional(),
+    }),
+  }),
+  timestamp: z.number(),
+  signature: z.object({
+    properties: z.array(z.string()),
+    checksum: z.string(),
+  }),
+});
+
+function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  return path.split('.').reduce<unknown>((acc, part) => {
+    if (acc && typeof acc === 'object' && part in acc) {
+      return (acc as Record<string, unknown>)[part];
+    }
+    return undefined;
+  }, obj);
 }
 
 export async function POST(req: Request) {
   try {
-    const payload = await req.json();
-    console.log('🔄 Wompi Webhook recibido:', JSON.stringify(payload, null, 2));
+    const rawPayload = await req.json();
+    const parseResult = WompiWebhookSchema.safeParse(rawPayload);
 
+    if (!parseResult.success) {
+      console.warn('⚠️ Payload de webhook no cumple con el esquema esperado de Wompi:', parseResult.error.format());
+      return NextResponse.json({ message: 'Estructura de evento no procesada.' }, { status: 200 });
+    }
+
+    const payload = parseResult.data;
     const { event, data, timestamp, signature } = payload;
 
-    if (event !== 'transaction.updated' || !data || !data.transaction) {
-      return NextResponse.json({ message: 'Evento no procesado.' }, { status: 200 });
+    if (event !== 'transaction.updated') {
+      return NextResponse.json({ message: 'Evento ignorado (no es transaction.updated).' }, { status: 200 });
     }
 
     const transaction = data.transaction;
@@ -31,13 +60,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const properties = signature?.properties;
-    const checksum = signature?.checksum;
-
-    if (!properties || !checksum) {
-      console.error('❌ Payload del webhook no contiene firma (signature.properties / signature.checksum).');
-      return NextResponse.json({ error: 'Firma de webhook ausente.' }, { status: 401 });
-    }
+    const { properties, checksum } = signature;
 
     // Concatenate the values of the properties in the order specified
     const concatenatedValues = properties
@@ -47,7 +70,7 @@ export async function POST(req: Request) {
         if (prop.startsWith('transaction.')) {
           resolvedPath = 'data.' + prop;
         }
-        return getNestedValue(payload, resolvedPath);
+        return String(getNestedValue(rawPayload as Record<string, unknown>, resolvedPath) ?? '');
       })
       .join('');
 
@@ -71,7 +94,7 @@ export async function POST(req: Request) {
     });
 
     if (!pedido) {
-      console.error(`❌ Pedido con ID ${orderId} no encontrado.`);
+      console.error(`❌ Pedido con ID ${orderId} no encontrado en base de datos.`);
       return NextResponse.json({ error: 'Pedido no encontrado.' }, { status: 404 });
     }
 
@@ -147,7 +170,7 @@ export async function POST(req: Request) {
           items: pedido.items.map((item) => ({
             id: item.producto.id,
             nombre: item.producto.nombre,
-            aroma: item.producto.aroma,
+            aroma: item.aroma ?? item.producto.aroma ?? null,
             cantidad: item.cantidad,
             precio_unitario: item.precio_unitario,
             subtotal: item.precio_unitario * item.cantidad,
@@ -174,8 +197,7 @@ export async function POST(req: Request) {
           console.error('❌ Error de red al conectar con Make/Zapier:', autoErr);
         }
       } else {
-        console.log('📝 Payload de automatización preparado (sin enviar, MAKE_WEBHOOK_URL no configurado):');
-        console.log(JSON.stringify(outboundPayload, null, 2));
+        console.log('📝 MAKE_WEBHOOK_URL no configurada (omitiendo disparo de automatización).');
       }
 
     } else if (['DECLINED', 'VOIDED', 'ERROR'].includes(wompiStatus)) {
@@ -191,7 +213,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Webhook error:', error);
     return NextResponse.json(
       { error: 'Error interno al procesar el webhook.' },

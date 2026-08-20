@@ -66,41 +66,26 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const resolvedParams = await params;
   const id = resolvedParams.id;
 
-  let product = null;
-  let resenas: any[] = [];
-
-  try {
-    // Query database for product with reviews
-    product = await prisma.producto.findUnique({
-      where: { id: id },
-      include: {
-        resenas: {
-          orderBy: { creado_en: 'desc' },
-        },
-        variaciones: {
-          where: { activo: true },
-          orderBy: { createdAt: 'asc' },
-        },
+  // Query database for product with reviews and active variations
+  const product = await prisma.producto.findUnique({
+    where: { id: id },
+    include: {
+      resenas: {
+        orderBy: { creado_en: 'desc' },
       },
-    });
-    if (product) {
-      resenas = product.resenas;
-    }
-  } catch (error) {
-    console.error('Error querying product with reviews:', error);
-    // Fallback: Query product without reviews
-    try {
-      product = await prisma.producto.findUnique({
-        where: { id: id },
-      });
-    } catch (fallbackError) {
-      console.error('Fallback query also failed:', fallbackError);
-    }
-  }
+      variaciones: {
+        where: { activo: true },
+        orderBy: { createdAt: 'asc' },
+      },
+    },
+  });
 
   if (!product || !product.activo) {
     redirect('/');
   }
+
+  const resenas = product.resenas || [];
+  const variaciones = product.variaciones || [];
 
   // Fetch all active aromas from DB
   let availableAromas: string[] = [];
@@ -131,7 +116,20 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   availableAromas = availableAromas.sort();
 
   // Fetch up to 4 other active products for the "Productos que te pueden interesar" section
-  let relatedProducts: any[] = [];
+  let relatedProducts: Array<{
+    id: string;
+    nombre: string;
+    descripcion: string;
+    precio: number | null;
+    esBajoPedido: boolean;
+    stock: number;
+    url_imagen: string | null;
+    imagenes: string[];
+    activo: boolean;
+    aroma: string | null;
+    material: string | null;
+    dimensiones: string | null;
+  }> = [];
   try {
     relatedProducts = await prisma.producto.findMany({
       where: {
@@ -144,19 +142,116 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     console.error('Error fetching related products:', relatedError);
   }
 
-  // Exclude resenas from product object to match expected type of ProductDetailShell
-  const { resenas: _, ...productData } = product as any;
+  // Schema.org Structured Data
+  const avgRating =
+    resenas.length > 0
+      ? resenas.reduce((sum, r) => sum + r.calificacion, 0) / resenas.length
+      : 5;
 
-  // Extract variaciones (already included in productData via query)
-  const variaciones = productData.variaciones || [];
+  const productImages =
+    product.imagenes && product.imagenes.length > 0
+      ? product.imagenes
+      : product.url_imagen
+      ? [product.url_imagen]
+      : ['https://sgvelas.com/logo-sandra.png'];
+
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.nombre,
+    description: product.descripcion,
+    image: productImages,
+    brand: {
+      '@type': 'Brand',
+      name: 'Sandra Gil Velas Artesanales',
+    },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'COP',
+      price: product.precio ?? 0,
+      itemCondition: 'https://schema.org/NewCondition',
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Sandra Gil Velas',
+      },
+      url: `https://sgvelas.com/productos/${product.id}`,
+    },
+    ...(resenas.length > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: avgRating.toFixed(1),
+            reviewCount: resenas.length,
+          },
+          review: resenas.slice(0, 5).map((r) => ({
+            '@type': 'Review',
+            author: { '@type': 'Person', name: r.autor },
+            reviewRating: { '@type': 'Rating', ratingValue: r.calificacion },
+            reviewBody: r.comentario,
+            datePublished: new Date(r.creado_en).toISOString().split('T')[0],
+          })),
+        }
+      : {}),
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: 'https://sgvelas.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Catálogo',
+        item: 'https://sgvelas.com/catalogo',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.nombre,
+        item: `https://sgvelas.com/productos/${product.id}`,
+      },
+    ],
+  };
+
+  const productProps = {
+    id: product.id,
+    nombre: product.nombre,
+    descripcion: product.descripcion,
+    aroma: product.aroma,
+    material: product.material,
+    dimensiones: product.dimensiones,
+    precio: product.precio,
+    esBajoPedido: product.esBajoPedido,
+    stock: product.stock,
+    url_imagen: product.url_imagen,
+    imagenes: product.imagenes,
+    activo: product.activo,
+  };
 
   return (
-    <ProductDetailShell
-      product={productData}
-      resenas={resenas}
-      availableAromas={availableAromas}
-      relatedProducts={relatedProducts}
-      variaciones={variaciones}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <ProductDetailShell
+        product={productProps}
+        resenas={resenas}
+        availableAromas={availableAromas}
+        relatedProducts={relatedProducts}
+        variaciones={variaciones}
+      />
+    </>
   );
 }

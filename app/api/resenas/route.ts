@@ -1,35 +1,35 @@
 import { prisma } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+const ResenaPayloadSchema = z.object({
+  producto_id: z.string().uuid({ message: 'ID de producto inválido' }),
+  autor: z.string().trim().min(2, { message: 'El nombre debe tener al menos 2 caracteres' }).max(80),
+  calificacion: z.number().int().min(1, { message: 'La calificación mínima es 1' }).max(5, { message: 'La calificación máxima es 5' }),
+  comentario: z.string().trim().min(5, { message: 'El comentario debe tener al menos 5 caracteres' }).max(1000),
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { producto_id, autor, calificacion, comentario } = body;
+    const rawBody = await request.json();
+    const parseResult = ResenaPayloadSchema.safeParse(rawBody);
 
-    // Validation
-    if (!producto_id || !autor?.trim() || !comentario?.trim()) {
-      return NextResponse.json(
-        { error: 'Todos los campos son obligatorios.' },
-        { status: 400 }
-      );
+    if (!parseResult.success) {
+      const errorMsg = parseResult.error.issues.map((e) => e.message).join(', ');
+      return NextResponse.json({ error: errorMsg }, { status: 400 });
     }
 
-    if (typeof calificacion !== 'number' || calificacion < 1 || calificacion > 5) {
-      return NextResponse.json(
-        { error: 'La calificación debe ser un número entre 1 y 5.' },
-        { status: 400 }
-      );
-    }
+    const { producto_id, autor, calificacion, comentario } = parseResult.data;
 
-    // Verify product exists
+    // Verify product exists and is active
     const producto = await prisma.producto.findUnique({
       where: { id: producto_id },
-      select: { id: true },
+      select: { id: true, activo: true },
     });
 
-    if (!producto) {
+    if (!producto || !producto.activo) {
       return NextResponse.json(
-        { error: 'Producto no encontrado.' },
+        { error: 'El producto no existe o no está activo.' },
         { status: 404 }
       );
     }
@@ -38,16 +38,17 @@ export async function POST(request: NextRequest) {
     const resena = await prisma.resena.create({
       data: {
         producto_id,
-        autor: autor.trim(),
-        calificacion: Math.round(calificacion),
-        comentario: comentario.trim(),
+        autor,
+        calificacion,
+        comentario,
       },
     });
 
     return NextResponse.json(resena, { status: 201 });
-  } catch {
+  } catch (error: unknown) {
+    console.error('Error creating review:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor.' },
+      { error: 'Error interno del servidor al procesar la reseña.' },
       { status: 500 }
     );
   }

@@ -18,6 +18,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/envio-express`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
       url: `${baseUrl}/nosotros`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -28,6 +34,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/legal/politica-de-envios`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.4,
     },
     {
       url: `${baseUrl}/legal/aviso-legal`,
@@ -58,12 +70,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const activeProducts = await prisma.producto.findMany({
       where: { activo: true },
-      select: { id: true },
+      select: { id: true, updatedAt: true },
     });
 
     const productRoutes: MetadataRoute.Sitemap = activeProducts.map((product) => ({
       url: `${baseUrl}/productos/${product.id}`,
-      lastModified: new Date(),
+      lastModified: product.updatedAt || new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     }));

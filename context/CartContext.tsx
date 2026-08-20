@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 
 export interface CartItem {
   id: string;
@@ -29,6 +30,7 @@ interface CartContextType {
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
+  toastMessage: string | null;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -51,6 +53,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -74,6 +77,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3500);
+  };
 
   const addToCart = (
     product: { id: string; nombre: string; precio: number | null; url_imagen: string | null; aroma?: string | null },
@@ -117,6 +127,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       ];
     });
 
+    showToast(`"${product.nombre}" añadido al carrito`);
     openCart();
   };
 
@@ -160,9 +171,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         isCartOpen,
         openCart,
         closeCart,
+        toastMessage,
       }}
     >
       {children}
+
+      {/* Accessible Toast Notification */}
+      {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-stone-900/95 backdrop-blur-sm text-white px-5 py-3 rounded-lg shadow-2xl border border-stone-700/60 flex items-center gap-3 animate-fade-in font-sans text-xs sm:text-sm"
+        >
+          <CheckCircle2 className="w-5 h-5 text-[#B88A32] shrink-0" />
+          <span className="font-medium text-stone-100">{toastMessage}</span>
+        </div>
+      )}
     </CartContext.Provider>
   );
 }

@@ -24,6 +24,7 @@ const NAV_LINKS: NavLink[] = [
   { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
   { href: '/nosotros', label: 'Sobre Nosotros' },
   { href: '/personalizadas', label: 'Velas Personalizadas', highlight: true },
+  { href: '/preguntas-frecuentes', label: 'Preguntas Frecuentes' },
   { href: '/legal/aviso-legal', label: 'Legal' },
 ];
 

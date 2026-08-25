@@ -46,6 +46,7 @@ export default function Footer() {
               </li>
               <li><Link href="/personalizadas" className="hover:text-white transition">Velas Bajo Pedido</Link></li>
               <li><Link href="/nosotros" className="hover:text-white transition">Sobre Nosotros</Link></li>
+              <li><Link href="/preguntas-frecuentes" className="hover:text-white transition">Preguntas Frecuentes</Link></li>
             </ul>
           </div>
 

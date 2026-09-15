@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from '@/components/Header';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
@@ -23,6 +23,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SkeletonImage from '@/components/SkeletonImage';
 import { isSoapProduct } from '@/app/catalogo/CatalogShell';
+import AromaDropdownSelector from '@/components/AromaDropdownSelector';
+import { DEFAULT_BOTANICAL_AROMAS } from '@/lib/aromas';
 
 const WA_NUMBER = '573175752029';
 
@@ -144,8 +146,22 @@ export default function ProductDetailShell({
 
   const isSoap = isSoapProduct(product);
 
-  const aromasList: string[] = availableAromas.length > 0 ? availableAromas : (product.aroma ? [product.aroma] : ['Aroma por defecto']);
-  const [selectedAroma, setSelectedAroma] = useState<string>(product.aroma || aromasList[0] || 'Aroma por defecto');
+  const aromasList: string[] = useMemo(() => {
+    const set = new Set<string>();
+    if (product.aroma) set.add(product.aroma);
+    availableAromas.forEach((a) => {
+      if (a) set.add(a);
+    });
+    // Ensure customer always has a complete palette of aromas to pick from
+    if (set.size < 2) {
+      DEFAULT_BOTANICAL_AROMAS.forEach((a) => set.add(a));
+    }
+    return Array.from(set);
+  }, [availableAromas, product.aroma]);
+
+  const [selectedAroma, setSelectedAroma] = useState<string>(
+    product.aroma || aromasList[0] || 'Lavanda & Manzanilla'
+  );
 
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>('care');
@@ -419,45 +435,12 @@ export default function ProductDetailShell({
 
             {/* ── AROMA SELECTOR (For VELAS only - Hidden for JABON) ── */}
             {!isSoap && (
-              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-3 shadow-xs font-sans">
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
-                  <Wind className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span>Selecciona el Aroma de tu Vela:</span>
-                </label>
-
-                <div className="flex flex-wrap gap-2">
-                  {aromasList.map((aroma) => {
-                    const isActive = selectedAroma === aroma;
-                    return (
-                      <button
-                        key={aroma}
-                        type="button"
-                        onClick={() => setSelectedAroma(aroma)}
-                        className={`
-                          inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium
-                          border transition-all duration-200 cursor-pointer min-h-[38px]
-                          active:scale-95
-                          ${isActive
-                            ? 'border-[#B88A32] text-[#B88A32] bg-amber-50 shadow-sm font-semibold'
-                            : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
-                          }
-                        `}
-                        aria-pressed={isActive}
-                        aria-label={`Seleccionar aroma ${aroma}`}
-                      >
-                        {isActive && <Check className="w-3 h-3 shrink-0" />}
-                        {aroma}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {selectedAroma && (
-                  <p className="text-[10px] text-stone-400 font-sans leading-relaxed pt-0.5">
-                    ✓ Aroma seleccionado: <span className="text-[#B88A32] font-semibold">{selectedAroma}</span>
-                  </p>
-                )}
-              </div>
+              <AromaDropdownSelector
+                aromas={aromasList}
+                selectedAroma={selectedAroma}
+                onSelectAroma={setSelectedAroma}
+                productName={product.nombre}
+              />
             )}
 
             {/* ── VARIATION SELECTOR ── */}

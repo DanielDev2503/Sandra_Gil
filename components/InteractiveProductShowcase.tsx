@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import SkeletonImage from './SkeletonImage';
 import CandleGlowPulse from './CandleGlowPulse';
+import AromaDropdownSelector from './AromaDropdownSelector';
+import { getAromaProfile } from '@/lib/aromas';
 
 interface Variacion {
   id: string;
@@ -98,7 +100,11 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
 
   // Active aroma profile
   const defaultAroma = product.aroma || 'Vainilla Francesa';
-  const availableAromas = Object.keys(AROMA_PROFILES);
+  const availableAromas = useMemo(() => {
+    const list = new Set(Object.keys(AROMA_PROFILES));
+    if (product.aroma) list.add(product.aroma);
+    return Array.from(list);
+  }, [product.aroma]);
   const initialAroma = availableAromas.includes(defaultAroma)
     ? defaultAroma
     : availableAromas[0];
@@ -126,11 +132,12 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
   const currentDisplayImage = allImages[activeImageIndex] || allImages[0] || '';
   const effectivePrice = selectedVariation?.precio ?? product.precio;
 
+  const aromaInfo = getAromaProfile(selectedAroma);
   const currentOlfactory = AROMA_PROFILES[selectedAroma] || {
-    top: 'Esencias Botánicas Puras',
-    heart: selectedAroma,
-    base: 'Cera de Soya & Ámbar',
-    mood: 'Equilibrio & Armonía',
+    top: aromaInfo.top,
+    heart: aromaInfo.heart,
+    base: aromaInfo.base,
+    mood: aromaInfo.mood,
   };
 
   const handleBuyNow = () => {
@@ -318,30 +325,14 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
             )}
 
             {/* Scent Selector */}
-            <div className="space-y-2.5">
-              <label className="text-xs uppercase tracking-wider font-semibold text-stone-700 flex items-center justify-between">
-                <span>Seleccionar Aroma:</span>
-                <span className="text-[11px] font-normal text-brand-gold italic">
-                  Sensación: {currentOlfactory.mood}
-                </span>
-              </label>
-
-              <div className="flex flex-wrap gap-2">
-                {availableAromas.map((aroma) => (
-                  <button
-                    key={aroma}
-                    onClick={() => setSelectedAroma(aroma)}
-                    className={`px-3.5 py-2 min-h-[44px] rounded-full text-xs font-medium transition-all duration-200 cursor-pointer border ${
-                      selectedAroma === aroma
-                        ? 'bg-brand-gold text-white border-brand-gold shadow-xs font-semibold'
-                        : 'bg-white text-stone-600 border-stone-200 hover:border-brand-gold/50'
-                    }`}
-                  >
-                    {aroma}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <AromaDropdownSelector
+              aromas={availableAromas}
+              selectedAroma={selectedAroma}
+              onSelectAroma={setSelectedAroma}
+              productName={product.nombre}
+              showNotice={true}
+              showOlfactoryCard={false}
+            />
 
             {/* Olfactory Pyramid Card */}
             <div className="bg-[#FAF8F5] p-4 sm:p-5 rounded-xl border border-brand-gold/25 space-y-3 font-sans">

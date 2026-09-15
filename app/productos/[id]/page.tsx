@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import ProductDetailShell from './ProductDetailShell';
 import { redirect } from 'next/navigation';
+import { DEFAULT_BOTANICAL_AROMAS } from '@/lib/aromas';
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -112,6 +113,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   if (product.aroma && !availableAromas.includes(product.aroma)) {
     availableAromas.push(product.aroma);
+  }
+  if (availableAromas.length < 2) {
+    availableAromas = Array.from(new Set([...availableAromas, ...DEFAULT_BOTANICAL_AROMAS]));
   }
   availableAromas = availableAromas.sort();
 

@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 export const revalidate = 0; // Dynamic rendering for real-time stock levels
 
 export const metadata: Metadata = {
-  title: 'Catálogo de Velas Artesanales y Cosmética Natural | Sandra Gil',
+  title: 'Catálogo de Velas Aromáticas y Decorativas en Cera de Soya | Sandra Gil',
   description:
     'Explora nuestra colección de velas aromáticas de cera de soya, jabones botánicos y piezas decorativas hechas a mano en Bogotá, Colombia. Envío rápido.',
   alternates: {

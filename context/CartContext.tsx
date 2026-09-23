@@ -60,6 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const savedCart = localStorage.getItem('sandra_gil_velas_cart');
     if (savedCart) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCart(JSON.parse(savedCart));
       } catch (e) {
         console.error('Error loading cart from localStorage', e);

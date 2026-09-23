@@ -4,6 +4,7 @@ import React from 'react';
 import { useCart } from '@/context/CartContext';
 import { X, Plus, Minus, Trash2, ShoppingBag, ShieldCheck, Truck, Lock } from 'lucide-react';
 import Link from 'next/link';
+import SkeletonImage from './SkeletonImage';
 
 export default function CartDrawer() {
   const { cart, updateQuantity, removeFromCart, cartTotal, cartCount, isCartOpen, closeCart } = useCart();
@@ -62,11 +63,15 @@ export default function CartDrawer() {
                   key={`${item.id}-${item.aroma}-${item.variacionId ?? 'base'}-${idx}`}
                   className="flex gap-4 pb-4 border-b border-stone-200/60 last:border-0 last:pb-0 font-sans items-start"
                 >
-                  <img
-                    src={item.url_imagen || '/logo-sandra.png'}
-                    alt={item.nombre}
-                    className="w-20 h-20 object-cover bg-stone-100 rounded-md border border-stone-200/50 shrink-0"
-                  />
+                  <div className="relative w-20 h-20 bg-stone-100 rounded-md border border-stone-200/50 shrink-0 overflow-hidden">
+                    <SkeletonImage
+                      src={item.url_imagen || '/logo-sandra.png'}
+                      alt={`Vela artesanal ${item.nombre} Sandra Gil`}
+                      className="w-full h-full object-cover"
+                      fill
+                      sizes="80px"
+                    />
+                  </div>
                   <div className="flex-1 flex flex-col justify-between min-h-[5rem]">
                     <div>
                       <h4 className="font-serif font-medium text-stone-900 text-sm leading-snug">{item.nombre}</h4>

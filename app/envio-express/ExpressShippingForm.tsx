@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageCircle, Send, FileText, Receipt, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { MessageCircle, Send, FileText, Receipt, HelpCircle } from 'lucide-react';
 
 const WA_NUMBER = '573175752029';
 

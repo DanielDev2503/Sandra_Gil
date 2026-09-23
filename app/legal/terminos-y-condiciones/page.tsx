@@ -34,7 +34,7 @@ export default function TerminosCondicionesPage() {
         <h3 className="text-lg font-semibold text-stone-800">2. Objeto del Contrato</h3>
         <p className="text-sm leading-relaxed">
           Los presentes Términos y Condiciones regulan la relación contractual entre Sandra Gil Velas Artesanales 
-          (en adelante "el Vendedor") y los consumidores que realizan compras a través del sitio web (en adelante "el Comprador"), 
+          (en adelante &quot;el Vendedor&quot;) y los consumidores que realizan compras a través del sitio web (en adelante &quot;el Comprador&quot;), 
           de conformidad con lo establecido en la Ley 1480 de 2011 y el Decreto 1499 de 2014.
         </p>
       </section>
@@ -126,7 +126,7 @@ export default function TerminosCondicionesPage() {
       <section className="space-y-3">
         <h3 className="text-lg font-semibold text-stone-800">9. Velas Bajo Pedido (Personalizadas)</h3>
         <p className="text-sm leading-relaxed">
-          Los productos catalogados como "Elaboración Bajo Pedido" son elaborados específicamente para el Comprador. 
+          Los productos catalogados como &quot;Elaboración Bajo Pedido&quot; son elaborados específicamente para el Comprador. 
           El precio, el tiempo de producción y las especificaciones se acuerdan directamente por WhatsApp antes de iniciar la producción. 
           Una vez confirmado el pedido y recibido el anticipo (si aplica), no es posible cancelar el pedido.
         </p>

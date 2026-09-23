@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sandragilvelas.com';
+
   return {
     rules: [
       {
@@ -20,6 +22,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: ['/', '/llms.txt', '/catalogo'],
       },
     ],
-    sitemap: 'https://sandragilvelas.com/sitemap.xml',
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

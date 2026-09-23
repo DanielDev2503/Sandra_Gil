@@ -10,9 +10,10 @@ async function main() {
   
   const productos = [
     {
-      nombre: "Vela Celestial de Lavanda y Flores Botánicas",
-      descripcion: "Vela artesanal de cera de soya natural, decorada con flores de lavanda y amatista. Aroma relajante y suave, ideal para meditación.",
+      nombre: "Vela Aromática Lavanda & Manzanilla",
+      descripcion: "Vela artesanal elaborada con 100% cera de soya natural, vertida a mano en Bogotá. Decorada con flores botánicas naturales de lavanda y amatista. Aroma relajante y suave formulado para aromaterapia y descanso profundo.",
       aroma: "Lavanda & Manzanilla",
+      material: "100% Cera de Soya Natural y Flores Botánicas",
       dimensiones: "8 x 8 cm",
       precio: 45000,
       stock: 20,
@@ -21,8 +22,9 @@ async function main() {
     },
     {
       nombre: "Vela de Rosas Silvestres y Peonías",
-      descripcion: "Sinfonía romántica de pétalos de rosa y peonías frescas. Decorada con flores secas de peonía y destellos dorados.",
+      descripcion: "Sinfonía romántica de pétalos de rosa y peonías frescas en cera de soya botánica. Decorada con flores botánicas naturales de peonía secadas al sol y destellos minerales.",
       aroma: "Rosas & Peonías",
+      material: "100% Cera de Soya Natural y Flores Botánicas",
       dimensiones: "10 x 8 cm",
       precio: 48000,
       stock: 15,
@@ -30,9 +32,10 @@ async function main() {
       activo: true
     },
     {
-      nombre: "Vela Citrus Blossom & Caléndula",
-      descripcion: "Notas vibrantes de mandarina, bergamota y caléndula. Decorada con pétalos de caléndula secados al sol.",
+      nombre: "Vela Botánica Cítricos & Caléndula",
+      descripcion: "Cera de soya ecológica con flores botánicas naturales de caléndula, energía y vitalidad. Notas vibrantes de mandarina, bergamota y pétalos dorados cosechados artesanalmente.",
       aroma: "Cítricos & Caléndula",
+      material: "100% Cera de Soya Natural y Flores Botánicas",
       dimensiones: "8 x 8 cm",
       precio: 42000,
       stock: 25,
@@ -40,9 +43,10 @@ async function main() {
       activo: true
     },
     {
-      nombre: "Vela Jazmín Imperial y Cuarzo Blanco",
-      descripcion: "Aroma dulce y cautivador a jazmín silvestre con un cuarzo cristalino para purificar la energía del espacio.",
+      nombre: "Vela Decorativa Jazmín Imperial",
+      descripcion: "Cera de soya pura en recipiente artesanal, elegancia y calidez. Aroma cautivador a jazmín silvestre con cuarzo blanco cristalino para purificar y armonizar el ambiente.",
       aroma: "Jazmín & Vainilla",
+      material: "100% Cera de Soya Natural y Flores Botánicas",
       dimensiones: "9 x 9 cm",
       precio: 52000,
       stock: 12,

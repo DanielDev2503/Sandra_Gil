@@ -11,12 +11,10 @@ import {
   ChevronUp,
   Star,
   Truck,
-  ShieldCheck,
   CreditCard,
   MessageCircle,
   Send,
   Ruler,
-  Wind,
   Check,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -469,11 +467,12 @@ export default function ProductDetailShell({
                     aria-label={`Seleccionar variación ${product.nombre}`}
                   >
                     {/* Product thumbnail */}
-                    <span className="w-8 h-8 rounded-lg overflow-hidden border border-amber-900/10 shrink-0">
-                      <img
-                        src={product.imagenes?.[0] || product.url_imagen || '/placeholder.png'}
-                        alt={product.nombre}
-                        className="w-full h-full object-cover"
+                    <span className="relative w-8 h-8 rounded-lg overflow-hidden border border-amber-900/10 shrink-0">
+                      <SkeletonImage
+                        src={product.imagenes?.[0] || product.url_imagen}
+                        alt={isSoap ? `Jabón artesanal ${product.nombre} Sandra Gil Bogotá` : `Vela artesanal ${product.nombre} en cera de soya Sandra Gil Bogotá`}
+                        className="object-cover"
+                        sizes="32px"
                       />
                     </span>
                     {!selectedVariation && <Check className="w-3.5 h-3.5 shrink-0 text-[#B88A32]" />}
@@ -504,11 +503,12 @@ export default function ProductDetailShell({
                         aria-label={`Seleccionar variación ${v.nombre}`}
                       >
                         {/* Variation thumbnail */}
-                        <span className="w-8 h-8 rounded-lg overflow-hidden border border-stone-200/60 shrink-0">
-                          <img
+                        <span className="relative w-8 h-8 rounded-lg overflow-hidden border border-stone-200/60 shrink-0">
+                          <SkeletonImage
                             src={v.imagen}
-                            alt={v.nombre}
-                            className="w-full h-full object-cover"
+                            alt={isSoap ? `Variación ${v.nombre} de jabón ${product.nombre} Sandra Gil` : `Variación ${v.nombre} de vela artesanal ${product.nombre} Sandra Gil Bogotá`}
+                            className="object-cover"
+                            sizes="32px"
                           />
                         </span>
                         {isActive && <Check className="w-3.5 h-3.5 shrink-0 text-[#B88A32]" />}

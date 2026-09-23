@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Leaf, Sparkles, Flame, ShieldCheck, HeartHandshake, Wind } from 'lucide-react';
+import { Leaf, Sparkles, Flame, HeartHandshake, Wind } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 
 const PILLARS = [

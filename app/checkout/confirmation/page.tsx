@@ -116,7 +116,7 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
                 <p className="text-stone-600">{pedido.ciudad}</p>
                 {pedido.notas_entrega && (
                   <p className="text-xs text-stone-500 italic mt-2 border-t border-stone-200/60 pt-2">
-                    Nota: "{pedido.notas_entrega}"
+                    Nota: &quot;{pedido.notas_entrega}&quot;
                   </p>
                 )}
               </div>

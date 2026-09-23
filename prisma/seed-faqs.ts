@@ -2,14 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { INITIAL_FAQS } from '../lib/faqs-data';
-import * as fs from 'fs';
-import * as path from 'path';
-
 // Cargar .env manualmente si no está presente en process.env
 if (typeof process.loadEnvFile === 'function') {
   try {
     process.loadEnvFile();
-  } catch (e) {
+  } catch {
     // Si no existe, continuar
   }
 }

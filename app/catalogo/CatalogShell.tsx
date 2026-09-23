@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Header from '@/components/Header';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
@@ -44,10 +44,16 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   // Read initial filters from URL query params
   const [selectedType, setSelectedType] = useState<'todos' | 'velas' | 'jabones'>('todos');
-  const [selectedMaterial, setSelectedMaterial] = useState<string>(
-    searchParams.get('material') || ''
-  );
+  const rawUrlMat = searchParams.get('material') || '';
+  const normalizedInitialMat = rawUrlMat.toLowerCase().includes('preservad') ? 'Flores Botánicas' : rawUrlMat;
+  const [selectedMaterial, setSelectedMaterial] = useState<string>(normalizedInitialMat);
+  const [prevSearchMat, setPrevSearchMat] = useState(rawUrlMat);
   const [sortOrder, setSortOrder] = useState<'predeterminado' | 'precio-asc' | 'precio-desc'>('predeterminado');
+
+  if (prevSearchMat !== rawUrlMat) {
+    setPrevSearchMat(rawUrlMat);
+    setSelectedMaterial(normalizedInitialMat);
+  }
 
   // Derive unique materials from the product list
   const materials = useMemo(() => {
@@ -67,11 +73,6 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     },
     [router]
   );
-
-  useEffect(() => {
-    const mat = searchParams.get('material');
-    if (mat) setSelectedMaterial(mat);
-  }, [searchParams]);
 
   const handleMaterialChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
@@ -144,14 +145,16 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 w-full space-y-4">
         {/* Type Tabs: Todos, Velas Artesanales, Jabones Artesanales */}
         <div className="flex flex-wrap items-center justify-center gap-2 border-b border-stone-200 pb-4">
-          {[
-            { id: 'todos', label: 'Todos los Productos' },
-            { id: 'velas', label: 'Velas Artesanales' },
-            { id: 'jabones', label: 'Jabones Artesanales' },
-          ].map((tab) => (
+          {(
+            [
+              { id: 'todos', label: 'Todos los Productos' },
+              { id: 'velas', label: 'Velas Artesanales' },
+              { id: 'jabones', label: 'Jabones Artesanales' },
+            ] as const
+          ).map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setSelectedType(tab.id as any)}
+              onClick={() => setSelectedType(tab.id)}
               className={`px-5 py-2.5 min-h-[44px] text-xs uppercase tracking-wider font-semibold rounded-full transition-all duration-300 cursor-pointer flex items-center gap-2 ${
                 selectedType === tab.id
                   ? 'bg-brand-brown text-white shadow-md'
@@ -192,7 +195,11 @@ export default function CatalogShell({ products }: CatalogShellProps) {
             <ArrowUpDown className="w-4 h-4 text-stone-500 shrink-0" />
             <select
               value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as any)}
+              onChange={(e) =>
+                setSortOrder(
+                  e.target.value as 'predeterminado' | 'precio-asc' | 'precio-desc'
+                )
+              }
               className="px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
             >
               <option value="predeterminado">Ordenar por: Relevancia</option>

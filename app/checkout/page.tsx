@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { useCart } from '@/context/CartContext';
-import { ArrowLeft, CreditCard, ShoppingBag, Truck, Clock, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, CreditCard, ShoppingBag, Truck, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import SkeletonImage from '@/components/SkeletonImage';
 import {
   COLOMBIA_CITIES,
   getCityById,
@@ -28,12 +29,11 @@ export default function CheckoutPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  // Avoid hydration mismatch
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Redirect if cart is empty
   useEffect(() => {
@@ -353,11 +353,15 @@ export default function CheckoutPage() {
             <div className="divide-y divide-stone-200/70 max-h-80 overflow-y-auto pr-1">
               {cart.map((item) => (
                 <div key={item.id} className="flex gap-3 sm:gap-4 py-3 first:pt-0 last:pb-0">
-                  <img
-                    src={item.url_imagen}
-                    alt={item.nombre}
-                    className="w-14 h-14 sm:w-16 sm:h-16 object-cover bg-stone-200 rounded-xs shrink-0"
-                  />
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 bg-stone-200 rounded-xs shrink-0 overflow-hidden">
+                    <SkeletonImage
+                      src={item.url_imagen}
+                      alt={`Vela artesanal ${item.nombre} Sandra Gil`}
+                      className="w-full h-full object-cover"
+                      fill
+                      sizes="64px"
+                    />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-medium text-stone-900 truncate">{item.nombre}</h4>
                     {item.variacionNombre && (

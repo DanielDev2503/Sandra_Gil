@@ -31,7 +31,7 @@ export default function AvisoLegalPage() {
       <section className="space-y-3">
         <h3 className="text-lg font-semibold text-stone-800">2. Objeto y Ámbito de Aplicación</h3>
         <p className="text-sm leading-relaxed">
-          El presente Aviso Legal regula el acceso y el uso del sitio web de Sandra Gil Velas Artesanales (en adelante, "el Sitio"), 
+          El presente Aviso Legal regula el acceso y el uso del sitio web de Sandra Gil Velas Artesanales (en adelante, &quot;el Sitio&quot;), 
           así como los servicios de venta en línea de productos artesanales que se ofrecen a través del mismo. 
           El acceso al Sitio implica la aceptación plena y sin reservas de todas las disposiciones incluidas en este Aviso Legal.
         </p>

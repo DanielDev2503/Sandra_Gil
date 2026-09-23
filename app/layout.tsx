@@ -20,11 +20,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://sandragilvelas.com'),
   title: {
-    default: 'Sandra Gil | Velas Decorativas y Aromáticas Artesanales',
+    default: 'Sandra Gil | Velas Decorativas y Aromáticas de Cera de Soya en Bogotá',
     template: '%s | Sandra Gil Velas',
   },
   description:
-    'Velas artesanales premium vertidas a mano con cera de soya natural, flores botánicas y aromas exclusivos en Bogotá, Colombia. Envíos locales y nacionales.',
+    'Tienda artesanal de velas decorativas y aromáticas 100% cera de soya natural vertidas a mano con flores botánicas en Bogotá. Envíos gratis locales y despachos a toda Colombia.',
   keywords: [
     'velas artesanales bogota',
     'velas de cera de soya bogota',
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     canonical: './',
   },
   openGraph: {
-    title: 'Sandra Gil | Velas Decorativas y Aromáticas Artesanales Bogotá',
+    title: 'Sandra Gil | Velas Artesanales y Aromáticas en Bogotá',
     description:
-      'Velas artesanales premium vertidas a mano con cera de soya natural, flores botánicas y aromas exclusivos en Bogotá, Colombia. Envíos locales y nacionales.',
+      'Velas ecológicas de cera de soya vertidas a mano con flores botánicas y esencias exclusivas. Combustión limpia.',
     url: 'https://sandragilvelas.com',
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
@@ -95,25 +95,25 @@ const jsonLdGraph = {
     {
       '@type': ['Store', 'LocalBusiness'],
       '@id': 'https://sandragilvelas.com/#store',
-      name: 'Sandra Gil Velas Artesanales',
+      name: 'Sandra Gil - Velas Artesanales',
       url: 'https://sandragilvelas.com',
       logo: 'https://sandragilvelas.com/logo-sandra.png',
       image: 'https://sandragilvelas.com/logo-sandra.png',
       description:
-        'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores botánicas.',
+        'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores botánicas naturales.',
       telephone: '+573175752029',
       priceRange: '$$',
       currenciesAccepted: 'COP',
       paymentAccepted:
-        'Tarjeta de Crédito, Tarjeta Débito, PSE, Nequi, Daviplata, Bancolombia, Efectivo',
+        'Efectivo, PSE, Tarjetas de Crédito/Débito, Nequi, Daviplata a través de Wompi (Bancolombia)',
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Bogotá',
+        addressLocality: 'Bogotá D.C.',
         addressRegion: 'Cundinamarca',
         addressCountry: 'CO',
       },
       areaServed: [
-        { '@type': 'City', name: 'Bogotá' },
+        { '@type': 'City', name: 'Bogotá D.C.' },
         { '@type': 'City', name: 'Chía' },
         { '@type': 'City', name: 'Cajicá' },
         { '@type': 'City', name: 'Cota' },

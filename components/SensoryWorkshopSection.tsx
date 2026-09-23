@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, MessageCircle, Gift, Users, Calendar, ArrowRight, Heart } from 'lucide-react';
+import { Sparkles, MessageCircle, Gift, Users, ArrowRight, Heart } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 
 const WA_NUMBER = '573175752029';

@@ -155,7 +155,7 @@ export default function FAQClient({ initialFaqs }: FAQClientProps) {
             </div>
             {searchQuery && (
               <p className="mt-2 text-xs text-stone-500 font-sans text-left pl-2">
-                Mostrando resultados para: <span className="font-semibold text-brand-brown">"{searchQuery}"</span>
+                Mostrando resultados para: <span className="font-semibold text-brand-brown">&quot;{searchQuery}&quot;</span>
               </p>
             )}
           </div>
@@ -428,7 +428,7 @@ export default function FAQClient({ initialFaqs }: FAQClientProps) {
                 No encontramos preguntas para tu búsqueda
               </h3>
               <p className="mt-1 text-xs text-stone-500 max-w-md mx-auto font-sans">
-                No hay resultados para <span className="font-semibold text-stone-700">"{searchQuery}"</span> en la categoría seleccionada.
+                No hay resultados para <span className="font-semibold text-stone-700">&quot;{searchQuery}&quot;</span> en la categoría seleccionada.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <button

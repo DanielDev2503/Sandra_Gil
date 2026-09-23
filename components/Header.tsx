@@ -12,7 +12,7 @@ const WA_NUMBER = '573175752029';
 interface NavLink {
   href: string;
   label: string;
-  icon?: any;
+  icon?: React.ComponentType<{ className?: string }>;
   isExpress?: boolean;
   highlight?: boolean;
   isExternal?: boolean;
@@ -32,11 +32,13 @@ export default function Header() {
   const { cartCount, openCart } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
-  // Close mobile menu on route change
-  useEffect(() => {
+  // Close mobile menu on route change during render
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileMenuOpen(false);
-  }, [pathname]);
+  }
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {

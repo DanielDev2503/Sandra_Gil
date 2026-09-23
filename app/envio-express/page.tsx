@@ -9,7 +9,6 @@ import {
   Truck,
   Clock,
   ClipboardCheck,
-  Sparkles,
   ShieldCheck,
   ChevronRight,
 } from 'lucide-react';

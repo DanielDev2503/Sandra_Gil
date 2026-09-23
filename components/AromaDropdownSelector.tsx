@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, ChevronDown, Check, Wind, Droplets, Info } from 'lucide-react';
+import { Sparkles, ChevronDown, Check, Wind, Droplets } from 'lucide-react';
 import { getAromaProfile } from '@/lib/aromas';
 
 interface AromaDropdownSelectorProps {

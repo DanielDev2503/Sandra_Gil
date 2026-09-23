@@ -6,7 +6,7 @@ import { Sparkles, Leaf, Heart, Flame, GraduationCap } from 'lucide-react';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'Sobre Nosotros | Sandra Gil Velas Artesanales Bogotá',
+  title: 'Sobre Sandra Gil | Taller Artesanal de Velas Botánicas en Bogotá',
   description:
     'Conoce la historia de Sandra Gil Velas Artesanales: taller artesanal en Bogotá dedicado a crear velas de cera de soya con flores botánicas naturales y aromas exclusivos.',
   alternates: {

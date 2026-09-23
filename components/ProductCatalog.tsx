@@ -42,7 +42,6 @@ interface ProductCatalogProps {
 export default function ProductCatalog({ products }: ProductCatalogProps) {
   const { addToCart } = useCart();
   const [selectedAroma, setSelectedAroma] = useState<string>('Todos');
-  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
   // Extract all unique aromas from active products
   const aromas = useMemo(() => {
@@ -126,8 +125,6 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4, delay: idx * 0.05 }}
                 className="group bg-white rounded-xl border border-brand-gold/20 overflow-hidden flex flex-col h-full hover:shadow-xl hover:border-brand-gold/60 transition-all duration-300"
-                onMouseEnter={() => setHoveredProduct(product.id)}
-                onMouseLeave={() => setHoveredProduct(null)}
               >
                 {/* Product Image Box */}
                 <Link 
@@ -253,6 +250,57 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
           })}
         </AnimatePresence>
       </motion.div>
+
+      {/* GEO & Conversational Search Direct Answers Block */}
+      <div className="mt-16 sm:mt-24 pt-12 border-t border-brand-gold/20">
+        <div className="text-center max-w-xl mx-auto mb-10">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-brand-gold font-bold font-sans">
+            Guía Esencial & Transparencia
+          </span>
+          <h3 className="text-xl sm:text-2xl font-serif font-light text-stone-900 mt-1">
+            Lo que Debes Saber de Nuestras Velas
+          </h3>
+          <div className="w-10 h-[1px] bg-brand-gold mx-auto mt-2" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white/80 p-6 rounded-xl border border-brand-gold/20 shadow-xs">
+            <div className="w-9 h-9 rounded-full bg-brand-gold/10 flex items-center justify-center mb-3.5">
+              <Leaf className="w-4 h-4 text-brand-gold" />
+            </div>
+            <h4 className="font-serif font-medium text-stone-900 text-sm mb-2">
+              ¿Por qué cera de soya vs. parafina tradicional?
+            </h4>
+            <p className="text-xs text-stone-600 leading-relaxed font-sans font-light">
+              La cera de soya 100% natural ofrece una combustión limpia con hasta un 90% menos de hollín que la parafina derivada del petróleo. Quema a menor temperatura, garantizando que tu vela dure hasta un 50% más tiempo y difunda esencias botánicas puras sin toxinas.
+            </p>
+          </div>
+
+          <div className="bg-white/80 p-6 rounded-xl border border-brand-gold/20 shadow-xs">
+            <div className="w-9 h-9 rounded-full bg-brand-gold/10 flex items-center justify-center mb-3.5">
+              <Flame className="w-4 h-4 text-brand-gold" />
+            </div>
+            <h4 className="font-serif font-medium text-stone-900 text-sm mb-2">
+              ¿Cuál es la regla recomendada de encendido?
+            </h4>
+            <p className="text-xs text-stone-600 leading-relaxed font-sans font-light">
+              En el primer encendido, mantén la vela prendida entre 2 y 3 horas para formar una piscina completa y prevenir el túnel. En encendidos posteriores, la duración máxima de quemado continuo recomendada es de 2 horas consecutivas, recordando recortar el pabilo a 5 mm.
+            </p>
+          </div>
+
+          <div className="bg-white/80 p-6 rounded-xl border border-brand-gold/20 shadow-xs">
+            <div className="w-9 h-9 rounded-full bg-brand-gold/10 flex items-center justify-center mb-3.5">
+              <ShieldCheck className="w-4 h-4 text-brand-gold" />
+            </div>
+            <h4 className="font-serif font-medium text-stone-900 text-sm mb-2">
+              ¿Cómo funcionan los envíos y garantías?
+            </h4>
+            <p className="text-xs text-stone-600 leading-relaxed font-sans font-light">
+              Realizamos envíos gratis en Bogotá urbana y municipios de la Sabana en 2 a 3 días hábiles, además de contar con opción express el mismo día. A nivel nacional, despachamos vía Servientrega en 2 a 5 días hábiles con tarifa fija de $9.000 COP y empaque de seguridad multicapa.
+            </p>
+          </div>
+        </div>
+      </div>
 
     </section>
   );

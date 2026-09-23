@@ -45,37 +45,45 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/legal/politica-de-envios`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.4,
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/legal/aviso-legal`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/legal/politica-de-privacidad`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/legal/politica-de-cookies`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/legal/terminos-y-condiciones`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
   ];
 
   try {
     const activeProducts = await prisma.producto.findMany({
-      where: { activo: true },
+      where: {
+        activo: true,
+        NOT: [
+          { nombre: { contains: 'prueba', mode: 'insensitive' } },
+          { descripcion: { contains: 'prueba', mode: 'insensitive' } },
+          { nombre: { contains: 'produvto', mode: 'insensitive' } },
+          { nombre: { contains: 'lololol', mode: 'insensitive' } },
+        ],
+      },
       select: { id: true, updatedAt: true },
     });
 

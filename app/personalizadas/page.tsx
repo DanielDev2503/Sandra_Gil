@@ -3,17 +3,18 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { MessageCircle, Sparkles, Clock, Palette } from 'lucide-react';
+import SkeletonImage from '@/components/SkeletonImage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Velas Personalizadas y Recordatorios para Eventos | Sandra Gil Bogotá',
+  title: 'Velas Personalizadas para Eventos y Recordatorios en Bogotá | Sandra Gil',
   description:
     'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores botánicas y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
   alternates: {
     canonical: 'https://sandragilvelas.com/personalizadas',
   },
   openGraph: {
-    title: 'Velas Personalizadas y Recordatorios para Eventos | Sandra Gil Bogotá',
+    title: 'Velas Personalizadas para Eventos y Recordatorios en Bogotá | Sandra Gil',
     description:
       'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores botánicas y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
     url: 'https://sandragilvelas.com/personalizadas',
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Velas Personalizadas | Sandra Gil Velas Artesanales',
+    title: 'Velas Personalizadas para Eventos | Sandra Gil Velas Artesanales',
     description:
       'Diseñamos velas únicas y recuerdos personalizados con cera de soya pura y flores botánicas en Bogotá.',
   },
@@ -126,16 +127,18 @@ export default async function PersonalizadasPage() {
                   return (
                     <div key={product.id} className="bg-white rounded-lg border border-brand-gold/20 overflow-hidden flex flex-col shadow-xs hover:shadow-md transition-all duration-300">
                       <Link href={`/productos/${product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
-                        <img
+                        <SkeletonImage
                           src={displayImage ?? ''}
-                          alt={product.nombre}
+                          alt={`Vela artesanal personalizada ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                           className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
-                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-brand-gold/20 flex items-center gap-1">
+                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-brand-gold/20 flex items-center gap-1 z-10">
                           <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                           <span className="text-[10px] font-bold text-brand-brown uppercase tracking-wider">Bajo Pedido</span>
                         </div>
-                        <div className="absolute bottom-3 left-3 bg-brand-brown/80 text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest">
+                        <div className="absolute bottom-3 left-3 bg-brand-brown/80 text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest z-10">
                           {product.aroma}
                         </div>
                       </Link>

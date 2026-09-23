@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
     };
   }
 
-  const title = `${product.nombre} | Sandra Gil Velas Artesanales`;
+  const title = `${product.nombre} - Vela de Cera de Soya`;
   const rawDesc = product.descripcion || 'Vela artesanal vertida a mano con cera de soya natural y esencias exclusivas en Bogotá.';
   const description = rawDesc.length > 155 ? `${rawDesc.substring(0, 152)}...` : rawDesc;
   const imageUrl = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : (product.url_imagen || '/logo-sandra.png');

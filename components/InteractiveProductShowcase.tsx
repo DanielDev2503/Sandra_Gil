@@ -7,9 +7,7 @@ import { useCart } from '@/context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, 
-  Leaf, 
   Flame, 
-  ShieldCheck, 
   Droplets, 
   Clock, 
   Check, 
@@ -87,24 +85,23 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
   const router = useRouter();
   const { addToCart, clearCart } = useCart();
 
-  if (!product) return null;
-
   // Active variation state
   const activeVariations = useMemo(
-    () => (product.variaciones || []).filter((v) => v.activo),
-    [product.variaciones]
+    () => (product?.variaciones || []).filter((v) => v.activo),
+    [product?.variaciones]
   );
   const [selectedVariation, setSelectedVariation] = useState<Variacion | null>(
     activeVariations.length > 0 ? activeVariations[0] : null
   );
 
   // Active aroma profile
-  const defaultAroma = product.aroma || 'Vainilla Francesa';
+  const productAroma = product?.aroma;
+  const defaultAroma = productAroma || 'Vainilla Francesa';
   const availableAromas = useMemo(() => {
     const list = new Set(Object.keys(AROMA_PROFILES));
-    if (product.aroma) list.add(product.aroma);
+    if (productAroma) list.add(productAroma);
     return Array.from(list);
-  }, [product.aroma]);
+  }, [productAroma]);
   const initialAroma = availableAromas.includes(defaultAroma)
     ? defaultAroma
     : availableAromas[0];
@@ -115,6 +112,7 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
 
   const allImages = useMemo(() => {
     const list: string[] = [];
+    if (!product) return list;
     if (selectedVariation?.imagen) {
       list.push(selectedVariation.imagen);
     }
@@ -128,6 +126,8 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
     }
     return list;
   }, [product, selectedVariation]);
+
+  if (!product) return null;
 
   const currentDisplayImage = allImages[activeImageIndex] || allImages[0] || '';
   const effectivePrice = selectedVariation?.precio ?? product.precio;
@@ -252,7 +252,7 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
                   >
                     <Image
                       src={img}
-                      alt={`Vista ${idx + 1}`}
+                      alt={product.tipo === 'JABON' ? `Jabón artesanal botánico ${product.nombre} – miniatura ${idx + 1} Sandra Gil Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural – miniatura ${idx + 1} Sandra Gil Bogotá`}
                       fill
                       className="object-cover"
                       sizes="80px"

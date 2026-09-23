@@ -105,7 +105,7 @@ const jsonLdGraph = {
       priceRange: '$$',
       currenciesAccepted: 'COP',
       paymentAccepted:
-        'Efectivo, PSE, Tarjetas de Crédito/Débito, Nequi, Daviplata a través de Wompi (Bancolombia)',
+        'Wompi, Nequi, Daviplata, PSE, Tarjeta de Crédito, Tarjeta de Débito',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Bogotá D.C.',

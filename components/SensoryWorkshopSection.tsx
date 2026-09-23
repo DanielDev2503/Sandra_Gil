@@ -63,8 +63,8 @@ export default function SensoryWorkshopSection() {
             Creamos Momentos Inolvidables
           </h2>
           <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 mb-4" />
-          <p className="text-stone-600 text-xs sm:text-sm font-sans font-light leading-relaxed">
-            Desde detalles personalizados para fechas inolvidables hasta talleres sensoriales donde descubres el arte de la cera vegetal.
+          <p className="text-stone-600 text-xs sm:text-sm font-sans font-light leading-relaxed max-w-xl mx-auto">
+            Taller artesanal en Bogotá dedicado a la creación de velas aromáticas en 100% cera de soya natural pura y flores botánicas naturales. Diseñamos recordatorios exclusivos para bodas y eventos, regalos corporativos y talleres presenciales con envíos locales y a toda Colombia.
           </p>
         </div>
 

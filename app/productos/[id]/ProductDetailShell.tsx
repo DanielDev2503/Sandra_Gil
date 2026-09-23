@@ -470,7 +470,7 @@ export default function ProductDetailShell({
                     <span className="relative w-8 h-8 rounded-lg overflow-hidden border border-amber-900/10 shrink-0">
                       <SkeletonImage
                         src={product.imagenes?.[0] || product.url_imagen}
-                        alt={isSoap ? `Jabón artesanal ${product.nombre} Sandra Gil Bogotá` : `Vela artesanal ${product.nombre} en cera de soya Sandra Gil Bogotá`}
+                        alt={isSoap ? `Jabón artesanal ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                         className="object-cover"
                         sizes="32px"
                       />
@@ -506,7 +506,7 @@ export default function ProductDetailShell({
                         <span className="relative w-8 h-8 rounded-lg overflow-hidden border border-stone-200/60 shrink-0">
                           <SkeletonImage
                             src={v.imagen}
-                            alt={isSoap ? `Variación ${v.nombre} de jabón ${product.nombre} Sandra Gil` : `Variación ${v.nombre} de vela artesanal ${product.nombre} Sandra Gil Bogotá`}
+                            alt={isSoap ? `Variación ${v.nombre} de jabón ${product.nombre} Sandra Gil - Taller Bogotá` : `Variación ${v.nombre} de vela artesanal ${product.nombre} en cera de soya Sandra Gil - Taller Bogotá`}
                             className="object-cover"
                             sizes="32px"
                           />

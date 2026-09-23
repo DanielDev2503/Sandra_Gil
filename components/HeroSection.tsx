@@ -86,8 +86,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
 
             {/* Subtitle / Value Thesis */}
             <p className="text-stone-600 text-sm sm:text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed font-sans font-light">
-              Velas aromáticas y piezas escultóricas vertidas a mano en Bogotá con cera de soya 100% natural, 
-              adornadas con flores botánicas naturales y esencias exclusivas. Luz pura que transforma tu hogar.
+              Taller artesanal en Bogotá especializado en velas aromáticas vertidas a mano con 100% cera de soya natural pura, flores botánicas naturales y pabilo de algodón sin plomo. Disfruta de una combustión limpia y no tóxica con envíos en Bogotá, Chía, Cajicá y despacho nacional a toda Colombia.
             </p>
 
             {/* Action CTAs */}

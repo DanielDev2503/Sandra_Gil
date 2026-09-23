@@ -21,10 +21,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: '⚡ Envío Express en Bogotá | Sandra Gil Velas Artesanales',
     description: 'Servicio de entrega rápida el mismo día para Bogotá D.C. Cobertura local por mensajería digital.',
-    url: 'https://sgvelas.com/envio-express',
+    url: 'https://sandragilvelas.com/envio-express',
   },
   alternates: {
-    canonical: '/envio-express',
+    canonical: 'https://sandragilvelas.com/envio-express',
   },
 };
 

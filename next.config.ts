@@ -47,6 +47,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "sgvelas.com",
       },
+      {
+        protocol: "https",
+        hostname: "sandragilvelas.com",
+      },
     ],
   },
   async headers() {

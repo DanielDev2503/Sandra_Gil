@@ -32,7 +32,7 @@ const WA_NUMBER = '573175752029';
 
 const ARTISAN_PILLARS = [
   { icon: Leaf, title: '100% Cera de Soya', subtitle: 'Biodegradable & limpia' },
-  { icon: Sparkles, title: 'Flores Preservadas', subtitle: 'Diseño botánico vivo' },
+  { icon: Sparkles, title: 'Flores Botánicas', subtitle: 'Diseño botánico natural' },
   { icon: Flame, title: 'Combustión Limpia', subtitle: 'Pabilo de algodón sin plomo' },
   { icon: ShieldCheck, title: 'Hecho a Mano', subtitle: 'Vertido en Bogotá' },
 ];
@@ -86,8 +86,8 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
 
             {/* Subtitle / Value Thesis */}
             <p className="text-stone-600 text-sm sm:text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed font-sans font-light">
-              Velas aromáticas y piezas escultóricas vertidas a mano con cera de soya 100% natural, 
-              adornadas con flores preservadas y esencias botánicas exclusivas. Luz que transforma tu hogar.
+              Velas aromáticas y piezas escultóricas vertidas a mano en Bogotá con cera de soya 100% natural, 
+              adornadas con flores botánicas naturales y esencias exclusivas. Luz pura que transforma tu hogar.
             </p>
 
             {/* Action CTAs */}
@@ -138,7 +138,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
               {heroImage ? (
                 <SkeletonImage
                   src={heroImage}
-                  alt={heroProduct?.nombre ?? 'Vela artesanal de soya Sandra Gil'}
+                  alt={heroProduct?.nombre ? `Vela artesanal ${heroProduct.nombre} en cera de soya natural Sandra Gil - Taller Bogotá` : 'Vela artesanal en cera de soya natural Sandra Gil - Taller Bogotá'}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   fill
                   priority

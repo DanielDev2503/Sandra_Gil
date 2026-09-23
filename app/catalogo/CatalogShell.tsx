@@ -251,7 +251,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                   <Link href={`/productos/${product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                     <SkeletonImage
                       src={displayImage ?? ''}
-                      alt={product.nombre}
+                      alt={soap ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

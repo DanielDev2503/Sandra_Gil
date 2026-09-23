@@ -20,12 +20,12 @@ const PILLARS = [
   {
     id: 'flores',
     badge: 'Arte Botánico',
-    title: 'Flores Preservadas Reales',
+    title: 'Flores Botánicas Naturales',
     description:
-      'Incorporamos hortensias, eucalipto, lavanda y siemprevivas naturales que mantienen su color y textura intactos, convirtiendo cada vela en una pieza decorativa de lujo.',
+      'Incorporamos hortensias, eucalipto, lavanda y siemprevivas botánicas naturales seleccionadas que mantienen su frescura y textura, convirtiendo cada vela en una pieza decorativa única.',
     icon: Sparkles,
     colSpan: 'lg:col-span-4',
-    highlight: 'Naturaleza inmortalizada',
+    highlight: 'Botánica natural seleccionada',
     tag: 'Diseño Único',
   },
   {
@@ -80,7 +80,7 @@ export default function BrandPillarsBento() {
           <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-4 mb-4" />
           <p className="text-stone-500 text-xs sm:text-sm font-sans font-light leading-relaxed">
             Cada vela es el resultado de un proceso consciente que fusiona la pureza de la cera vegetal, 
-            el arte de las flores preservadas y la sutileza de la perfumería fina.
+            el arte de las flores botánicas naturales y la sutileza de la perfumería fina.
           </p>
         </div>
 

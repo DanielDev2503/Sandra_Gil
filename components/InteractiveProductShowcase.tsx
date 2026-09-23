@@ -216,7 +216,7 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
                 >
                   <SkeletonImage
                     src={currentDisplayImage}
-                    alt={product.nombre}
+                    alt={product.tipo === 'JABON' ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                     className="w-full h-full object-cover"
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"

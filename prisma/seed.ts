@@ -10,7 +10,7 @@ async function main() {
   
   const productos = [
     {
-      nombre: "Vela Celestial de Lavanda y Flores Preservadas",
+      nombre: "Vela Celestial de Lavanda y Flores Botánicas",
       descripcion: "Vela artesanal de cera de soya natural, decorada con flores de lavanda y amatista. Aroma relajante y suave, ideal para meditación.",
       aroma: "Lavanda & Manzanilla",
       dimensiones: "8 x 8 cm",

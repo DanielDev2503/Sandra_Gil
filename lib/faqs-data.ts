@@ -24,7 +24,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-envios-1',
     pregunta: '¿Hacen envíos en Bogotá y municipios aledaños?',
     respuesta:
-      '¡Sí! Realizamos envíos a todas las localidades de Bogotá urbana y a municipios de la sabana como Chía, Cajicá, Cota, Sopó, La Calera, Zipaquirá y Soacha. Cada paquete se envía cuidadosamente embalado y protegido para garantizar que llegue en perfectas condiciones.',
+      '¡Sí! Realizamos envíos gratis a todas las localidades urbanas de Bogotá D.C. y municipios de la Sabana (Chía, Cajicá, Cota, Zipaquirá, Sopó, La Calera y Soacha). Para el resto del país contamos con envíos nacionales vía Servientrega por una tarifa estándar de $9.000 COP y $24.000 COP para trayectos especiales.',
     categoria: 'Envíos y Entregas',
     orden: 1,
     activo: true,
@@ -33,7 +33,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-envios-2',
     pregunta: '¿Cuánto tiempo tarda en llegar mi pedido?',
     respuesta:
-      'Los pedidos estándar se procesan y entregan en un lapso de 1 a 3 días hábiles en Bogotá. Si requieres tu pedido con urgencia para hoy mismo o un horario específico, disponemos de la opción de **Envío Express** sujeta a disponibilidad horaria.',
+      'El alistamiento artesanal toma de 1 a 2 días hábiles (curado y fraguado de la cera de soya). En Bogotá y Sabana la entrega toma 1 día hábil adicional (2 a 3 días hábiles en total). Para destinos nacionales, la entrega toma de 2 a 5 días hábiles totales vía Servientrega. Además, disponemos de la opción de Envío Express el mismo día en Bogotá D.C.',
     categoria: 'Envíos y Entregas',
     orden: 2,
     activo: true,
@@ -42,7 +42,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-envios-3',
     pregunta: '¿Cómo protegen las velas y flores botánicas durante el transporte?',
     respuesta:
-      'Utilizamos un sistema de embalaje multicapa eco-amigable con papel kraft corrugado, burbuja amortiguadora y cajas rígidas reforzadas. Nuestras flores botánicas preservadas van selladas e inmovilizadas para evitar desprendimientos por movimiento.',
+      'Utilizamos un sistema de embalaje multicapa eco-amigable con papel kraft corrugado, burbuja amortiguadora y cajas rígidas reforzadas. Nuestras flores botánicas naturales van selladas e inmovilizadas para evitar desprendimientos por movimiento, con garantía total de reposición en caso de avería.',
     categoria: 'Envíos y Entregas',
     orden: 3,
     activo: true,
@@ -51,7 +51,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-envios-4',
     pregunta: '¿Puedo recoger mi pedido personalmente en el taller?',
     respuesta:
-      'Sí, contamos con punto de entrega coordinado en nuestro taller artesanal en Bogotá. Al realizar tu compra o escribirnos por WhatsApp, indícanos que deseas recogida presencial para agendar tu horario conveniente.',
+      'Sí, contamos con punto de entrega coordinado en nuestro taller artesanal en Bogotá. Al realizar tu compra o escribirnos por WhatsApp (+57 3175752029), indícanos que deseas recogida presencial para agendar tu horario conveniente.',
     categoria: 'Envíos y Entregas',
     orden: 4,
     activo: true,
@@ -69,18 +69,18 @@ export const INITIAL_FAQS: FAQItem[] = [
   },
   {
     id: 'faq-cuidados-2',
-    pregunta: '¿Por qué debo recortar el pabilo antes de cada uso?',
+    pregunta: '¿Por qué debo recortar el pabilo y cuál es la duración máxima de quemado continuo?',
     respuesta:
-      'Recomendamos recortar el pabilo de algodón a unos 5 mm (medio centímetro) antes de volver a encender la vela. Esto garantiza una llama limpia, pareja y estable, previene el exceso de humo y prolonga notablemente la vida útil de la cera.',
+      'Recomendamos una duración máxima de quemado continuo de 2 horas consecutivas. Superar este lapso puede sobrecalentar el envase y evaporar prematuramente las esencias puras. Asimismo, antes de cada encendido, recorta el pabilo de algodón a 5 mm para garantizar una combustión limpia, sin humo ni hollín.',
     categoria: 'Cuidados de la Vela',
     orden: 6,
     activo: true,
   },
   {
     id: 'faq-cuidados-3',
-    pregunta: '¿Qué precauciones debo tener con las flores preservadas e incrustaciones?',
+    pregunta: '¿Qué precauciones debo tener con las flores botánicas naturales e incrustaciones?',
     respuesta:
-      'Nuestras flores y cristales están dispuestos cuidadosamente en la superficie. A medida que la cera se consume, si alguna flor flotante se acerca demasiado a la llama, te sugerimos retirarla suavemente con unas pinzas o empujarla hacia el borde del envase para mantener la llama impecable.',
+      'Nuestras flores botánicas naturales y cristales están dispuestos artesanalmente en la superficie. A medida que la cera se consume, si algún elemento botánico se acerca a la llama, te sugerimos retirarlo suavemente con unas pinzas o empujarlo hacia el borde del envase para mantener una llama pura e impecable.',
     categoria: 'Cuidados de la Vela',
     orden: 7,
     activo: true,
@@ -167,7 +167,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-personalizadas-1',
     pregunta: '¿Elaboran recordatorios y detalles para bodas, bautizos y eventos corporativos?',
     respuesta:
-      'Sí, diseñamos recuerdos personalizados para todo tipo de celebraciones y regalos corporativos: personalización de etiquetas con tu nombre o logo, selección de flores preservadas temáticas, aromas a elección y empaques de lujo con precios especiales por volumen.',
+      'Sí, diseñamos recuerdos personalizados para todo tipo de celebraciones y regalos corporativos: personalización de etiquetas con tu nombre o logo, selección de flores botánicas naturales temáticas, aromas a elección y empaques de lujo con precios especiales por volumen.',
     categoria: 'Personalizadas y Eventos',
     orden: 16,
     activo: true,

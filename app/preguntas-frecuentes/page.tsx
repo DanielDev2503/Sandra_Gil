@@ -11,26 +11,26 @@ import { ChevronRight } from 'lucide-react';
 export const revalidate = 3600; // Revalidate every hour (ISR)
 
 export const metadata: Metadata = {
-  title: 'Preguntas Frecuentes | Sandra Gil Velas Artesanales',
+  title: 'Preguntas Frecuentes | Sandra Gil Velas Artesanales Bogotá',
   description:
-    'Encuentra respuestas sobre nuestras velas de cera de soya natural, flores preservadas, tiempos y costos de envío en Bogotá, métodos de pago y cuidados esenciales.',
+    'Encuentra respuestas sobre nuestras velas de cera de soya natural, flores botánicas, tiempos y costos de envío en Bogotá, métodos de pago y cuidados esenciales.',
   alternates: {
-    canonical: 'https://sgvelas.com/preguntas-frecuentes',
+    canonical: 'https://sandragilvelas.com/preguntas-frecuentes',
   },
   openGraph: {
     title: 'Preguntas Frecuentes | Sandra Gil Velas Artesanales Bogotá',
     description:
       'Respuestas a dudas sobre envíos en Bogotá, métodos de pago en línea, cuidado del pabilo y personalización de velas artesanales.',
-    url: 'https://sgvelas.com/preguntas-frecuentes',
+    url: 'https://sandragilvelas.com/preguntas-frecuentes',
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Preguntas Frecuentes | Sandra Gil Velas',
+    title: 'Preguntas Frecuentes | Sandra Gil Velas Artesanales',
     description:
-      'Guía y preguntas frecuentes sobre nuestras velas de cera de soya natural y envíos en Bogotá.',
+      'Guía y preguntas frecuentes sobre nuestras velas de cera de soya natural, flores botánicas y envíos en Bogotá.',
   },
 };
 

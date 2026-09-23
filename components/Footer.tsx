@@ -24,7 +24,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-xs text-stone-400 max-w-xs leading-relaxed">
-              Velas decorativas y aromáticas elaboradas a mano con cera de soya natural, flores botánicas preservadas y esencias exclusivas.
+              Velas decorativas y aromáticas elaboradas a mano con cera de soya natural, flores botánicas naturales y esencias exclusivas.
             </p>
             <div className="flex items-center gap-2 text-xs text-stone-400">
               <MapPin className="w-4 h-4 text-brand-gold shrink-0" />

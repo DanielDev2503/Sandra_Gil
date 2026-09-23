@@ -18,20 +18,31 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://sgvelas.com'),
+  metadataBase: new URL('https://sandragilvelas.com'),
   title: {
-    default: "Sandra Gil | Velas Decorativas y Aromáticas Artesanales",
-    template: "%s | Sandra Gil Velas",
+    default: 'Sandra Gil | Velas Decorativas y Aromáticas Artesanales',
+    template: '%s | Sandra Gil Velas',
   },
-  description: "Velas artesanales premium hechas a mano con cera de soya natural, flores preservadas y aromas exclusivos en Bogotá, Colombia. Envío local rápido.",
-  keywords: ["velas artesanales", "velas decorativas", "velas aromáticas", "cera de soya", "flores preservadas", "Bogotá", "Sandra Gil", "diseño de la luz"],
+  description:
+    'Velas artesanales premium vertidas a mano con cera de soya natural, flores botánicas y aromas exclusivos en Bogotá, Colombia. Envíos locales y nacionales.',
+  keywords: [
+    'velas artesanales bogota',
+    'velas de cera de soya bogota',
+    'velas ecologicas colombia',
+    'aromaterapia cera de soya',
+    'velas decorativas hechas a mano',
+    'velas personalizadas eventos bogota',
+    'Sandra Gil',
+    'velas artesanales',
+  ],
   alternates: {
     canonical: './',
   },
   openGraph: {
-    title: "Sandra Gil | Velas Decorativas y Aromáticas Artesanales",
-    description: "Velas artesanales premium hechas a mano con cera de soya natural, flores preservadas y aromas exclusivos en Bogotá, Colombia.",
-    url: 'https://sgvelas.com',
+    title: 'Sandra Gil | Velas Decorativas y Aromáticas Artesanales Bogotá',
+    description:
+      'Velas artesanales premium vertidas a mano con cera de soya natural, flores botánicas y aromas exclusivos en Bogotá, Colombia. Envíos locales y nacionales.',
+    url: 'https://sandragilvelas.com',
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
     type: 'website',
@@ -40,14 +51,15 @@ export const metadata: Metadata = {
         url: '/logo-sandra.png',
         width: 800,
         height: 800,
-        alt: 'Sandra Gil Velas Artesanales',
+        alt: 'Sandra Gil Velas Artesanales Bogotá',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Sandra Gil | Velas Decorativas y Aromáticas Artesanales",
-    description: "Velas artesanales premium hechas a mano con cera de soya natural, flores preservadas y aromas exclusivos en Bogotá, Colombia.",
+    title: 'Sandra Gil | Velas Decorativas y Aromáticas Artesanales Bogotá',
+    description:
+      'Velas artesanales premium vertidas a mano con cera de soya natural, flores botánicas y aromas exclusivos en Bogotá, Colombia. Envíos locales y nacionales.',
     images: ['/logo-sandra.png'],
   },
   robots: {
@@ -56,21 +68,73 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
+const jsonLdGraph = {
   '@context': 'https://schema.org',
-  '@type': 'Store',
-  name: 'Sandra Gil Velas Artesanales',
-  image: 'https://sgvelas.com/logo-sandra.png',
-  description: 'Velas decorativas y aromáticas vertidas a mano en Bogotá con 100% cera de soya natural y flores botánicas preservadas.',
-  url: 'https://sgvelas.com',
-  telephone: '+573175752029',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Bogotá',
-    addressRegion: 'Cundinamarca',
-    addressCountry: 'CO',
-  },
-  priceRange: '$$',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://sandragilvelas.com/#organization',
+      name: 'Sandra Gil Velas Artesanales',
+      url: 'https://sandragilvelas.com',
+      logo: {
+        '@type': 'ImageObject',
+        '@id': 'https://sandragilvelas.com/#logo',
+        url: 'https://sandragilvelas.com/logo-sandra.png',
+        caption: 'Sandra Gil Velas Artesanales',
+      },
+      image: 'https://sandragilvelas.com/logo-sandra.png',
+      telephone: '+573175752029',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+573175752029',
+        contactType: 'customer service',
+        areaServed: 'CO',
+        availableLanguage: ['Spanish'],
+      },
+    },
+    {
+      '@type': ['Store', 'LocalBusiness'],
+      '@id': 'https://sandragilvelas.com/#store',
+      name: 'Sandra Gil Velas Artesanales',
+      url: 'https://sandragilvelas.com',
+      logo: 'https://sandragilvelas.com/logo-sandra.png',
+      image: 'https://sandragilvelas.com/logo-sandra.png',
+      description:
+        'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores botánicas.',
+      telephone: '+573175752029',
+      priceRange: '$$',
+      currenciesAccepted: 'COP',
+      paymentAccepted:
+        'Tarjeta de Crédito, Tarjeta Débito, PSE, Nequi, Daviplata, Bancolombia, Efectivo',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Bogotá',
+        addressRegion: 'Cundinamarca',
+        addressCountry: 'CO',
+      },
+      areaServed: [
+        { '@type': 'City', name: 'Bogotá' },
+        { '@type': 'City', name: 'Chía' },
+        { '@type': 'City', name: 'Cajicá' },
+        { '@type': 'City', name: 'Cota' },
+        { '@type': 'City', name: 'Zipaquirá' },
+        { '@type': 'Country', name: 'Colombia' },
+      ],
+      parentOrganization: {
+        '@id': 'https://sandragilvelas.com/#organization',
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://sandragilvelas.com/#website',
+      url: 'https://sandragilvelas.com',
+      name: 'Sandra Gil Velas Artesanales',
+      inLanguage: 'es-CO',
+      publisher: {
+        '@id': 'https://sandragilvelas.com/#organization',
+      },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -86,7 +150,7 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
         />
       </head>
       <body className="font-sans min-h-full flex flex-col bg-[#FBF9F6] text-[#2C2A29] overflow-x-hidden">

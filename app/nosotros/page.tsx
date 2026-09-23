@@ -6,9 +6,27 @@ import { Sparkles, Leaf, Heart, Flame, GraduationCap } from 'lucide-react';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'Sobre Nosotros | Sandra Gil Velas Artesanales',
+  title: 'Sobre Nosotros | Sandra Gil Velas Artesanales Bogotá',
   description:
-    'Conoce la historia de Sandra Gil Velas Artesanales: un taller artesanal en Bogotá dedicado a crear velas de cera de soya con flores preservadas y aromas exclusivos.',
+    'Conoce la historia de Sandra Gil Velas Artesanales: taller artesanal en Bogotá dedicado a crear velas de cera de soya con flores botánicas naturales y aromas exclusivos.',
+  alternates: {
+    canonical: 'https://sandragilvelas.com/nosotros',
+  },
+  openGraph: {
+    title: 'Sobre Nosotros | Sandra Gil Velas Artesanales Bogotá',
+    description:
+      'Taller artesanal en Bogotá dedicado a la creación consciente de velas de cera de soya natural, flores botánicas y aromas de bienestar.',
+    url: 'https://sandragilvelas.com/nosotros',
+    siteName: 'Sandra Gil Velas Artesanales',
+    locale: 'es_CO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Sobre Nosotros | Sandra Gil Velas Artesanales',
+    description:
+      'Conoce el taller artesanal de Sandra Gil en Bogotá: cera de soya 100% natural y flores botánicas.',
+  },
 };
 
 const PILLARS = [
@@ -22,7 +40,7 @@ const PILLARS = [
     icon: Sparkles,
     title: 'Diseño Artesanal',
     description:
-      'Cada vela es moldeada y vertida a mano, con flores botánicas preservadas que la hacen irrepetible.',
+      'Cada vela es moldeada y vertida a mano, con flores botánicas naturales que la hacen irrepetible.',
   },
   {
     icon: Heart,
@@ -105,7 +123,7 @@ export default function NosotrosPage() {
               </p>
               <p>
                 Hoy cada vela que sale de nuestro taller es vertida a mano, decorada con flores
-                botánicas preservadas artesanalmente y perfumada con mezclas de aromaterapia
+                botánicas naturales seleccionadas artesanalmente y perfumada con mezclas de aromaterapia
                 diseñadas para transformar cualquier espacio. Trabajamos en lotes pequeños para
                 cuidar cada detalle: desde la temperatura exacta de vertido hasta la selección
                 individual de cada flor y cristal.
@@ -180,7 +198,7 @@ export default function NosotrosPage() {
                 </h2>
 
                 <p className="mt-4 sm:mt-6 text-xs sm:text-sm md:text-base text-stone-300 max-w-xl mx-auto leading-relaxed font-sans font-light">
-                  Aprende a crear tu propia vela aromática de cera de soya con flores preservadas.
+                  Aprende a crear tu propia vela aromática de cera de soya con flores botánicas naturales.
                   Una experiencia sensorial guiada por Sandra Gil donde descubrirás las técnicas
                   artesanales, el arte de la aromaterapia y te llevarás una pieza única hecha por
                   tus propias manos. Ideal para regalar, para equipos corporativos o para una tarde

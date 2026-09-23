@@ -13,7 +13,7 @@ const EXPERIENCES = [
     title: 'Eventos & Recordatorios Exclusivos',
     subtitle: 'Bodas, Bautizos y Ocasiones Especiales',
     description:
-      'Personalizamos aromas, etiquetas de diseño, cuarzos y flores preservadas para que tus invitados se lleven un recuerdo inolvidable lleno de luz.',
+      'Personalizamos aromas botánicos, etiquetas de diseño, cuarzos y flores botánicas naturales para que tus invitados se lleven un recuerdo inolvidable lleno de luz.',
     ctaText: 'Cotizar para mi Evento',
     waMessage: 'Hola Sandra, quiero cotizar velas personalizadas para un evento especial.',
   },
@@ -22,7 +22,7 @@ const EXPERIENCES = [
     title: 'Talleres de Creación & Vertido',
     subtitle: 'Experiencia Presencial en Bogotá',
     description:
-      'Aprende a formular tus propios aromas, manipular cera de soya botánica y encapsular flores preservadas en un espacio íntimo de relajación y bienestar.',
+      'Aprende a formular tus propios aromas, manipular cera de soya botánica y encapsular flores botánicas naturales en un espacio íntimo de relajación y bienestar.',
     ctaText: 'Consultar Próximas Fechas',
     waMessage: 'Hola Sandra, me gustaría información sobre los próximos talleres presenciales de velas.',
   },

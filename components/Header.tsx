@@ -58,7 +58,7 @@ export default function Header() {
     <>
       {/* Top micro-banner */}
       <div className="bg-brand-brown text-[#FAF8F5] text-[10px] sm:text-[11px] text-center py-1.5 px-3 font-sans tracking-wide">
-        🕯️ 100% Cera de Soya Natural · Vertido a Mano en Bogotá · Flores Botánicas Preservadas ·{' '}
+        🕯️ 100% Cera de Soya Natural · Vertido a Mano en Bogotá · Flores Botánicas Naturales ·{' '}
         <a
           href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20tus%20velas`}
           target="_blank"

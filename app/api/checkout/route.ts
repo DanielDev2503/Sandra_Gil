@@ -158,7 +158,7 @@ export async function POST(req: Request) {
     const publicKey = process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY;
     const integritySecret = process.env.WOMPI_INTEGRITY_SECRET;
     const wompiUrl = process.env.WOMPI_CHECKOUT_URL || 'https://checkout.wompi.co/p/';
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://sgvelas.com';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://sandragilvelas.com';
 
     if (!publicKey || !integritySecret) {
       console.error('❌ Variables de entorno de Wompi no configuradas: NEXT_PUBLIC_WOMPI_PUBLIC_KEY o WOMPI_INTEGRITY_SECRET faltantes.');

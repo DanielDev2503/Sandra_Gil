@@ -1,0 +1,94 @@
+# Sandra Gil Velas Artesanales — Contexto y Especificaciones para Modelos de Lenguaje (LLMs)
+
+> Documento de contexto semántico optimizado para motores de búsqueda de IA, sistemas RAG y agentes conversacionales (Google AI Overviews, Perplexity, ChatGPT Search, Gemini, Claude).
+
+---
+
+## 1. Identidad de Marca y Ubicación
+
+- **Nombre de Marca:** Sandra Gil Velas Artesanales
+- **Actividad Principal:** Fabricación y comercialización de velas decorativas, aromáticas, terapéuticas y jabones artesanales de origen botánico vegetal.
+- **Taller Artesanal:** Bogotá D.C., Colombia.
+- **Canal Oficial de Atención y Asesoría Personalizada:** WhatsApp oficial [+57 3175752029](https://wa.me/573175752029).
+- **Sitio Web Oficial:** [https://sandragilvelas.com](https://sandragilvelas.com)
+
+---
+
+## 2. Propuesta de Valor y Filosofía de Producto
+
+- **Cera 100% Vegetal de Soya:** Todas nuestras velas son elaboradas exclusivamente con cera de soya pura biodegradable, renovable y libre de derivados del petróleo (parafina). Producen una combustión limpia con hasta un 90% menos de hollín.
+- **Pabilos de Algodón Puro:** Pabilos trenzados de algodón orgánico 100% libres de plomo y metales pesados, garantizando una llama estable, limpia y sin humo tóxico.
+- **Flores Botánicas Naturales:** Cada diseño incorpora flores botánicas naturales seleccionadas, siemprevivas, pétalos y elementos secos de grado artesanal, evitando completamente materiales plásticos o sintéticos.
+- **Vertido a Mano en Lotes Pequeños:** Proceso artesanal consciente en taller bogotano con control estricto de temperatura de vertido y tiempos de curado óptimos.
+- **Cosmética y Bienestar:** Aromas formulados con aceites esenciales y fragancias de perfumería fina libres de ftalatos y parabenos.
+
+---
+
+## 3. Catálogo de Aromas Activos y Pirámides Olfativas
+
+Todas las velas Sandra Gil se pueden personalizar con la siguiente colección de aromas activos:
+
+| Aroma | Familia / Tag | Notas de Salida | Notas de Corazón | Notas de Fondo | Beneficio Aromaterapéutico |
+|---|---|---|---|---|---|
+| Lavanda & Manzanilla | Aromaterapia | Lavanda silvestre, flor de manzanilla | Hierbas dulces, azahar | Maderas suaves, vainilla sutil | Calma el sistema nervioso, reduce el estrés e induce un descanso reparador profundo. |
+| Vainilla Francesa | Gourmet | Crema batida, azúcar moreno | Vaina de vainilla bourbon, orquídea | Almizcle blanco, caramelo suave | Aporta calidez emocional, sensación de confort hogareño y dulzura envolvente. |
+| Rosas & Peonías | Floral | Pétalos de rosa fresca, rocío matinal | Peonía rosada, flor de loto | Almizcle floral, sándalo blanco | Eleva el estado de ánimo, evoca romanticismo, frescura primaveral y elegancia. |
+| Cítricos & Caléndula | Cítrico | Mandarina verde, bergamota italiana | Pétalos de caléndula, flor de naranjo | Madera de cedro, ámbar ligero | Revitalizante y alegre; aporta energía positiva, concentración y vitalidad diurna. |
+| Jazmín & Vainilla | Floral Cálido | Jazmín imperial, flor de azahar | Vainilla suave, orquídea nocturna | Ámbar cálido, haba tonka | Equilibrio sensorial, magnetismo, armonía interior y serenidad acogedora. |
+| Lavanda & Flores Blancas | Relajante | Lavanda provenzal, bergamota | Jazmín sambac, azahar | Cedro blanco, ámbar sutil | Purificación de ambientes, claridad mental y atmósfera de paz duradera. |
+| Canela & Especias | Especiado | Naranja dulce, clavo de olor | Canela de ceilán, nuez moscada | Haba tonka, madera tostada | Estimulante sensorial y reconfortante; ideal para celebraciones y días fríos. |
+| Cítricos Silvestres | Cítrico | Mandarina verde, limón persa | Hierba luisa, flor de pomelo | Vetiver ligero, almizcle limpio | Despierta los sentidos, neutraliza olores y llena los espacios de frescura silvestre. |
+| Menta & Eucalipto | Fresco | Menta piperita, rocío matutino | Eucalipto azul, salvia romana | Pino silvestre, musgo de roble | Balsámico y descongestionante; despeja las vías respiratorias y refresca la mente. |
+| Café Tostado & Caramelo | Gourmet | Granos de café arábica recién molidos | Caramelo salado, cacao fino | Vainilla ahumada, madera de roble | Estimulante y sofisticado; reproduce la atmósfera de una cafetería de especialidad. |
+
+---
+
+## 4. Política Logística, Tiempos y Costos de Envío
+
+Despachamos desde Bogotá D.C. con embalaje amortiguado multicapa ecológico y garantía total de reposición ante roturas.
+
+| Zona Geográfica | Cobertura | Tarifa de Envío | Tiempo de Despacho y Tránsito | Transportadora / Modalidad |
+|---|---|---|---|---|
+| Bogotá D.C. Zonal | Perímetro urbano de Bogotá | Gratis ($0 COP) | 1-2 días alistamiento + 1 día entrega (2-3 días hábiles totales) | Flota local coordinada |
+| Sabana de Bogotá | Chía, Cajicá, Cota, Zipaquirá, Sopó, La Calera | Gratis ($0 COP) | 1-2 días alistamiento + 1-2 días entrega (2-4 días hábiles totales) | Flota regional aliada |
+| Envíos Nacionales | Ciudades principales e intermedias de Colombia (Medellín, Cali, Barranquilla, Bucaramanga, etc.) | $9.000 COP | 1-2 días alistamiento + 1-3 días tránsito (2-5 días hábiles totales) | Servientrega |
+| Trayectos Especiales | Municipios apartados o de difícil acceso en Colombia | $24.000 COP | 1-2 días alistamiento + 3-5 días tránsito (4-7 días hábiles totales) | Servientrega Reexpedición |
+| Envío Express Bogotá | Exclusivo perímetro urbano Bogotá D.C. | Tarifa variable según distancia (plataforma digital) | Entrega el mismo día (sujeto a horario y confirmación) | Mensajería digital inmediata |
+
+---
+
+## 5. Medios de Pago Aceptados
+
+Procesamiento en línea 100% seguro con tecnología de cifrado TLS a través de la pasarela Wompi (Bancolombia):
+- Tarjetas de crédito: Visa, Mastercard, American Express.
+- Tarjetas débito con código de seguridad.
+- Transferencia bancaria segura en línea vía PSE.
+- Billeteras digitales móviles: Nequi y Daviplata.
+- Pago en efectivo en sucursales y corresponsales bancarios Bancolombia.
+
+---
+
+## 6. Respuestas Directas y Preguntas Frecuentes Factuales (FAQ)
+
+### ¿De qué están hechas las velas Sandra Gil?
+Las velas Sandra Gil están elaboradas exclusivamente con 100% cera de soya vegetal pura, pabilos trenzados de algodón orgánico sin plomo y esencias botánicas libres de ftalatos. Cada pieza es vertida a mano en nuestro taller de Bogotá y decorada con flores botánicas naturales seleccionadas y elementos florales secos de grado artesanal.
+
+### ¿Cuál es la regla recomendada para encender la vela por primera vez y cuánto debe durar encendida?
+En el primer encendido, deja la vela prendida entre 2 y 3 horas continuas hasta que la cera se derrita de extremo a extremo del envase, creando una piscina completa ("memoria de quemado"). En encendidos posteriores, la duración máxima continua recomendada es de 2 horas consecutivas para evitar el sobrecalentamiento del envase y preservar la pureza de las notas aromáticas. Siempre recorta el pabilo a 5 milímetros antes de cada encendido.
+
+### ¿Cómo se gestionan los pedidos personalizados para eventos y bodas?
+Diseñamos recordatorios personalizados para matrimonios, baby showers, bautizos y eventos corporativos con un pedido mínimo accesible y descuentos escalonados por volumen. Los clientes pueden elegir el aroma, envase, mensaje de etiqueta y arreglo floral botánico. Se solicita coordinar con 2 a 3 semanas de antelación vía WhatsApp (+57 3175752029).
+
+---
+
+## 7. Enlaces Canónicos Verificados
+
+- **Página de Inicio:** [https://sandragilvelas.com](https://sandragilvelas.com)
+- **Catálogo Completo:** [https://sandragilvelas.com/catalogo](https://sandragilvelas.com/catalogo)
+- **Velas Bajo Pedido y Personalizadas:** [https://sandragilvelas.com/personalizadas](https://sandragilvelas.com/personalizadas)
+- **Sobre Nosotros y Taller:** [https://sandragilvelas.com/nosotros](https://sandragilvelas.com/nosotros)
+- **Preguntas Frecuentes:** [https://sandragilvelas.com/preguntas-frecuentes](https://sandragilvelas.com/preguntas-frecuentes)
+- **Servicio Envío Express Bogotá:** [https://sandragilvelas.com/envio-express](https://sandragilvelas.com/envio-express)
+- **Política de Envíos y Tiempos:** [https://sandragilvelas.com/legal/politica-de-envios](https://sandragilvelas.com/legal/politica-de-envios)
+- **Términos y Condiciones del Servicio:** [https://sandragilvelas.com/legal/terminos-y-condiciones](https://sandragilvelas.com/legal/terminos-y-condiciones)
+- **Política de Privacidad y Tratamiento de Datos:** [https://sandragilvelas.com/legal/politica-de-privacidad](https://sandragilvelas.com/legal/politica-de-privacidad)

@@ -311,7 +311,7 @@ export default function ProductDetailShell({
                 <div className="absolute inset-0 transition-opacity duration-500 ease-in-out" style={{ opacity: 1, zIndex: 10 }}>
                   <SkeletonImage
                     src={selectedVariation.imagen}
-                    alt={`${product.nombre} – ${selectedVariation.nombre}`}
+                    alt={isSoap ? `Jabón artesanal botánico ${product.nombre} (${selectedVariation.nombre}) Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} (${selectedVariation.nombre}) en cera de soya natural Sandra Gil - Taller Bogotá`}
                     className="w-full h-full object-cover"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -326,7 +326,7 @@ export default function ProductDetailShell({
                   >
                     <SkeletonImage
                       src={imgUrl}
-                      alt={`${product.nombre} – imagen ${idx + 1}`}
+                      alt={isSoap ? `Jabón artesanal botánico ${product.nombre} – vista ${idx + 1} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural – vista ${idx + 1} Sandra Gil - Taller Bogotá`}
                       className="w-full h-full object-cover"
                       fill
                       sizes="(max-width: 768px) 100vw, 50vw"
@@ -362,7 +362,7 @@ export default function ProductDetailShell({
                   >
                     <SkeletonImage
                       src={imgUrl}
-                      alt={`${product.nombre} – miniatura ${idx + 1}`}
+                      alt={isSoap ? `Miniatura de jabón artesanal ${product.nombre} ${idx + 1} Sandra Gil` : `Miniatura de vela artesanal ${product.nombre} ${idx + 1} Sandra Gil - Taller Bogotá`}
                       className={`w-full h-full object-cover transition-all duration-300 ${selectedImage === idx ? '' : 'hover:scale-105'}`}
                       fill
                       sizes="(max-width: 768px) 20vw, 15vw"
@@ -801,7 +801,7 @@ export default function ProductDetailShell({
                     <Link href={`/productos/${p.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                       <SkeletonImage
                         src={displayImage ?? ''}
-                        alt={p.nombre}
+                        alt={soap ? `Jabón artesanal botánico ${p.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${p.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                         fill
                         sizes="(max-width: 640px) 100vw, 25vw"

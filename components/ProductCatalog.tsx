@@ -75,7 +75,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
         </h2>
         <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 mb-4" />
         <p className="text-stone-500 text-xs sm:text-sm font-sans font-light leading-relaxed">
-          Cada diseño es vertido individualmente a mano con cera de soya natural, enriquecido con fragancias selectas y detalles botánicos preservados.
+          Cada diseño es vertido individualmente a mano con cera de soya natural, enriquecido con fragancias selectas y detalles botánicos naturales seleccionados.
         </p>
       </div>
 
@@ -137,7 +137,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                 >
                   <SkeletonImage
                     src={displayImage ?? ''}
-                    alt={product.nombre}
+                    alt={product.tipo === 'JABON' ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

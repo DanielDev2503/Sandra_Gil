@@ -6,8 +6,27 @@ import { MessageCircle, Sparkles, Clock, Palette } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Velas Bajo Pedido | Sandra Gil Velas Artesanales',
-  description: 'Velas decorativas elaboradas a pedido con cera de soya natural, flores botánicas y aromas personalizados. Cotiza por WhatsApp con Sandra Gil en Bogotá.',
+  title: 'Velas Personalizadas y Recordatorios para Eventos | Sandra Gil Bogotá',
+  description:
+    'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores botánicas y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
+  alternates: {
+    canonical: 'https://sandragilvelas.com/personalizadas',
+  },
+  openGraph: {
+    title: 'Velas Personalizadas y Recordatorios para Eventos | Sandra Gil Bogotá',
+    description:
+      'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores botánicas y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
+    url: 'https://sandragilvelas.com/personalizadas',
+    siteName: 'Sandra Gil Velas Artesanales',
+    locale: 'es_CO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Velas Personalizadas | Sandra Gil Velas Artesanales',
+    description:
+      'Diseñamos velas únicas y recuerdos personalizados con cera de soya pura y flores botánicas en Bogotá.',
+  },
 };
 
 export const revalidate = 0;

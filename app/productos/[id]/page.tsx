@@ -34,12 +34,12 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
     title,
     description,
     alternates: {
-      canonical: `https://sgvelas.com/productos/${product.id}`,
+      canonical: `https://sandragilvelas.com/productos/${product.id}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://sgvelas.com/productos/${product.id}`,
+      url: `https://sandragilvelas.com/productos/${product.id}`,
       siteName: 'Sandra Gil Velas Artesanales',
       locale: 'es_CO',
       type: 'website',
@@ -157,7 +157,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       ? product.imagenes
       : product.url_imagen
       ? [product.url_imagen]
-      : ['https://sgvelas.com/logo-sandra.png'];
+      : ['https://sandragilvelas.com/logo-sandra.png'];
 
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -165,21 +165,26 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     name: product.nombre,
     description: product.descripcion,
     image: productImages,
+    sku: product.id,
     brand: {
       '@type': 'Brand',
-      name: 'Sandra Gil Velas Artesanales',
+      name: 'Sandra Gil',
     },
+    material: product.material || '100% Cera de Soya Natural',
     offers: {
       '@type': 'Offer',
       priceCurrency: 'COP',
       price: product.precio ?? 0,
       itemCondition: 'https://schema.org/NewCondition',
-      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      availability:
+        product.stock > 0
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
       seller: {
         '@type': 'Organization',
-        name: 'Sandra Gil Velas',
+        name: 'Sandra Gil Velas Artesanales',
       },
-      url: `https://sgvelas.com/productos/${product.id}`,
+      url: `https://sandragilvelas.com/productos/${product.id}`,
     },
     ...(resenas.length > 0
       ? {
@@ -207,19 +212,19 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         '@type': 'ListItem',
         position: 1,
         name: 'Inicio',
-        item: 'https://sgvelas.com',
+        item: 'https://sandragilvelas.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Catálogo',
-        item: 'https://sgvelas.com/catalogo',
+        item: 'https://sandragilvelas.com/catalogo',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: product.nombre,
-        item: `https://sgvelas.com/productos/${product.id}`,
+        item: `https://sandragilvelas.com/productos/${product.id}`,
       },
     ],
   };

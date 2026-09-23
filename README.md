@@ -1,6 +1,6 @@
 # Sandra Gil · Velas Artesanales & Aromáticas 🕯️
 
-> Plataforma de comercio electrónico de alta fidelidad para **Sandra Gil Velas Artesanales**, especializada en velas decorativas y aromáticas vertidas a mano con cera de soya 100% natural, flores botánicas preservadas y cosmética artesanal en Bogotá, Colombia.
+> Plataforma de comercio electrónico de alta fidelidad para **Sandra Gil Velas Artesanales**, especializada en velas decorativas y aromáticas vertidas a mano con cera de soya 100% natural, flores botánicas naturales y cosmética artesanal en Bogotá, Colombia.
 
 ---
 
@@ -76,7 +76,8 @@ WOMPI_EVENTS_SECRET="prod_events_..."                 # Secreto para validar fir
 WOMPI_CHECKOUT_URL="https://checkout.wompi.co/p/"     # Endpoint de redirección de Wompi
 
 # ── Dominio Base
-NEXT_PUBLIC_BASE_URL="https://sgvelas.com"             # http://localhost:3000 en desarrollo
+NEXT_PUBLIC_APP_URL="https://sandragilvelas.com"          # Dominio oficial de producción
+NEXT_PUBLIC_BASE_URL="https://sandragilvelas.com"         # http://localhost:3000 en desarrollo
 
 # ── Automatizaciones (Opcional)
 MAKE_WEBHOOK_URL="https://hook.us1.make.com/..."       # Webhook para notificar a WhatsApp/Email/CRM

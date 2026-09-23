@@ -1,22 +1,28 @@
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import ProductDetailShell from './ProductDetailShell';
-import { redirect } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { DEFAULT_BOTANICAL_AROMAS } from '@/lib/aromas';
 
 interface ProductDetailPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export const revalidate = 0; // Dynamic rendering for real-time stock levels
 
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const id = resolvedParams.id;
+  const { slug } = await params;
 
-  const product = await prisma.producto.findUnique({
-    where: { id: id },
+  let product = await prisma.producto.findUnique({
+    where: { slug },
   });
+
+  // Fallback metadata lookup if requested by legacy id
+  if (!product) {
+    product = await prisma.producto.findUnique({
+      where: { id: slug },
+    });
+  }
 
   if (!product || !product.activo) {
     return {
@@ -25,21 +31,22 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
     };
   }
 
-  const title = `${product.nombre} - Vela de Cera de Soya`;
+  const title = `${product.nombre} | Vela Artesanal de Cera de Soya`;
   const rawDesc = product.descripcion || 'Vela artesanal vertida a mano con cera de soya natural y esencias exclusivas en Bogotá.';
   const description = rawDesc.length > 155 ? `${rawDesc.substring(0, 152)}...` : rawDesc;
   const imageUrl = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : (product.url_imagen || '/logo-sandra.png');
+  const canonicalUrl = `https://sandragilvelas.com/productos/${product.slug}`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `https://sandragilvelas.com/productos/${product.id}`,
+      canonical: canonicalUrl,
     },
     openGraph: {
-      title,
+      title: `${product.nombre} | Sandra Gil Velas`,
       description,
-      url: `https://sandragilvelas.com/productos/${product.id}`,
+      url: canonicalUrl,
       siteName: 'Sandra Gil Velas Artesanales',
       locale: 'es_CO',
       type: 'website',
@@ -64,12 +71,11 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
 }
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
-  const resolvedParams = await params;
-  const id = resolvedParams.id;
+  const { slug } = await params;
 
-  // Query database for product with reviews and active variations
+  // Query database for product with reviews and active variations by slug
   const product = await prisma.producto.findUnique({
-    where: { id: id },
+    where: { slug },
     include: {
       resenas: {
         orderBy: { creado_en: 'desc' },
@@ -81,8 +87,19 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     },
   });
 
-  if (!product || !product.activo) {
-    redirect('/');
+  // Fallback de compatibilidad: si no coincide con slug, intentar buscar por id y redirigir 301
+  if (!product) {
+    const productoPorId = await prisma.producto.findUnique({
+      where: { id: slug },
+    });
+    if (productoPorId?.slug) {
+      permanentRedirect(`/productos/${productoPorId.slug}`);
+    }
+    notFound();
+  }
+
+  if (!product.activo) {
+    notFound();
   }
 
   const resenas = product.resenas || [];
@@ -122,6 +139,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   // Fetch up to 4 other active products for the "Productos que te pueden interesar" section
   let relatedProducts: Array<{
     id: string;
+    slug: string;
     nombre: string;
     descripcion: string;
     precio: number | null;
@@ -138,7 +156,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     relatedProducts = await prisma.producto.findMany({
       where: {
         activo: true,
-        id: { not: id },
+        id: { not: product.id },
       },
       take: 4,
     });
@@ -159,6 +177,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       ? [product.url_imagen]
       : ['https://sandragilvelas.com/logo-sandra.png'];
 
+  const productCanonicalUrl = `https://sandragilvelas.com/productos/${product.slug}`;
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -166,6 +186,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     description: product.descripcion,
     image: productImages,
     sku: product.id,
+    url: productCanonicalUrl,
     brand: {
       '@type': 'Brand',
       name: 'Sandra Gil',
@@ -173,6 +194,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     material: product.material || '100% Cera de Soya Natural',
     offers: {
       '@type': 'Offer',
+      url: productCanonicalUrl,
       priceCurrency: 'COP',
       price: product.precio ?? 0,
       itemCondition: 'https://schema.org/NewCondition',
@@ -184,7 +206,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         '@type': 'Organization',
         name: 'Sandra Gil Velas Artesanales',
       },
-      url: `https://sandragilvelas.com/productos/${product.id}`,
     },
     ...(resenas.length > 0
       ? {
@@ -224,13 +245,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         '@type': 'ListItem',
         position: 3,
         name: product.nombre,
-        item: `https://sandragilvelas.com/productos/${product.id}`,
+        item: productCanonicalUrl,
       },
     ],
   };
 
   const productProps = {
     id: product.id,
+    slug: product.slug,
     nombre: product.nombre,
     descripcion: product.descripcion,
     aroma: product.aroma,

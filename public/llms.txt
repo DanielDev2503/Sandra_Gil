@@ -92,3 +92,12 @@ Diseñamos recordatorios personalizados para matrimonios, baby showers, bautizos
 - **Política de Envíos y Tiempos:** [https://sandragilvelas.com/legal/politica-de-envios](https://sandragilvelas.com/legal/politica-de-envios)
 - **Términos y Condiciones del Servicio:** [https://sandragilvelas.com/legal/terminos-y-condiciones](https://sandragilvelas.com/legal/terminos-y-condiciones)
 - **Política de Privacidad y Tratamiento de Datos:** [https://sandragilvelas.com/legal/politica-de-privacidad](https://sandragilvelas.com/legal/politica-de-privacidad)
+
+### Fichas de Producto Canónicas Destacadas (Slugs Semánticos)
+- **Vela Botánica Lavanda & Manzanilla:** [https://sandragilvelas.com/productos/vela-aromatica-lavanda-manzanilla](https://sandragilvelas.com/productos/vela-aromatica-lavanda-manzanilla)
+- **Vela Botánica Cítricos & Caléndula:** [https://sandragilvelas.com/productos/vela-botanica-citricos-calendula](https://sandragilvelas.com/productos/vela-botanica-citricos-calendula)
+- **Vela Aromática Jazmín Imperial:** [https://sandragilvelas.com/productos/vela-aromatica-jazmin-imperial](https://sandragilvelas.com/productos/vela-aromatica-jazmin-imperial)
+- **Vela Aromática Rosas Silvestres:** [https://sandragilvelas.com/productos/vela-aromatica-rosas-silvestres](https://sandragilvelas.com/productos/vela-aromatica-rosas-silvestres)
+- **Vela Aromática Vainilla Dulce:** [https://sandragilvelas.com/productos/vela-calida-vainilla-dulce](https://sandragilvelas.com/productos/vela-calida-vainilla-dulce)
+- **Vela Especiada Canela & Manzana:** [https://sandragilvelas.com/productos/vela-especiada-canela-manzana](https://sandragilvelas.com/productos/vela-especiada-canela-manzana)
+- **Vela Herbal Eucalipto & Menta:** [https://sandragilvelas.com/productos/vela-herbal-eucalipto-menta](https://sandragilvelas.com/productos/vela-herbal-eucalipto-menta)

@@ -20,6 +20,7 @@ interface Variacion {
 
 interface Product {
   id: string;
+  slug?: string;
   nombre: string;
   descripcion: string;
   tipo?: 'VELA' | 'JABON';

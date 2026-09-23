@@ -20,6 +20,7 @@ interface Variacion {
 
 interface Product {
   id: string;
+  slug?: string;
   nombre: string;
   descripcion: string;
   tipo?: 'VELA' | 'JABON';
@@ -128,7 +129,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
               >
                 {/* Product Image Box */}
                 <Link 
-                  href={`/productos/${product.id}`} 
+                  href={`/productos/${product.slug || product.id}`} 
                   className="relative aspect-square block overflow-hidden bg-[#FAF8F5]"
                   aria-label={`Ver detalles de ${product.nombre}`}
                 >
@@ -169,7 +170,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                 {/* Product Info */}
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <Link href={`/productos/${product.id}`} className="block group/title">
+                    <Link href={`/productos/${product.slug || product.id}`} className="block group/title">
                       <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-brown transition-colors duration-200 line-clamp-2 leading-snug">
                         {product.nombre}
                       </h3>

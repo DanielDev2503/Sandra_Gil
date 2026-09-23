@@ -126,7 +126,7 @@ export default async function PersonalizadasPage() {
 
                   return (
                     <div key={product.id} className="bg-white rounded-lg border border-brand-gold/20 overflow-hidden flex flex-col shadow-xs hover:shadow-md transition-all duration-300">
-                      <Link href={`/productos/${product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
+                      <Link href={`/productos/${product.slug || product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                         <SkeletonImage
                           src={displayImage ?? ''}
                           alt={`Vela artesanal personalizada ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
@@ -144,7 +144,7 @@ export default async function PersonalizadasPage() {
                       </Link>
 
                       <div className="p-5 sm:p-6 flex flex-col flex-1">
-                        <Link href={`/productos/${product.id}`}>
+                        <Link href={`/productos/${product.slug || product.id}`}>
                           <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg hover:text-brand-gold transition line-clamp-2 min-h-[2.8rem] leading-snug">
                             {product.nombre}
                           </h3>

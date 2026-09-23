@@ -17,6 +17,7 @@ enum TipoProducto {
 model Producto {
   id            String              @id @default(uuid())
   nombre        String
+  slug          String              @unique
   descripcion   String
   tipo          TipoProducto        @default(VELA)
   aroma         String?

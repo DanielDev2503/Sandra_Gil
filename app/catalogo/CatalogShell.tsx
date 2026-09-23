@@ -14,6 +14,7 @@ const WA_NUMBER = '573175752029';
 
 interface Product {
   id: string;
+  slug?: string;
   nombre: string;
   descripcion: string;
   aroma?: string | null;
@@ -255,7 +256,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                   onMouseEnter={() => setHoveredProduct(product.id)}
                   onMouseLeave={() => setHoveredProduct(null)}
                 >
-                  <Link href={`/productos/${product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
+                  <Link href={`/productos/${product.slug || product.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                     <SkeletonImage
                       src={displayImage ?? ''}
                       alt={soap ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
@@ -297,7 +298,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
                   <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                     <div>
-                      <Link href={`/productos/${product.id}`} className="block group/title">
+                      <Link href={`/productos/${product.slug || product.id}`} className="block group/title">
                         <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-gold transition duration-200 line-clamp-2 min-h-[2.8rem] sm:min-h-[3.2rem] leading-snug">
                           {product.nombre}
                         </h3>

@@ -10,6 +10,7 @@ import SkeletonImage from './SkeletonImage';
 
 interface Product {
   id: string;
+  slug?: string;
   nombre: string;
   descripcion: string;
   tipo?: 'VELA' | 'JABON';
@@ -180,7 +181,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
                     {heroProduct?.precio ? `$${heroProduct.precio.toLocaleString('es-CO')} COP` : 'Bajo Pedido'}
                   </p>
                   <Link
-                    href={heroProduct?.id ? `/productos/${heroProduct.id}` : '#catalogo'}
+                    href={heroProduct?.slug ? `/productos/${heroProduct.slug}` : heroProduct?.id ? `/productos/${heroProduct.id}` : '#catalogo'}
                     className="text-xs text-white/90 hover:text-white underline underline-offset-4 flex items-center gap-1 font-medium transition"
                   >
                     <span>Ver Detalles</span>

@@ -11,6 +11,7 @@ async function main() {
   const productos = [
     {
       nombre: "Vela Botánica Lavanda & Manzanilla",
+      slug: "vela-aromatica-lavanda-manzanilla",
       descripcion: "Calma profunda, relajación y descanso reparador. Vertida a mano en Bogotá con cera de soya 100% vegetal, flores botánicas naturales y pabilo de algodón orgánico sin plomo. Ideal para rituales nocturnos y aromaterapia de serenidad.",
       aroma: "Lavanda & Manzanilla",
       material: "100% Cera de Soya Natural",
@@ -27,6 +28,7 @@ async function main() {
     },
     {
       nombre: "Vela Botánica Cítricos & Caléndula",
+      slug: "vela-botanica-citricos-calendula",
       descripcion: "Energía, frescura botánica y claridad mental para espacios de trabajo y estudio. Elaborada a mano en Bogotá con esencias cítricas vivas de mandarina y bergamota, acompañada de pétalos botánicos naturales de caléndula sobre cera vegetal pura.",
       aroma: "Cítricos & Caléndula",
       material: "100% Cera de Soya Natural",
@@ -43,6 +45,7 @@ async function main() {
     },
     {
       nombre: "Vela Aromática Jazmín Imperial",
+      slug: "vela-aromatica-jazmin-imperial",
       descripcion: "Elegancia floral, sofisticación y calidez en envase artesanal reutilizable. Notas envolventes de jazmín blanco y flor de azahar sobre cera pura de soya para iluminar momentos de calma e introspección.",
       aroma: "Jazmín & Vainilla",
       material: "100% Cera de Soya Natural",
@@ -59,6 +62,7 @@ async function main() {
     },
     {
       nombre: "Vela Aromática Rosas Silvestres",
+      slug: "vela-aromatica-rosas-silvestres",
       descripcion: "Esencia romántica clásica con pétalos botánicos naturales. Una atmósfera sutil y delicada para renovar la energía de tu hogar con combustión limpia, pabilo de algodón sin plomo y cera 100% vegetal.",
       aroma: "Rosas & Peonías",
       material: "100% Cera de Soya Natural",
@@ -75,6 +79,7 @@ async function main() {
     },
     {
       nombre: "Vela Aromática Vainilla Dulce",
+      slug: "vela-calida-vainilla-dulce",
       descripcion: "Notas cálidas y sensación acogedora para el hogar. Crema de vainilla bourbon y azúcar moreno sobre cera de soya biodegradable que reconforta los sentidos y propicia un ambiente cálido y familiar.",
       aroma: "Vainilla Francesa",
       material: "100% Cera de Soya Natural",
@@ -90,6 +95,7 @@ async function main() {
     },
     {
       nombre: "Vela Especiada Canela & Manzana",
+      slug: "vela-especiada-canela-manzana",
       descripcion: "Clima cálido, especiado y reconfortante. Fusión aromática de canela en rama y frutos otoñales para crear ambientes de celebración e inspiración con combustión prolongada y libre de toxinas.",
       aroma: "Canela & Especias",
       material: "100% Cera de Soya Natural",
@@ -106,6 +112,7 @@ async function main() {
     },
     {
       nombre: "Vela Herbal Eucalipto & Menta",
+      slug: "vela-herbal-eucalipto-menta",
       descripcion: "Claridad mental, apertura de vías respiratorias y frescura aromática. Diseñada para purificar el ambiente con aceites botánicos, cera de soya natural y combustión libre de hollín ni humos negros.",
       aroma: "Menta & Eucalipto",
       material: "100% Cera de Soya Natural",

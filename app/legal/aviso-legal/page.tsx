@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Aviso Legal | Sandra Gil Velas Artesanales',
   description: 'Aviso legal de Sandra Gil Velas Artesanales. Información sobre el titular del sitio web y condiciones de uso.',
+  alternates: {
+    canonical: 'https://sandragilvelas.com/legal/aviso-legal',
+  },
 };
 
 export default function AvisoLegalPage() {

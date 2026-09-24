@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Política de Privacidad | Sandra Gil Velas Artesanales',
   description: 'Política de privacidad y tratamiento de datos personales de Sandra Gil Velas. Cumplimiento Ley 1581 de 2012 (Colombia).',
+  alternates: {
+    canonical: 'https://sandragilvelas.com/legal/politica-de-privacidad',
+  },
 };
 
 export default function PoliticaPrivacidadPage() {

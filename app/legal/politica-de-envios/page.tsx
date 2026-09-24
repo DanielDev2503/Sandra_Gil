@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Política de Envíos y Tiempos de Entrega | Sandra Gil Velas',
   description: 'Conoce los tiempos de elaboración artesanal (1-2 días), transporte nacional con Servientrega y opción de Envío Express el mismo día en Bogotá.',
   alternates: {
-    canonical: '/legal/politica-de-envios',
+    canonical: 'https://sandragilvelas.com/legal/politica-de-envios',
   },
 };
 

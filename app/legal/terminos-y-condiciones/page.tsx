@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Términos y Condiciones | Sandra Gil Velas Artesanales',
   description: 'Términos y condiciones de compra de Sandra Gil Velas Artesanales. Cumplimiento Ley 1480 (Estatuto del Consumidor Colombia).',
+  alternates: {
+    canonical: 'https://sandragilvelas.com/legal/terminos-y-condiciones',
+  },
 };
 
 export default function TerminosCondicionesPage() {

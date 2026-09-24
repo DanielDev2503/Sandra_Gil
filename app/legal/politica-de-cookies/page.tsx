@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Política de Cookies | Sandra Gil Velas Artesanales',
   description: 'Política de cookies del sitio web de Sandra Gil Velas Artesanales. Información sobre las cookies utilizadas.',
+  alternates: {
+    canonical: 'https://sandragilvelas.com/legal/politica-de-cookies',
+  },
 };
 
 export default function PoliticaCookiesPage() {

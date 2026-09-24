@@ -35,9 +35,6 @@ export const metadata: Metadata = {
     'Sandra Gil',
     'velas artesanales',
   ],
-  alternates: {
-    canonical: './',
-  },
   openGraph: {
     title: 'Sandra Gil | Velas Artesanales y Aromáticas en Bogotá',
     description:

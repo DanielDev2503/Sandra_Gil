@@ -1,8 +1,15 @@
+import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import StoreShell from '@/components/StoreShell';
 import { OFFICIAL_AROMAS } from '@/lib/aromas';
 
 export const revalidate = 0; // Dynamic rendering for real-time stock levels
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://sandragilvelas.com',
+  },
+};
 
 export default async function Home() {
   // Fetch active products with variations and official active aromas from DB

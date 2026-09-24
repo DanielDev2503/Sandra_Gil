@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -17,7 +18,7 @@ import {
 import SkeletonImage from './SkeletonImage';
 import CandleGlowPulse from './CandleGlowPulse';
 import AromaDropdownSelector from './AromaDropdownSelector';
-import { getAromaProfile } from '@/lib/aromas';
+import { getAromaProfile, AROMAS } from '@/lib/aromas';
 
 interface Variacion {
   id: string;
@@ -29,6 +30,7 @@ interface Variacion {
 
 interface Product {
   id: string;
+  slug: string;
   nombre: string;
   descripcion: string;
   tipo?: 'VELA' | 'JABON';
@@ -48,39 +50,6 @@ interface InteractiveProductShowcaseProps {
   product: Product | null;
 }
 
-const AROMA_PROFILES: Record<string, { top: string; heart: string; base: string; mood: string }> = {
-  'Vainilla Francesa': {
-    top: 'Flor de Vainilla, Mantequilla Dulce',
-    heart: 'Caramelo Tostado, Crema de Coco',
-    base: 'Haba Tonka, Azúcar Morena',
-    mood: 'Cálido, Acogedor & Relajante',
-  },
-  'Lavanda Silvestre': {
-    top: 'Eucalipto Fresco, Bergamota',
-    heart: 'Flores de Lavanda Francesa, Manzanilla',
-    base: 'Cedro Blanco, Almizcle Suave',
-    mood: 'Serenidad, Paz & Descanso Profundo',
-  },
-  'Café & Canela': {
-    top: 'Granos de Café Colombiano Tostado',
-    heart: 'Canela en Rama, Nuez Moscada',
-    base: 'Cacao Puro, Vainilla Ahumada',
-    mood: 'Energía, Inspiración & Calidez',
-  },
-  'Flores Blancas': {
-    top: 'Pétalos de Jazmín, Neroli',
-    heart: 'Gardenia, Lirio de los Valles',
-    base: 'Ámbar Cálido, Maderas Nobles',
-    mood: 'Elegancia, Frescura & Sofisticación',
-  },
-  'Eucalipto & Menta': {
-    top: 'Menta Verde, Limón Sutil',
-    heart: 'Eucalipto Silvestre, Romero',
-    base: 'Musgo de Roble, Pino Blanco',
-    mood: 'Claridad Mental, Purificación & Vitalidad',
-  },
-};
-
 export default function InteractiveProductShowcase({ product }: InteractiveProductShowcaseProps) {
   const router = useRouter();
   const { addToCart, clearCart } = useCart();
@@ -94,18 +63,22 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
     activeVariations.length > 0 ? activeVariations[0] : null
   );
 
-  // Active aroma profile
+  // Active aroma profile synchronized with official catalog from lib/aromas.ts
   const productAroma = product?.aroma;
-  const defaultAroma = productAroma || 'Vainilla Francesa';
   const availableAromas = useMemo(() => {
-    const list = new Set(Object.keys(AROMA_PROFILES));
+    const list = new Set<string>(AROMAS);
     if (productAroma) list.add(productAroma);
     return Array.from(list);
   }, [productAroma]);
-  const initialAroma = availableAromas.includes(defaultAroma)
-    ? defaultAroma
-    : availableAromas[0];
-  const [selectedAroma, setSelectedAroma] = useState<string>(initialAroma);
+
+  const defaultAroma = useMemo(() => {
+    if (productAroma && availableAromas.includes(productAroma)) {
+      return productAroma;
+    }
+    return availableAromas[0] || 'Lavanda & Manzanilla';
+  }, [productAroma, availableAromas]);
+
+  const [selectedAroma, setSelectedAroma] = useState<string>(defaultAroma);
 
   // Active image
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
@@ -133,7 +106,7 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
   const effectivePrice = selectedVariation?.precio ?? product.precio;
 
   const aromaInfo = getAromaProfile(selectedAroma);
-  const currentOlfactory = AROMA_PROFILES[selectedAroma] || {
+  const currentOlfactory = {
     top: aromaInfo.top,
     heart: aromaInfo.heart,
     base: aromaInfo.base,
@@ -274,9 +247,11 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
                   Edición Artesanal Limitada
                 </span>
               </div>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal text-stone-900 leading-tight">
-                {product.nombre}
-              </h3>
+              <Link href={`/productos/${product.slug || product.id}`} className="group/title block">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal text-stone-900 group-hover/title:text-brand-brown transition-colors leading-tight">
+                  {product.nombre}
+                </h3>
+              </Link>
               
               <div className="flex items-baseline gap-3 mt-3">
                 <span className="text-2xl sm:text-3xl font-serif font-semibold text-brand-brown">
@@ -336,12 +311,25 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
 
             {/* Olfactory Pyramid Card */}
             <div className="bg-[#FAF8F5] p-4 sm:p-5 rounded-xl border border-brand-gold/25 space-y-3 font-sans">
-              <div className="flex items-center gap-2 text-brand-brown pb-2 border-b border-brand-gold/15">
-                <Droplets className="w-4 h-4 text-brand-gold" />
-                <span className="text-xs uppercase tracking-wider font-bold">
-                  Pirámide Olfativa · {selectedAroma}
-                </span>
+              <div className="flex items-center justify-between pb-2 border-b border-brand-gold/15">
+                <div className="flex items-center gap-2 text-brand-brown">
+                  <Droplets className="w-4 h-4 text-brand-gold" />
+                  <span className="text-xs uppercase tracking-wider font-bold">
+                    Pirámide Olfativa · {selectedAroma}
+                  </span>
+                </div>
+                {aromaInfo.tag && (
+                  <span className="text-[10px] font-semibold text-brand-brown bg-brand-gold/15 px-2.5 py-0.5 rounded-full border border-brand-gold/30">
+                    {aromaInfo.tag}
+                  </span>
+                )}
               </div>
+
+              {aromaInfo.description && (
+                <p className="text-xs text-stone-600 font-light leading-relaxed">
+                  {aromaInfo.description}
+                </p>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div className="bg-white/80 p-2.5 rounded-lg border border-brand-gold/15">

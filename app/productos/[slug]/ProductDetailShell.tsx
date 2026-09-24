@@ -35,7 +35,7 @@ interface Variacion {
 
 interface Product {
   id: string;
-  slug?: string;
+  slug: string;
   nombre: string;
   descripcion: string;
   aroma?: string | null;
@@ -799,7 +799,7 @@ export default function ProductDetailShell({
                     key={p.id}
                     className="group bg-white rounded-lg border border-stone-200/60 overflow-hidden flex flex-col h-full hover:shadow-md transition-all duration-300"
                   >
-                    <Link href={`/productos/${p.slug || p.id}`} className="relative aspect-square block overflow-hidden bg-stone-100">
+                    <Link href={`/productos/${p.slug}`} className="relative aspect-square block overflow-hidden bg-stone-100">
                       <SkeletonImage
                         src={displayImage ?? ''}
                         alt={soap ? `Jabón artesanal botánico ${p.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${p.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
@@ -816,7 +816,7 @@ export default function ProductDetailShell({
 
                     <div className="p-4 flex-1 flex flex-col justify-between">
                       <div>
-                        <Link href={`/productos/${p.slug || p.id}`}>
+                        <Link href={`/productos/${p.slug}`}>
                           <h3 className="font-serif font-medium text-stone-900 text-sm hover:text-brand-gold transition duration-200 line-clamp-1">
                             {p.nombre}
                           </h3>
@@ -834,7 +834,7 @@ export default function ProductDetailShell({
                         )}
 
                         <Link
-                          href={`/productos/${p.slug || p.id}`}
+                          href={`/productos/${p.slug}`}
                           className="text-[10px] uppercase font-bold text-brand-gold hover:text-brand-brown transition"
                         >
                           Ver más →

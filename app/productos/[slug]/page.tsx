@@ -4,13 +4,13 @@ import ProductDetailShell from './ProductDetailShell';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { DEFAULT_BOTANICAL_AROMAS } from '@/lib/aromas';
 
-interface ProductDetailPageProps {
+interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export const revalidate = 0; // Dynamic rendering for real-time stock levels
 
-export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
 
   let product = await prisma.producto.findUnique({
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   };
 }
 
-export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
+export default async function ProductDetailPage({ params }: ProductPageProps) {
   const { slug } = await params;
 
   // Query database for product with reviews and active variations by slug
@@ -87,7 +87,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     },
   });
 
-  // Fallback de compatibilidad: si no coincide con slug, intentar buscar por id y redirigir 301
+  // Fallback para URLs indexadas previamente con UUID (Redirección 301 SEO)
   if (!product) {
     const productoPorId = await prisma.producto.findUnique({
       where: { id: slug },
@@ -177,7 +177,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       ? [product.url_imagen]
       : ['https://sandragilvelas.com/logo-sandra.png'];
 
-  const productCanonicalUrl = `https://sandragilvelas.com/productos/${product.slug}`;
+  const baseUrl = 'https://sandragilvelas.com';
+  const productCanonicalUrl = `${baseUrl}/productos/${product.slug}`;
 
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -194,7 +195,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     material: product.material || '100% Cera de Soya Natural',
     offers: {
       '@type': 'Offer',
-      url: productCanonicalUrl,
+      url: `${baseUrl}/productos/${product.slug}`,
       priceCurrency: 'COP',
       price: product.precio ?? 0,
       itemCondition: 'https://schema.org/NewCondition',

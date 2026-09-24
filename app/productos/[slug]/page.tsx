@@ -151,10 +151,11 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   }
 
   // Schema.org Structured Data
-  const avgRating =
-    resenas.length > 0
-      ? resenas.reduce((sum, r) => sum + r.calificacion, 0) / resenas.length
-      : 5;
+  const totalResenas = resenas.length;
+  const promedio =
+    totalResenas > 0
+      ? resenas.reduce((sum, r) => sum + r.calificacion, 0) / totalResenas
+      : 0;
 
   const productImages =
     product.imagenes && product.imagenes.length > 0
@@ -229,20 +230,43 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         returnFees: 'https://schema.org/FreeReturn',
       },
     },
-    ...(resenas.length > 0
+    ...(totalResenas > 0
       ? {
           aggregateRating: {
             '@type': 'AggregateRating',
-            ratingValue: avgRating.toFixed(1),
-            reviewCount: resenas.length,
+            ratingValue: promedio.toFixed(1),
+            reviewCount: totalResenas,
+            bestRating: '5',
+            worstRating: '1',
           },
-          review: resenas.slice(0, 5).map((r) => ({
-            '@type': 'Review',
-            author: { '@type': 'Person', name: r.autor },
-            reviewRating: { '@type': 'Rating', ratingValue: r.calificacion },
-            reviewBody: r.comentario,
-            datePublished: new Date(r.creado_en).toISOString().split('T')[0],
-          })),
+          review: resenas.map((r) => {
+            const authorName =
+              (r as { autor?: string; nombre?: string }).nombre ||
+              r.autor ||
+              'Cliente verificado';
+            const rawDate =
+              (r as { createdAt?: Date | string }).createdAt ||
+              r.creado_en;
+            const datePublished = rawDate
+              ? new Date(rawDate).toISOString().split('T')[0]
+              : '2026-09-01';
+
+            return {
+              '@type': 'Review',
+              author: {
+                '@type': 'Person',
+                name: authorName,
+              },
+              datePublished,
+              reviewBody: r.comentario,
+              reviewRating: {
+                '@type': 'Rating',
+                ratingValue: r.calificacion,
+                bestRating: '5',
+                worstRating: '1',
+              },
+            };
+          }),
         }
       : {}),
   };

@@ -146,21 +146,22 @@ export default function ProductDetailShell({
   const isSoap = isSoapProduct(product);
 
   const aromasList: string[] = useMemo(() => {
-    const set = new Set<string>();
-    if (product.aroma) set.add(product.aroma);
-    availableAromas.forEach((a) => {
-      if (a) set.add(a);
-    });
-    // Ensure customer always has a complete palette of aromas to pick from
-    if (set.size < 2) {
-      DEFAULT_BOTANICAL_AROMAS.forEach((a) => set.add(a));
+    if (availableAromas && availableAromas.length > 0) {
+      return availableAromas;
     }
-    return Array.from(set);
-  }, [availableAromas, product.aroma]);
+    return [...DEFAULT_BOTANICAL_AROMAS];
+  }, [availableAromas]);
 
-  const [selectedAroma, setSelectedAroma] = useState<string>(
-    product.aroma || aromasList[0] || 'Lavanda & Manzanilla'
-  );
+  const defaultAroma = useMemo(() => {
+    if (product.aroma && aromasList.includes(product.aroma)) {
+      return product.aroma;
+    }
+    return aromasList[0] || 'Lavanda & Manzanilla';
+  }, [product.aroma, aromasList]);
+
+  const [userSelectedAroma, setUserSelectedAroma] = useState<string | null>(null);
+  const selectedAroma = userSelectedAroma ?? defaultAroma;
+  const setSelectedAroma = (aroma: string) => setUserSelectedAroma(aroma);
 
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>('care');

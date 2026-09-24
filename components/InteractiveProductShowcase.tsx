@@ -48,9 +48,10 @@ interface Product {
 
 interface InteractiveProductShowcaseProps {
   product: Product | null;
+  availableAromas?: string[];
 }
 
-export default function InteractiveProductShowcase({ product }: InteractiveProductShowcaseProps) {
+export default function InteractiveProductShowcase({ product, availableAromas = [] }: InteractiveProductShowcaseProps) {
   const router = useRouter();
   const { addToCart, clearCart } = useCart();
 
@@ -63,22 +64,25 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
     activeVariations.length > 0 ? activeVariations[0] : null
   );
 
-  // Active aroma profile synchronized with official catalog from lib/aromas.ts
+  // Active aroma profile synchronized with official catalog (28 active aromas)
   const productAroma = product?.aroma;
-  const availableAromas = useMemo(() => {
-    const list = new Set<string>(AROMAS);
-    if (productAroma) list.add(productAroma);
-    return Array.from(list);
-  }, [productAroma]);
+  const aromasList = useMemo(() => {
+    if (availableAromas && availableAromas.length > 0) {
+      return availableAromas;
+    }
+    return [...AROMAS];
+  }, [availableAromas]);
 
   const defaultAroma = useMemo(() => {
-    if (productAroma && availableAromas.includes(productAroma)) {
+    if (productAroma && aromasList.includes(productAroma)) {
       return productAroma;
     }
-    return availableAromas[0] || 'Lavanda & Manzanilla';
-  }, [productAroma, availableAromas]);
+    return aromasList[0] || 'Lavanda & Manzanilla';
+  }, [productAroma, aromasList]);
 
-  const [selectedAroma, setSelectedAroma] = useState<string>(defaultAroma);
+  const [userSelectedAroma, setUserSelectedAroma] = useState<string | null>(null);
+  const selectedAroma = userSelectedAroma ?? defaultAroma;
+  const setSelectedAroma = (aroma: string) => setUserSelectedAroma(aroma);
 
   // Active image
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
@@ -301,7 +305,7 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
 
             {/* Scent Selector */}
             <AromaDropdownSelector
-              aromas={availableAromas}
+              aromas={aromasList}
               selectedAroma={selectedAroma}
               onSelectAroma={setSelectedAroma}
               productName={product.nombre}
@@ -314,7 +318,7 @@ export default function InteractiveProductShowcase({ product }: InteractiveProdu
               <div className="flex items-center justify-between pb-2 border-b border-brand-gold/15">
                 <div className="flex items-center gap-2 text-brand-brown">
                   <Droplets className="w-4 h-4 text-brand-gold" />
-                  <span className="text-xs uppercase tracking-wider font-bold">
+                  <span className="text-xs uppercase tracking-wider font-bold capitalize">
                     Pirámide Olfativa · {selectedAroma}
                   </span>
                 </div>

@@ -39,9 +39,10 @@ interface Product {
 interface StoreShellProps {
   products: Product[];
   heroProduct: Product | null;
+  availableAromas?: string[];
 }
 
-export default function StoreShell({ products, heroProduct }: StoreShellProps) {
+export default function StoreShell({ products, heroProduct, availableAromas = [] }: StoreShellProps) {
   // Select featured showcase product (heroProduct or first product with stock)
   const showcaseProduct = heroProduct || products[0] || null;
 
@@ -59,11 +60,14 @@ export default function StoreShell({ products, heroProduct }: StoreShellProps) {
 
         {/* 3. Interactive Product Spotlight & Olfactory Pyramid Experience */}
         {showcaseProduct && (
-          <InteractiveProductShowcase product={showcaseProduct} />
+          <InteractiveProductShowcase
+            product={showcaseProduct}
+            availableAromas={availableAromas}
+          />
         )}
 
-        {/* 4. Complete Product Catalog with Stagger Animations & Scent Filters */}
-        <ProductCatalog products={products} />
+        {/* 4. Complete Product Catalog without scent pills */}
+        <ProductCatalog products={products} showFilters={false} />
 
         {/* 5. Sensory Aromas, Workshops & Custom Orders Section with WhatsApp CTAs */}
         <SensoryWorkshopSection />

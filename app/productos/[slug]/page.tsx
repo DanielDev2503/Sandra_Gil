@@ -105,36 +105,22 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const resenas = product.resenas || [];
   const variaciones = product.variaciones || [];
 
-  // Fetch all active aromas from DB
+  // Fetch all 28 active aromas from DB (Fuente única de verdad)
   let availableAromas: string[] = [];
   try {
     const aromasDb = await prisma.aroma.findMany({
       where: { activo: true },
       select: { nombre: true },
+      orderBy: { nombre: 'asc' },
     });
     availableAromas = aromasDb.map((a) => a.nombre);
   } catch (err) {
     console.error('Error fetching from Aroma model:', err);
   }
 
-  try {
-    const activeProducts = await prisma.producto.findMany({
-      where: { activo: true },
-      select: { aroma: true },
-    });
-    const productAromas = activeProducts.map((p) => p.aroma).filter((a): a is string => !!a);
-    availableAromas = Array.from(new Set([...availableAromas, ...productAromas]));
-  } catch (err) {
-    console.error('Error fetching aromas from active products:', err);
+  if (availableAromas.length === 0) {
+    availableAromas = [...DEFAULT_BOTANICAL_AROMAS];
   }
-
-  if (product.aroma && !availableAromas.includes(product.aroma)) {
-    availableAromas.push(product.aroma);
-  }
-  if (availableAromas.length < 2) {
-    availableAromas = Array.from(new Set([...availableAromas, ...DEFAULT_BOTANICAL_AROMAS]));
-  }
-  availableAromas = availableAromas.sort();
 
   // Fetch up to 4 other active products for the "Productos que te pueden interesar" section
   let relatedProducts: Array<{

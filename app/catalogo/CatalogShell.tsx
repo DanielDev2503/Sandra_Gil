@@ -118,9 +118,17 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     return result;
   }, [products, selectedType, selectedMaterial, sortOrder]);
 
+  const handleAddToCart = (product: Product) => {
+    const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
+    const defaultAroma = product.aroma || (isSoapProduct(product) ? null : 'Lavanda & Manzanilla');
+    addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
+  };
+
   const handleBuyNow = (product: Product) => {
     clearCart();
-    addToCart(product, 1);
+    const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
+    const defaultAroma = product.aroma || (isSoapProduct(product) ? null : 'Lavanda & Manzanilla');
+    addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
     router.push('/checkout');
   };
 
@@ -349,7 +357,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                       ) : (
                         <div className="grid grid-cols-2 gap-2 mt-2">
                           <button
-                            onClick={() => addToCart(product)}
+                            onClick={() => handleAddToCart(product)}
                             disabled={isOutOfStock}
                             className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm border border-brand-brown transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
                               isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed' : 'bg-white hover:bg-stone-50 text-brand-brown'

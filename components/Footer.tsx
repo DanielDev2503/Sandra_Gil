@@ -58,6 +58,7 @@ export default function Footer() {
               <li><Link href="/legal/politica-de-privacidad" className="hover:text-white transition">Política de Privacidad</Link></li>
               <li><Link href="/legal/politica-de-cookies" className="hover:text-white transition">Política de Cookies</Link></li>
               <li><Link href="/legal/terminos-y-condiciones" className="hover:text-white transition">Términos y Condiciones</Link></li>
+              <li><Link href="/legal/politica-de-devoluciones" className="hover:text-white transition">Política de Devoluciones</Link></li>
               <li><Link href="/legal/politica-de-envios" className="hover:text-white transition font-medium text-amber-300">Política de Envíos</Link></li>
             </ul>
           </div>

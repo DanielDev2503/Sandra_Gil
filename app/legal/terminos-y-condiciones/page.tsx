@@ -92,7 +92,8 @@ export default function TerminosCondicionesPage() {
           <li>El Comprador asuma los costos de devolución.</li>
         </ul>
         <p className="text-sm leading-relaxed mt-2">
-          Para ejercer el derecho de retracto, contacte a Sandra Gil por WhatsApp al +57 317 575 2029.
+          Para conocer el procedimiento detallado, tiempos y condiciones, consulta nuestra{' '}
+          <a href="/legal/politica-de-devoluciones" className="text-brand-gold hover:underline">Política de Devoluciones y Garantías</a>, o contacta a Sandra Gil por WhatsApp al +57 317 575 2029.
         </p>
         <p className="text-sm leading-relaxed">
           <strong>Excepción:</strong> Las velas elaboradas bajo pedido (personalizadas) no tienen derecho a retracto 

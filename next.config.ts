@@ -33,13 +33,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   images: {
-    // Forzar a la CDN de Vercel a retener las imágenes optimizadas por 1 año
-    minimumCacheTTL: 31536000,
-    // Generar únicamente WebP (evita duplicar transformaciones en AVIF)
-    formats: ['image/webp'],
-    // Reducir la matriz de breakpoints para evitar explosión de variantes
-    deviceSizes: [640, 750, 1080, 1200, 1920],
-    imageSizes: [64, 128, 256, 384],
+    // Desactivar el procesador de Vercel para evitar el bloqueo 402/429 de cuota y servir directo desde Supabase CDN
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

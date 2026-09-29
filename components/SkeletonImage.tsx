@@ -19,7 +19,14 @@ export function formatSupabaseUrl(url?: string | null): string {
     }
   }
 
-  if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') || cleanUrl.startsWith('data:')) {
+  if (
+    cleanUrl.startsWith('http://') ||
+    cleanUrl.startsWith('https://') ||
+    cleanUrl.startsWith('data:') ||
+    cleanUrl.startsWith('/logo') ||
+    cleanUrl.startsWith('/favicon') ||
+    cleanUrl.startsWith('/icon')
+  ) {
     return cleanUrl;
   }
   const basePath = 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos';
@@ -68,6 +75,9 @@ export default function SkeletonImage({
 
   const handleError = () => {
     if (!hasError) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`[SkeletonImage] Failed to load image: ${imgSrc}`);
+      }
       setHasError(true);
       setImgSrc(fallbackSrc);
       setLoaded(true);

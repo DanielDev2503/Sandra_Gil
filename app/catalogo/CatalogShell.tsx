@@ -250,7 +250,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filteredAndSortedProducts.map((product) => {
+            {filteredAndSortedProducts.map((product, idx) => {
               const soap = isSoapProduct(product);
               const isLowStock = product.stock > 0 && product.stock <= 15;
               const isOutOfStock = product.stock <= 0;
@@ -270,7 +270,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                       alt={soap ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      priority={idx < 4}
                     />
 
                     {/* Type Badge */}

@@ -211,7 +211,7 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                     alt={soap ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                   />
 
                   {/* Top-Left Dynamic Badge */}

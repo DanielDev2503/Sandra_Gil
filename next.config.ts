@@ -33,23 +33,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   images: {
-    formats: ["image/avif", "image/webp"],
+    // Forzar a la CDN de Vercel a retener las imágenes optimizadas por 1 año
+    minimumCacheTTL: 31536000,
+    // Generar únicamente WebP (evita duplicar transformaciones en AVIF)
+    formats: ['image/webp'],
+    // Reducir la matriz de breakpoints para evitar explosión de variantes
+    deviceSizes: [640, 750, 1080, 1200, 1920],
+    imageSizes: [64, 128, 256, 384],
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "*.supabase.co",
-      },
-      {
-        protocol: "https",
-        hostname: "sgvelas.com",
-      },
-      {
-        protocol: "https",
-        hostname: "sandragilvelas.com",
+        protocol: 'https',
+        hostname: '**.supabase.co',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
   },

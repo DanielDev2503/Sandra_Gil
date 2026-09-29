@@ -314,7 +314,8 @@ export default function ProductDetailShell({
                     alt={isSoap ? `Jabón artesanal botánico ${product.nombre} (${selectedVariation.nombre}) Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} (${selectedVariation.nombre}) en cera de soya natural Sandra Gil - Taller Bogotá`}
                     className="w-full h-full object-cover"
                     fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                    priority
                   />
                 </div>
               ) : (
@@ -329,7 +330,7 @@ export default function ProductDetailShell({
                       alt={isSoap ? `Jabón artesanal botánico ${product.nombre} – vista ${idx + 1} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural – vista ${idx + 1} Sandra Gil - Taller Bogotá`}
                       className="w-full h-full object-cover"
                       fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                       priority={idx === 0}
                     />
                   </div>
@@ -365,7 +366,7 @@ export default function ProductDetailShell({
                       alt={isSoap ? `Miniatura de jabón artesanal ${product.nombre} ${idx + 1} Sandra Gil` : `Miniatura de vela artesanal ${product.nombre} ${idx + 1} Sandra Gil - Taller Bogotá`}
                       className={`w-full h-full object-cover transition-all duration-300 ${selectedImage === idx ? '' : 'hover:scale-105'}`}
                       fill
-                      sizes="(max-width: 768px) 20vw, 15vw"
+                      sizes="(max-width: 640px) 80px, 120px"
                     />
                   </button>
                 ))}
@@ -806,7 +807,7 @@ export default function ProductDetailShell({
                         alt={soap ? `Jabón artesanal botánico ${p.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${p.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                         fill
-                        sizes="(max-width: 640px) 100vw, 25vw"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       />
                       <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-sm shadow-xs border border-stone-100">
                         <span className="text-[9px] font-bold text-stone-600 uppercase tracking-wider">

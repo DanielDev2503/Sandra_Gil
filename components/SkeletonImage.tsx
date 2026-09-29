@@ -9,7 +9,16 @@ export function formatSupabaseUrl(url?: string | null): string {
   if (!url || typeof url !== 'string' || url.trim() === '') {
     return DEFAULT_FALLBACK_IMAGE;
   }
-  const cleanUrl = url.trim();
+  let cleanUrl = url.trim();
+
+  // Eliminar parámetros de consulta dinámicos (?t=..., ?v=..., timestamps) para permitir cache hit en Vercel CDN
+  if (!cleanUrl.startsWith('data:')) {
+    const questionMarkIndex = cleanUrl.indexOf('?');
+    if (questionMarkIndex !== -1) {
+      cleanUrl = cleanUrl.substring(0, questionMarkIndex);
+    }
+  }
+
   if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') || cleanUrl.startsWith('data:')) {
     return cleanUrl;
   }
@@ -77,6 +86,7 @@ export default function SkeletonImage({
         fill={fill}
         sizes={fill ? sizes : undefined}
         priority={priority}
+        loading={priority ? undefined : 'lazy'}
         unoptimized={hasError || imgSrc.startsWith('data:')}
         className={`${className} transition-opacity duration-500 ease-in-out ${
           loaded ? 'opacity-100' : 'opacity-0'

@@ -196,7 +196,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                     alt={product.tipo === 'JABON' ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
                     className="w-full h-full object-cover"
                     fill
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    sizes="(max-width: 1024px) 100vw, (max-width: 1200px) 50vw, 600px"
                   />
                 </motion.div>
               </AnimatePresence>
@@ -227,7 +227,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                         : 'border-stone-200 opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <Image
+                    <SkeletonImage
                       src={img}
                       alt={product.tipo === 'JABON' ? `Jabón artesanal botánico ${product.nombre} – miniatura ${idx + 1} Sandra Gil Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural – miniatura ${idx + 1} Sandra Gil Bogotá`}
                       fill

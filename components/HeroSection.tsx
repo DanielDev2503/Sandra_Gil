@@ -142,7 +142,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   fill
                   priority
-                  sizes="(max-width: 768px) 100vw, 40vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 448px"
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center bg-brand-cream p-8 text-center">
@@ -151,6 +151,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
                     alt="Sandra Gil Velas"
                     width={160}
                     height={160}
+                    priority
                     className="object-contain opacity-70"
                   />
                   <p className="font-serif text-lg text-stone-700 mt-4">Velas Botánicas Hechas a Mano</p>

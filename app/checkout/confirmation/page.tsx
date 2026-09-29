@@ -3,11 +3,37 @@ import { CheckCircle2, XCircle, Clock, MessageSquare, ShoppingBag, Truck, User }
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import GoogleCustomerReviewsOptIn from '@/components/GoogleCustomerReviewsOptIn';
+
 interface ConfirmationPageProps {
   searchParams: Promise<{ orderId?: string }>;
 }
 
 export const revalidate = 0; // Dynamic rendering for real-time status check
+
+function getEstimatedDeliveryDate(orderDate: Date = new Date(), ciudad?: string): string {
+  const date = new Date(orderDate);
+  const isBogotaOrSurroundings =
+    !ciudad ||
+    ciudad.toLowerCase().includes('bogot') ||
+    ciudad.toLowerCase().includes('alrededores');
+  // 3 días hábiles para Bogotá y alrededores, 5 días hábiles para destinos nacionales
+  const daysToAdd = isBogotaOrSurroundings ? 3 : 5;
+
+  let added = 0;
+  while (added < daysToAdd) {
+    date.setDate(date.getDate() + 1);
+    const day = date.getDay();
+    if (day !== 0) { // Lunes a sábado son días operativos
+      added++;
+    }
+  }
+
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
 
 export default async function ConfirmationPage({ searchParams }: ConfirmationPageProps) {
   const resolvedSearchParams = await searchParams;
@@ -17,17 +43,43 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
     redirect('/');
   }
 
-  // Fetch order details from database
-  const pedido = await prisma.pedido.findUnique({
-    where: { id: orderId },
-    include: {
-      items: {
+  // Fetch order details from database or test mock
+  const pedido = orderId === 'test'
+    ? {
+        id: 'ORDER-TEST-5860719569',
+        cliente_nombre: 'Cliente de Prueba',
+        cliente_email: 'cliente.prueba@ejemplo.com',
+        cliente_telefono: '3175752029',
+        ciudad: 'Bogotá',
+        direccion_envio: 'Calle 100 # 15-20, Bogotá',
+        notas_entrega: 'Timbre 201',
+        total_productos: 75000,
+        costo_envio: 0,
+        total_pagado: 75000,
+        estado_pago: 'pagado',
+        creado_en: new Date(),
+        items: [
+          {
+            id: 'item-test-1',
+            cantidad: 1,
+            precio_unitario: 75000,
+            producto: {
+              nombre: 'Vela Botánica Lavanda & Manzanilla',
+              aroma: 'Lavanda & Manzanilla',
+            },
+          },
+        ],
+      }
+    : await prisma.pedido.findUnique({
+        where: { id: orderId },
         include: {
-          producto: true,
+          items: {
+            include: {
+              producto: true,
+            },
+          },
         },
-      },
-    },
-  });
+      });
 
   if (!pedido) {
     redirect('/');
@@ -44,6 +96,9 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
   const isPaid = pedido.estado_pago === 'pagado';
   const isFailed = pedido.estado_pago === 'fallido';
   const isPending = pedido.estado_pago === 'pendiente';
+
+  // Fecha estimada de entrega para Google Customer Reviews (formato YYYY-MM-DD)
+  const estimatedDeliveryDate = getEstimatedDeliveryDate(pedido.creado_en, pedido.ciudad);
 
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col font-sans">
@@ -207,6 +262,16 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
           </div>
 
         </div>
+
+        {/* Google Customer Reviews - Integración de Aceptación (Survey Opt-In) */}
+        {!isFailed && (
+          <GoogleCustomerReviewsOptIn
+            orderId={pedido.id}
+            email={pedido.cliente_email}
+            deliveryCountry="CO"
+            estimatedDeliveryDate={estimatedDeliveryDate}
+          />
+        )}
       </main>
     </div>
   );

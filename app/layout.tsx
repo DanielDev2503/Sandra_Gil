@@ -149,6 +149,39 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
         />
+        {/* Google Customer Reviews - Insignia de Tienda (Store Widget) */}
+        <script
+          id="merchantWidgetScript"
+          src="https://www.gstatic.com/shopping/merchant/merchantwidget.js"
+          defer
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              var merchantWidgetScript = document.getElementById('merchantWidgetScript');
+              if (merchantWidgetScript) {
+                merchantWidgetScript.addEventListener('load', function () {
+                  if (typeof merchantwidget !== 'undefined') {
+                    merchantwidget.start({
+                      // REQUIRED FIELDS
+                      merchant_id: 5860719569,
+                      // OPTIONAL FIELDS
+                      position: 'LEFT_BOTTOM',
+                      region: 'CO',
+                    });
+                  }
+                });
+              }
+              if (typeof merchantwidget !== 'undefined') {
+                merchantwidget.start({
+                  merchant_id: 5860719569,
+                  position: 'LEFT_BOTTOM',
+                  region: 'CO',
+                });
+              }
+            `,
+          }}
+        />
       </head>
       <body className="font-sans min-h-full flex flex-col bg-[#FBF9F6] text-[#2C2A29] overflow-x-hidden">
         <CartProvider>

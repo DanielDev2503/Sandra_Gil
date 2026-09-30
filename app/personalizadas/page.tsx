@@ -30,13 +30,22 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 0;
+export const revalidate = 3600; // ISR: Cache en Vercel Edge CDN por 1 hora con revalidación on-demand
 
 const WA_NUMBER = '573175752029';
 
 export default async function PersonalizadasPage() {
   const products = await prisma.producto.findMany({
     where: { activo: true, esBajoPedido: true },
+    select: {
+      id: true,
+      slug: true,
+      nombre: true,
+      descripcion: true,
+      aroma: true,
+      url_imagen: true,
+      imagenes: true,
+    },
     orderBy: { nombre: 'asc' },
   });
 

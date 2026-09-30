@@ -8,19 +8,52 @@ interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 0; // Dynamic rendering for real-time stock levels
+export const revalidate = 3600; // ISR: Pre-renderiza slugs y sirve desde Vercel Edge CDN por 1 hora
+
+export async function generateStaticParams() {
+  try {
+    const products = await prisma.producto.findMany({
+      where: { activo: true },
+      select: { slug: true },
+    });
+    return products.map((product) => ({
+      slug: product.slug,
+    }));
+  } catch (error) {
+    console.error('Error generando static params de productos:', error);
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
 
   let product = await prisma.producto.findUnique({
     where: { slug },
+    select: {
+      id: true,
+      slug: true,
+      nombre: true,
+      descripcion: true,
+      activo: true,
+      url_imagen: true,
+      imagenes: true,
+    },
   });
 
   // Fallback metadata lookup if requested by legacy id
   if (!product) {
     product = await prisma.producto.findUnique({
       where: { id: slug },
+      select: {
+        id: true,
+        slug: true,
+        nombre: true,
+        descripcion: true,
+        activo: true,
+        url_imagen: true,
+        imagenes: true,
+      },
     });
   }
 
@@ -73,15 +106,42 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 export default async function ProductDetailPage({ params }: ProductPageProps) {
   const { slug } = await params;
 
-  // Query database for product with reviews and active variations by slug
+  // Query database for product with reviews and active variations by slug with explicit select
   const product = await prisma.producto.findUnique({
     where: { slug },
-    include: {
+    select: {
+      id: true,
+      slug: true,
+      nombre: true,
+      descripcion: true,
+      aroma: true,
+      material: true,
+      dimensiones: true,
+      precio: true,
+      esBajoPedido: true,
+      stock: true,
+      url_imagen: true,
+      imagenes: true,
+      activo: true,
       resenas: {
+        select: {
+          id: true,
+          producto_id: true,
+          autor: true,
+          calificacion: true,
+          comentario: true,
+          creado_en: true,
+        },
         orderBy: { creado_en: 'desc' },
       },
       variaciones: {
         where: { activo: true },
+        select: {
+          id: true,
+          nombre: true,
+          imagen: true,
+          precio: true,
+        },
         orderBy: { createdAt: 'asc' },
       },
     },
@@ -91,6 +151,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   if (!product) {
     const productoPorId = await prisma.producto.findUnique({
       where: { id: slug },
+      select: { slug: true },
     });
     if (productoPorId?.slug) {
       permanentRedirect(`/productos/${productoPorId.slug}`);
@@ -105,7 +166,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const resenas = product.resenas || [];
   const variaciones = product.variaciones || [];
 
-  // Fetch all 28 active aromas from DB (Fuente única de verdad)
+  // Fetch all active aromas from DB (Fuente única de verdad)
   let availableAromas: string[] = [];
   try {
     const aromasDb = await prisma.aroma.findMany({
@@ -122,7 +183,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     availableAromas = [...DEFAULT_BOTANICAL_AROMAS];
   }
 
-  // Fetch up to 4 other active products for the "Productos que te pueden interesar" section
+  // Fetch up to 4 other active products for the "Productos que te pueden interesar" section with explicit select
   let relatedProducts: Array<{
     id: string;
     slug: string;
@@ -143,6 +204,21 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       where: {
         activo: true,
         id: { not: product.id },
+      },
+      select: {
+        id: true,
+        slug: true,
+        nombre: true,
+        descripcion: true,
+        precio: true,
+        esBajoPedido: true,
+        stock: true,
+        url_imagen: true,
+        imagenes: true,
+        activo: true,
+        aroma: true,
+        material: true,
+        dimensiones: true,
       },
       take: 4,
     });

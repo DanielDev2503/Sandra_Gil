@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 import StoreShell from '@/components/StoreShell';
 import { OFFICIAL_AROMAS } from '@/lib/aromas';
 
-export const revalidate = 0; // Dynamic rendering for real-time stock levels
+export const revalidate = 3600; // ISR: Cache en Vercel Edge CDN por 1 hora con revalidación on-demand
 
 export const metadata: Metadata = {
   alternates: {
@@ -16,9 +16,30 @@ export default async function Home() {
   const [products, aromasDb] = await Promise.all([
     prisma.producto.findMany({
       where: { activo: true },
-      include: {
+      select: {
+        id: true,
+        slug: true,
+        nombre: true,
+        descripcion: true,
+        tipo: true,
+        aroma: true,
+        material: true,
+        dimensiones: true,
+        precio: true,
+        esBajoPedido: true,
+        stock: true,
+        url_imagen: true,
+        imagenes: true,
+        activo: true,
         variaciones: {
           where: { activo: true },
+          select: {
+            id: true,
+            nombre: true,
+            imagen: true,
+            precio: true,
+            activo: true,
+          },
           orderBy: { createdAt: 'asc' },
         },
       },

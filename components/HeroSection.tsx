@@ -152,6 +152,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
                     width={160}
                     height={160}
                     priority
+                    unoptimized
                     className="object-contain opacity-70"
                   />
                   <p className="font-serif text-lg text-stone-700 mt-4">Velas Botánicas Hechas a Mano</p>

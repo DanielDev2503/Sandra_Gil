@@ -40,7 +40,7 @@ export default function CheckoutPage() {
     if (isClient && cart.length === 0) {
       router.push('/');
     }
-  }, [cart, isClient, router]);
+  }, [cart.length, isClient, router]);
 
   if (!isClient || cart.length === 0) {
     return (

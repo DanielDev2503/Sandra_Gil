@@ -57,9 +57,21 @@ export async function POST(req: Request) {
         id: { in: productIds },
         activo: true,
       },
-      include: {
+      select: {
+        id: true,
+        nombre: true,
+        precio: true,
+        stock: true,
+        esBajoPedido: true,
         variaciones: {
           where: { activo: true },
+          select: {
+            id: true,
+            nombre: true,
+            imagen: true,
+            precio: true,
+            activo: true,
+          },
         },
       },
     });

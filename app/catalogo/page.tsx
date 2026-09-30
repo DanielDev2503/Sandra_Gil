@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 import CatalogShell from './CatalogShell';
 import { Suspense } from 'react';
 
-export const revalidate = 0; // Dynamic rendering for real-time stock levels
+export const revalidate = 3600; // ISR: Cache en Vercel Edge CDN por 1 hora con revalidación on-demand
 
 export const metadata: Metadata = {
   title: 'Catálogo de Velas Aromáticas y Decorativas en Cera de Soya | Sandra Gil',
@@ -30,9 +30,24 @@ export const metadata: Metadata = {
 };
 
 export default async function CatalogPage() {
-  // Fetch active products from database
+  // Fetch active products from database with explicit select
   const products = await prisma.producto.findMany({
     where: {
+      activo: true,
+    },
+    select: {
+      id: true,
+      slug: true,
+      nombre: true,
+      descripcion: true,
+      aroma: true,
+      material: true,
+      dimensiones: true,
+      precio: true,
+      esBajoPedido: true,
+      stock: true,
+      url_imagen: true,
+      imagenes: true,
       activo: true,
     },
     orderBy: {

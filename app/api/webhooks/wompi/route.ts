@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import crypto from 'crypto';
 import { z } from 'zod';
@@ -139,6 +140,21 @@ export async function POST(req: Request) {
       });
 
       console.log(`🎉 Pedido ${orderId} pagado exitosamente. Inventario reducido.`);
+
+      // Revalidar inmediatamente la caché de Vercel Edge para reflejar el nuevo stock sin esperar la expiración del ISR
+      try {
+        revalidatePath('/');
+        revalidatePath('/catalogo');
+        revalidatePath('/personalizadas');
+        for (const item of pedido.items) {
+          if (item.producto?.slug) {
+            revalidatePath(`/productos/${item.producto.slug}`);
+          }
+        }
+        console.log('🔄 Revalidación de caché en Vercel Edge CDN completada exitosamente.');
+      } catch (revalErr) {
+        console.warn('⚠️ Advertencia al revalidar caché en Edge:', revalErr);
+      }
 
       // 4. Trigger outgoing automation webhook (Make.com / Zapier)
       const makeWebhookUrl = process.env.MAKE_WEBHOOK_URL;

@@ -38,6 +38,14 @@ async function getFaqs(): Promise<FAQItem[]> {
   try {
     const dbFaqs = await prisma.fAQ.findMany({
       where: { activo: true },
+      select: {
+        id: true,
+        pregunta: true,
+        respuesta: true,
+        categoria: true,
+        orden: true,
+        activo: true,
+      },
       orderBy: [{ orden: 'asc' }, { createdAt: 'desc' }],
     });
 

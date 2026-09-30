@@ -83,6 +83,7 @@ export default function Header() {
                   alt="Sandra Gil Velas Artesanales"
                   fill
                   priority
+                  unoptimized
                   className="object-contain"
                   sizes="(max-width: 768px) 40px, 56px"
                 />
@@ -174,6 +175,7 @@ export default function Header() {
                   alt="Sandra Gil"
                   width={36}
                   height={36}
+                  unoptimized
                   className="object-contain"
                 />
                 <span className="font-serif text-sm font-light tracking-wider text-stone-900">SANDRA GIL</span>

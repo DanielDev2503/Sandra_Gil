@@ -61,7 +61,7 @@ export default function GoogleCustomerReviewsOptIn({
     if (window.gapi && typeof window.gapi.load === 'function') {
       window.renderOptIn();
     }
-  }, [orderId, email, deliveryCountry, estimatedDeliveryDate, products]);
+  }, [orderId, email, deliveryCountry, estimatedDeliveryDate, products ? JSON.stringify(products) : '']);
 
   return (
     <>

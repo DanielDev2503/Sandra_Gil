@@ -33,12 +33,14 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   images: {
-    // Desactivar el procesador de Vercel para evitar el bloqueo 402/429 de cuota y servir directo desde Supabase CDN
+    // Desactivar el procesador de Vercel para evitar el bloqueo 402/429 de cuota (máx 5K/mes en Hobby) y servir directo desde Supabase Storage CDN
     unoptimized: true,
+    minimumCacheTTL: 31536000,
+    formats: ['image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.supabase.co',
+        hostname: 'imdyyahjqntkcjdliywt.supabase.co',
         pathname: '/storage/v1/object/public/**',
       },
     ],

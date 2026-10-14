@@ -30,7 +30,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 3600; // ISR: Cache en Vercel Edge CDN por 1 hora con revalidación on-demand
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const WA_NUMBER = '573175752029';
 
@@ -126,7 +127,7 @@ export default async function PersonalizadasPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {products.map((product) => {
+                {products.map((product: any) => {
                   const displayImage =
                     product.imagenes && product.imagenes.length > 0
                       ? product.imagenes[0]

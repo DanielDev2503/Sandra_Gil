@@ -8,7 +8,8 @@ import { INITIAL_FAQS, type FAQItem } from '@/lib/faqs-data';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
-export const revalidate = 3600; // Revalidate every hour (ISR)
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Preguntas Frecuentes | Sandra Gil Velas Artesanales Bogotá',
@@ -50,7 +51,7 @@ async function getFaqs(): Promise<FAQItem[]> {
     });
 
     if (dbFaqs && dbFaqs.length > 0) {
-      return dbFaqs.map((f) => ({
+      return dbFaqs.map((f: { id: string; pregunta: string; respuesta: string; categoria: string; orden: number; activo: boolean }) => ({
         id: f.id,
         pregunta: f.pregunta,
         respuesta: f.respuesta,

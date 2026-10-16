@@ -8,22 +8,10 @@ interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 3600; // ISR: Pre-renderiza slugs y sirve desde Vercel Edge CDN por 1 hora
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const dynamicParams = true;
 
-export async function generateStaticParams() {
-  try {
-    const products = await prisma.producto.findMany({
-      where: { activo: true },
-      select: { slug: true },
-    });
-    return products.map((product) => ({
-      slug: product.slug,
-    }));
-  } catch (error) {
-    console.error('Error generando static params de productos:', error);
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -174,7 +162,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       select: { nombre: true },
       orderBy: { nombre: 'asc' },
     });
-    availableAromas = aromasDb.map((a) => a.nombre);
+    availableAromas = aromasDb.map((a: { nombre: string }) => a.nombre);
   } catch (err) {
     console.error('Error fetching from Aroma model:', err);
   }
@@ -230,7 +218,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const totalResenas = resenas.length;
   const promedio =
     totalResenas > 0
-      ? resenas.reduce((sum, r) => sum + r.calificacion, 0) / totalResenas
+      ? resenas.reduce((sum: number, r: { calificacion: number }) => sum + r.calificacion, 0) / totalResenas
       : 0;
 
   const productImages =
@@ -315,7 +303,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             bestRating: '5',
             worstRating: '1',
           },
-          review: resenas.map((r) => {
+          review: resenas.map((r: any) => {
             const authorName =
               (r as { autor?: string; nombre?: string }).nombre ||
               r.autor ||

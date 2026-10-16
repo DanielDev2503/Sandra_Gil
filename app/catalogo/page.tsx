@@ -3,7 +3,8 @@ import { prisma } from '@/lib/db';
 import CatalogShell from './CatalogShell';
 import { Suspense } from 'react';
 
-export const revalidate = 3600; // ISR: Cache en Vercel Edge CDN por 1 hora con revalidación on-demand
+export const dynamic = 'force-dynamic';
+export const revalidate = 0; // SSR en tiempo real: consulta directa a Supabase en cada petición para reflejar cambios instantáneamente
 
 export const metadata: Metadata = {
   title: 'Catálogo de Velas Aromáticas y Decorativas en Cera de Soya | Sandra Gil',

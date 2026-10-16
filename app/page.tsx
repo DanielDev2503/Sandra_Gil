@@ -4,7 +4,8 @@ import StoreShell from '@/components/StoreShell';
 import { OFFICIAL_AROMAS } from '@/lib/aromas';
 import { INITIAL_FAQS } from '@/lib/faqs-data';
 
-export const revalidate = 3600; // ISR: Cache en Vercel Edge CDN por 1 hora con revalidación on-demand
+export const dynamic = 'force-dynamic';
+export const revalidate = 0; // SSR en tiempo real: consulta directa a Supabase en cada petición para reflejar cambios instantáneamente
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -88,12 +89,15 @@ export default async function Home() {
   ]);
 
   const availableAromas =
-    aromasDb.length > 0 ? aromasDb.map((a) => a.nombre) : [...OFFICIAL_AROMAS];
+    aromasDb.length > 0 ? aromasDb.map((a: { nombre: string }) => a.nombre) : [...OFFICIAL_AROMAS];
 
-  // Hero product: prioritize in-stock non-custom candle with highest visual appeal
+  // Hero product: prioritize flagship candle, then in-stock non-custom candles
   const heroProduct =
     products.find((p) => p.slug === 'vela-botanica-lavanda-manzanilla') ??
-    products.find((p) => p.stock > 0 && !p.esBajoPedido) ??
+    products
+      .filter((p) => p.stock > 0 && !p.esBajoPedido)
+      .sort((a, b) => a.stock - b.stock)[0] ??
+    products.find((p) => !p.esBajoPedido) ??
     products[0] ??
     null;
 

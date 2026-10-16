@@ -251,7 +251,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                   Edición Artesanal Limitada
                 </span>
               </div>
-              <Link href={`/productos/${product.slug || product.id}`} className="group/title block">
+              <Link href={`/productos/${product.slug}`} className="group/title block">
                 <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal text-stone-900 group-hover/title:text-brand-brown transition-colors leading-tight">
                   {product.nombre}
                 </h3>
@@ -350,20 +350,23 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                 </div>
               </div>
 
-              {/* Craftsmanship attributes */}
-              <div className="flex flex-wrap items-center gap-4 pt-2 text-[11px] text-stone-500">
+              {/* Craftsmanship attributes (Prevención de punto huérfano) */}
+              <div className="flex flex-wrap items-center gap-3 pt-2 text-[11px] text-stone-500 font-sans">
                 <span className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-brand-gold" />
-                  ~45 horas de combustión limpia
+                  <Clock className="w-3.5 h-3.5 text-brand-gold shrink-0" />
+                  <span>{product.dimensiones || '~45 horas de combustión limpia'}</span>
                 </span>
+                <span className="text-stone-300">•</span>
                 <span className="flex items-center gap-1.5">
-                  <Flame className="w-3.5 h-3.5 text-brand-gold" />
-                  Pabilo de algodón sin plomo
+                  <Flame className="w-3.5 h-3.5 text-brand-gold shrink-0" />
+                  <span>{product.material || '100% Cera de Soya Natural'}</span>
                 </span>
+                <span className="text-stone-300">•</span>
+                <span className="text-stone-600 font-medium">Envase de cristal reutilizable</span>
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons con Claridad Comercial */}
             <div className="space-y-3 pt-2">
               <button
                 onClick={handleBuyNow}
@@ -371,7 +374,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                 className="w-full py-4 min-h-[48px] bg-brand-gold hover:bg-brand-brown text-white text-xs uppercase tracking-widest font-bold rounded-sm transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:bg-stone-300 disabled:cursor-not-allowed"
               >
                 <Zap className="w-4 h-4 fill-current" />
-                <span>Comprar Ahora · Despacho Inmediato</span>
+                <span>Comprar Ahora · Pago Seguro</span>
               </button>
 
               <button
@@ -384,9 +387,31 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
               </button>
             </div>
 
-            <p className="text-[11px] text-stone-400 text-center font-sans tracking-wide">
-              🔒 Pago 100% seguro con Wompi (Bancolombia, Nequi, PSE y Tarjetas).
-            </p>
+            {/* Sellos de Confianza Financiera & Logística */}
+            <div className="pt-2 space-y-2.5">
+              <p className="text-[11px] text-stone-500 text-center font-sans tracking-wide">
+                🚚 Despachos locales desde Bogotá · Pago protegido por <strong>Wompi (Bancolombia)</strong>
+              </p>
+              
+              {/* Chips de Métodos de Pago Aceptados */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 font-sans">
+                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                  Wompi
+                </span>
+                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                  Bancolombia
+                </span>
+                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                  Nequi
+                </span>
+                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                  PSE
+                </span>
+                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                  Tarjetas Débito / Crédito
+                </span>
+              </div>
+            </div>
           </div>
 
         </div>

@@ -1,7 +1,10 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sandragilvelas.com';
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    'https://sandragilvelas.com';
 
   return {
     rules: [
@@ -19,7 +22,7 @@ export default function robots(): MetadataRoute.Robots {
           'Google-Extended',
           'Applebot-Extended',
         ],
-        allow: ['/', '/llms.txt', '/catalogo'],
+        allow: ['/', '/llms.txt', '/catalogo', '/productos/'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

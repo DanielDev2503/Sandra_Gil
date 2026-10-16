@@ -46,9 +46,13 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   // Read initial filters from URL query params
   const [selectedType, setSelectedType] = useState<'todos' | 'velas' | 'jabones'>('todos');
   const rawUrlMat = searchParams.get('material') || '';
+  const rawUrlAroma = searchParams.get('aroma') || '';
   const normalizedInitialMat = rawUrlMat.toLowerCase().includes('preservad') ? 'Flores Botánicas' : rawUrlMat;
+  
   const [selectedMaterial, setSelectedMaterial] = useState<string>(normalizedInitialMat);
+  const [selectedAroma, setSelectedAroma] = useState<string>(rawUrlAroma);
   const [prevSearchMat, setPrevSearchMat] = useState(rawUrlMat);
+  const [prevSearchAroma, setPrevSearchAroma] = useState(rawUrlAroma);
   const [sortOrder, setSortOrder] = useState<'predeterminado' | 'precio-asc' | 'precio-desc'>('predeterminado');
 
   if (prevSearchMat !== rawUrlMat) {
@@ -56,7 +60,12 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     setSelectedMaterial(normalizedInitialMat);
   }
 
-  // Derive unique materials from the product list
+  if (prevSearchAroma !== rawUrlAroma) {
+    setPrevSearchAroma(rawUrlAroma);
+    setSelectedAroma(rawUrlAroma);
+  }
+
+  // Derive unique materials and aromas from the product list
   const materials = useMemo(() => {
     const set = new Set(
       products.map((p) => p.material).filter((m): m is string => !!m)
@@ -64,11 +73,19 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     return Array.from(set).sort();
   }, [products]);
 
+  const aromas = useMemo(() => {
+    const set = new Set(
+      products.map((p) => p.aroma).filter((a): a is string => !!a)
+    );
+    return Array.from(set).sort();
+  }, [products]);
+
   // Sync URL with filter state
   const syncUrl = useCallback(
-    (material: string) => {
+    (material: string, aroma: string) => {
       const params = new URLSearchParams();
       if (material) params.set('material', material);
+      if (aroma) params.set('aroma', aroma);
       const qs = params.toString();
       router.replace(`/catalogo${qs ? `?${qs}` : ''}`, { scroll: false });
     },
@@ -78,17 +95,24 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const handleMaterialChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     setSelectedMaterial(val);
-    syncUrl(val);
+    syncUrl(val, selectedAroma);
+  };
+
+  const handleAromaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setSelectedAroma(val);
+    syncUrl(selectedMaterial, val);
   };
 
   const clearFilters = () => {
     setSelectedType('todos');
     setSelectedMaterial('');
+    setSelectedAroma('');
     setSortOrder('predeterminado');
-    syncUrl('');
+    syncUrl('', '');
   };
 
-  const hasActiveFilters = selectedType !== 'todos' || selectedMaterial !== '' || sortOrder !== 'predeterminado';
+  const hasActiveFilters = selectedType !== 'todos' || selectedMaterial !== '' || selectedAroma !== '' || sortOrder !== 'predeterminado';
 
   const filteredAndSortedProducts = useMemo(() => {
     let result = products.filter((p) => {
@@ -105,6 +129,23 @@ export default function CatalogShell({ products }: CatalogShellProps) {
         return false;
       }
 
+      // Aroma filter con normalización case-insensitive y sin fallos por tildes
+      if (selectedAroma) {
+        const normTarget = selectedAroma
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .trim();
+        const normProd = (p.aroma || '')
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .trim();
+        if (!normProd.includes(normTarget) && !normTarget.includes(normProd)) {
+          return false;
+        }
+      }
+
       return true;
     });
 
@@ -116,7 +157,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     }
 
     return result;
-  }, [products, selectedType, selectedMaterial, sortOrder]);
+  }, [products, selectedType, selectedMaterial, selectedAroma, sortOrder]);
 
   const handleAddToCart = (product: Product) => {
     const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
@@ -177,14 +218,28 @@ export default function CatalogShell({ products }: CatalogShellProps) {
         </div>
 
         {/* Filters & Sorting Bar */}
-        <div className="bg-white rounded-xl border border-stone-200/60 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+        <div className="bg-white rounded-xl border border-stone-200/60 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 flex-wrap">
             <div className="flex items-center gap-2 shrink-0">
               <SlidersHorizontal className="w-4 h-4 text-brand-gold" />
               <span className="text-xs font-semibold text-stone-700 uppercase tracking-wider">Filtrar por:</span>
             </div>
 
-            {/* Clean Dropdown for Material */}
+            {/* Dropdown for Aroma */}
+            <select
+              value={selectedAroma}
+              onChange={handleAromaChange}
+              className="px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
+            >
+              <option value="">Todos los aromas</option>
+              {aromas.map((a) => (
+                <option key={a} value={a}>
+                  Aroma: {a}
+                </option>
+              ))}
+            </select>
+
+            {/* Dropdown for Material */}
             <select
               value={selectedMaterial}
               onChange={handleMaterialChange}
@@ -236,7 +291,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
         </div>
       </div>
 
-      {/* Product Grid: mobile-first grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 */}
+      {/* Product Grid: 4-block standard layout with aspect-[4/5] */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full">
         {filteredAndSortedProducts.length === 0 ? (
           <div className="text-center py-16 sm:py-20 bg-white rounded-xl border border-stone-200/60 p-8">
@@ -252,7 +307,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredAndSortedProducts.map((product, idx) => {
               const soap = isSoapProduct(product);
-              const isLowStock = product.stock > 0 && product.stock <= 15;
+              const isLowStock = product.stock > 0 && product.stock <= 10;
               const isOutOfStock = product.stock <= 0;
               const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
               const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20el%20producto:%20${encodeURIComponent(product.nombre)}`;
@@ -260,72 +315,81 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               return (
                 <div
                   key={product.id}
-                  className="group bg-white rounded-lg border border-stone-200/60 overflow-hidden flex flex-col h-full hover:shadow-md transition-all duration-350 ease-in-out"
+                  className="group bg-white rounded-xl border border-stone-200/60 overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300"
                   onMouseEnter={() => setHoveredProduct(product.id)}
                   onMouseLeave={() => setHoveredProduct(null)}
                 >
-                  <Link href={`/productos/${product.slug}`} className="relative aspect-square block overflow-hidden bg-stone-100">
+                  {/* BLOQUE 1: Imagen aspect-[4/5] y único badge estratégico */}
+                  <Link href={`/productos/${product.slug}`} className="relative aspect-[4/5] block overflow-hidden bg-stone-100">
                     <SkeletonImage
                       src={displayImage ?? ''}
                       alt={soap ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       priority={idx < 4}
                     />
 
-                    {/* Type Badge */}
-                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                      <span className="text-[10px] font-semibold text-stone-700 uppercase tracking-wider">
-                        {soap ? 'Jabón Artesanal' : product.esBajoPedido ? 'Bajo Pedido' : 'Vela Artesanal'}
-                      </span>
-                    </div>
-
-                    {/* Material & Aroma Badges (Aroma hidden for soaps!) */}
-                    <div className="absolute bottom-3 left-3 flex flex-wrap items-center gap-1.5 max-w-[90%]">
-                      {!soap && product.aroma && (
-                        <span className="bg-brand-brown/80 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest truncate">
-                          {product.aroma}
+                    {/* Único badge estratégico */}
+                    <div className="absolute top-3 left-3 z-10">
+                      {isOutOfStock ? (
+                        <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                          Agotado
                         </span>
-                      )}
-                      {product.material && (
-                        <span className="bg-brand-gold/80 backdrop-blur-xs text-white px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest truncate">
-                          {product.material}
+                      ) : isLowStock ? (
+                        <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                          Últimas {product.stock}
+                        </span>
+                      ) : product.esBajoPedido ? (
+                        <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2.5 py-1 rounded-sm text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                          Bajo Pedido
+                        </span>
+                      ) : (
+                        <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                          {soap ? 'Jabón Botánico' : 'Vela Artesanal'}
                         </span>
                       )}
                     </div>
 
                     {hoveredProduct === product.id && (
-                      <div className="absolute inset-0 bg-black/15 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
+                      <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
                         <span className="bg-white text-stone-900 text-xs font-semibold px-4 py-2 rounded-sm shadow-md flex items-center gap-2">
-                          <Eye className="w-4 h-4 text-stone-700" /> Detalles
+                          <Eye className="w-4 h-4 text-stone-700" /> Ver Detalles
                         </span>
                       </div>
                     )}
                   </Link>
 
+                  {/* BLOQUES 2, 3 Y 4: Información, Descripción y Compra */}
                   <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                     <div>
+                      {/* BLOQUE 2: Categoría / Aroma + Nombre H3 + Medida / Duración */}
+                      <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold font-sans block mb-1">
+                        {product.aroma || (soap ? 'Jabón Botánico' : '100% Cera de Soya')}
+                      </span>
+
                       <Link href={`/productos/${product.slug}`} className="block group/title">
-                        <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-gold transition duration-200 line-clamp-2 min-h-[2.8rem] sm:min-h-[3.2rem] leading-snug">
+                        <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-brown transition duration-200 line-clamp-2 leading-snug">
                           {product.nombre}
                         </h3>
                       </Link>
-                      <div className="flex items-center gap-2 mt-1.5 text-xs text-stone-400 font-sans">
-                        <span>Medida: {product.dimensiones}</span>
-                        {product.material && (
-                          <>
-                            <span>•</span>
-                            <span>{product.material}</span>
-                          </>
-                        )}
+
+                      <div className="flex items-center gap-1.5 mt-1.5 text-xs text-stone-500 font-sans">
+                        <span>{product.dimensiones || '220g · 45h de combustión'}</span>
+                        <span>•</span>
+                        <span>{product.material || 'Cera 100% Vegetal'}</span>
                       </div>
+
+                      {/* BLOQUE 3: Descripción corta limitada a 2 líneas */}
                       <p className="text-xs text-stone-500 mt-2.5 line-clamp-2 leading-relaxed font-light font-sans">
                         {product.descripcion ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : ''}
                       </p>
                     </div>
 
+                    {/* BLOQUE 4: Precio y botones alineados al fondo (mt-auto) */}
                     <div className="mt-4 sm:mt-5 pt-3.5 sm:pt-4 border-t border-stone-100 font-sans">
                       <div className="flex justify-between items-center mb-3">
                         {product.esBajoPedido ? (
@@ -353,7 +417,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                           rel="noopener noreferrer"
                           className="w-full py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm bg-[#25D366] hover:bg-[#1da851] text-white transition-all duration-300 flex items-center justify-center gap-1.5 active:scale-98"
                         >
-                          <MessageCircle className="w-4 h-4" /> Cotizar
+                          <MessageCircle className="w-4 h-4" /> Cotizar por WhatsApp
                         </a>
                       ) : (
                         <div className="grid grid-cols-2 gap-2 mt-2">

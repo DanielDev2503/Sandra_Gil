@@ -21,11 +21,10 @@ interface NavLink {
 const NAV_LINKS: NavLink[] = [
   { href: '/', label: 'Inicio' },
   { href: '/catalogo', label: 'Catálogo' },
-  { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
-  { href: '/nosotros', label: 'Sobre Nosotros' },
   { href: '/personalizadas', label: 'Velas Personalizadas', highlight: true },
+  { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
+  { href: '/nosotros', label: 'Nosotros' },
   { href: '/preguntas-frecuentes', label: 'Preguntas Frecuentes' },
-  { href: '/legal/aviso-legal', label: 'Legal' },
 ];
 
 export default function Header() {
@@ -58,25 +57,28 @@ export default function Header() {
 
   return (
     <>
-      {/* Top micro-banner */}
-      <div className="bg-brand-brown text-[#FAF8F5] text-[10px] sm:text-[11px] text-center py-1.5 px-3 font-sans tracking-wide">
-        🕯️ 100% Cera de Soya Natural · Vertido a Mano en Bogotá · Flores Botánicas Naturales ·{' '}
-        <a
-          href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20tus%20velas`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline underline-offset-2 hover:text-brand-accent transition inline-flex items-center gap-1 font-semibold"
+      {/* Top micro-banner orientado a Conversión y Confianza Logística */}
+      <div className="bg-[#2C2A29] text-[#FAF8F5] text-[11px] sm:text-xs text-center py-2 px-3 font-sans tracking-wide border-b border-stone-800 flex items-center justify-center gap-1.5 flex-wrap">
+        <span>🚚 Envío Express en Bogotá · Paga seguro con Wompi, Nequi, PSE y Tarjetas</span>
+        <span className="hidden sm:inline text-stone-500">|</span>
+        <Link
+          href="/envio-express"
+          className="text-amber-300 hover:text-amber-200 underline underline-offset-2 font-medium transition inline-flex items-center gap-1"
         >
-          Escríbenos
-        </a>
+          Ver Envío Express →
+        </Link>
       </div>
 
-      <header className="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-stone-200/50 shadow-xs">
+      <header className="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-stone-200/60 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex items-center justify-between">
 
-          {/* Left: Logo + Brand */}
+          {/* Left: Logo + Brand (Accesible sin duplicidad de texto) */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <Link href="/" className="flex items-center gap-2.5 group" aria-label="Ir al inicio – Sandra Gil Velas Artesanales">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 group"
+              aria-label="Sandra Gil Velas Artesanales - Inicio"
+            >
               <div className="relative w-10 h-10 md:w-14 md:h-14 shrink-0">
                 <Image
                   src="/logo-sandra.png"
@@ -88,7 +90,10 @@ export default function Header() {
                   sizes="(max-width: 768px) 40px, 56px"
                 />
               </div>
-              <span className="font-serif font-light text-base md:text-xl text-stone-900 tracking-wider hidden xs:inline-block">
+              <span
+                className="font-serif font-light text-base md:text-xl text-stone-900 tracking-wider hidden xs:inline-block"
+                aria-hidden="true"
+              >
                 SANDRA GIL
               </span>
             </Link>
@@ -116,9 +121,9 @@ export default function Header() {
                   key={link.href}
                   href={link.href}
                   className={`hover:text-brand-brown transition duration-200 min-h-[44px] inline-flex items-center gap-1.5 ${
-                    link.isExpress ? 'text-amber-700 font-semibold hover:text-amber-800' : ''
+                    link.isExpress ? 'text-amber-800 font-semibold hover:text-amber-900' : ''
                   } ${link.highlight ? 'text-brand-gold font-semibold' : ''} ${
-                    pathname === link.href ? 'text-brand-brown font-bold' : ''
+                    pathname === link.href ? 'text-brand-brown font-bold border-b-2 border-brand-brown' : ''
                   }`}
                 >
                   {LinkIcon && <LinkIcon className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />}
@@ -133,11 +138,11 @@ export default function Header() {
             <button
               onClick={openCart}
               className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-brand-brown hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer"
-              aria-label="Abrir Carrito"
+              aria-label="Abrir carrito de compras"
             >
-              <ShoppingBag className="w-5 h-5" />
+              <ShoppingBag className="w-5 h-5 text-stone-800" />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 bg-brand-gold text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs font-sans">
+                <span className="absolute top-0.5 right-0.5 bg-brand-brown text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md font-sans border-2 border-white">
                   {cartCount}
                 </span>
               )}
@@ -178,7 +183,7 @@ export default function Header() {
                   unoptimized
                   className="object-contain"
                 />
-                <span className="font-serif text-sm font-light tracking-wider text-stone-900">SANDRA GIL</span>
+                <span className="font-serif text-sm font-light tracking-wider text-stone-900" aria-hidden="true">SANDRA GIL</span>
               </div>
               <button
                 onClick={closeMobileMenu}

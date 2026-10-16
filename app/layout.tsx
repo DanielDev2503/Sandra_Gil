@@ -17,8 +17,13 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.NEXT_PUBLIC_APP_URL ||
+  'https://sandragilvelas.com';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://sandragilvelas.com'),
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'Sandra Gil | Velas Decorativas y Aromáticas de Cera de Soya en Bogotá',
     template: '%s | Sandra Gil Velas',
@@ -35,11 +40,15 @@ export const metadata: Metadata = {
     'Sandra Gil',
     'velas artesanales',
   ],
+  icons: {
+    icon: '/icon.jpg',
+    apple: '/icon.jpg',
+  },
   openGraph: {
     title: 'Sandra Gil | Velas Artesanales y Aromáticas en Bogotá',
     description:
       'Velas ecológicas de cera de soya vertidas a mano con flores botánicas y esencias exclusivas. Combustión limpia.',
-    url: 'https://sandragilvelas.com',
+    url: siteUrl,
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
     type: 'website',
@@ -70,16 +79,16 @@ const jsonLdGraph = {
   '@graph': [
     {
       '@type': 'Organization',
-      '@id': 'https://sandragilvelas.com/#organization',
+      '@id': `${siteUrl}/#organization`,
       name: 'Sandra Gil Velas Artesanales',
-      url: 'https://sandragilvelas.com',
+      url: siteUrl,
       logo: {
         '@type': 'ImageObject',
-        '@id': 'https://sandragilvelas.com/#logo',
-        url: 'https://sandragilvelas.com/logo-sandra.png',
+        '@id': `${siteUrl}/#logo`,
+        url: `${siteUrl}/logo-sandra.png`,
         caption: 'Sandra Gil Velas Artesanales',
       },
-      image: 'https://sandragilvelas.com/logo-sandra.png',
+      image: `${siteUrl}/logo-sandra.png`,
       telephone: '+573175752029',
       contactPoint: {
         '@type': 'ContactPoint',
@@ -91,11 +100,11 @@ const jsonLdGraph = {
     },
     {
       '@type': ['Store', 'LocalBusiness'],
-      '@id': 'https://sandragilvelas.com/#store',
+      '@id': `${siteUrl}/#store`,
       name: 'Sandra Gil - Velas Artesanales',
-      url: 'https://sandragilvelas.com',
-      logo: 'https://sandragilvelas.com/logo-sandra.png',
-      image: 'https://sandragilvelas.com/logo-sandra.png',
+      url: siteUrl,
+      logo: `${siteUrl}/logo-sandra.png`,
+      image: `${siteUrl}/logo-sandra.png`,
       description:
         'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores botánicas naturales.',
       telephone: '+573175752029',
@@ -118,17 +127,17 @@ const jsonLdGraph = {
         { '@type': 'Country', name: 'Colombia' },
       ],
       parentOrganization: {
-        '@id': 'https://sandragilvelas.com/#organization',
+        '@id': `${siteUrl}/#organization`,
       },
     },
     {
       '@type': 'WebSite',
-      '@id': 'https://sandragilvelas.com/#website',
-      url: 'https://sandragilvelas.com',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
       name: 'Sandra Gil Velas Artesanales',
       inLanguage: 'es-CO',
       publisher: {
-        '@id': 'https://sandragilvelas.com/#organization',
+        '@id': `${siteUrl}/#organization`,
       },
     },
   ],

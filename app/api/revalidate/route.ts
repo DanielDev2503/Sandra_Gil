@@ -12,7 +12,8 @@ async function handleRevalidation(req: NextRequest) {
   try {
     revalidatePath(path);
     revalidatePath('/');
-    return NextResponse.json({ revalidated: true, path, now: Date.now() });
+    revalidatePath('/catalogo');
+    return NextResponse.json({ revalidated: true, path, routes: ['/', '/catalogo', path], now: Date.now() });
   } catch (err) {
     return NextResponse.json({ message: 'Error revalidando ruta', err }, { status: 500 });
   }

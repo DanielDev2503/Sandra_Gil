@@ -12,11 +12,14 @@ import SkeletonImage from '@/components/SkeletonImage';
 
 const WA_NUMBER = '573175752029';
 
-interface Product {
+export type TipoProducto = 'VELA' | 'JABON';
+
+export interface Product {
   id: string;
   slug: string;
   nombre: string;
   descripcion: string;
+  tipo?: TipoProducto | string | null;
   aroma?: string | null;
   material?: string | null;
   dimensiones?: string | null;
@@ -32,9 +35,48 @@ interface CatalogShellProps {
   products: Product[];
 }
 
-export function isSoapProduct(product: { nombre: string; material?: string | null; descripcion?: string }) {
-  const text = `${product.nombre} ${product.material || ''} ${product.descripcion || ''}`.toLowerCase();
-  return text.includes('jabón') || text.includes('jabon') || text.includes('soap');
+/**
+ * Normaliza una cadena eliminando tildes/diacríticos y convirtiendo a minúsculas.
+ */
+export const normalize = (str?: string | null): string =>
+  str ? str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() : '';
+
+/**
+ * Determina de forma robusta si un producto es un jabón artesanal reconociendo su campo `tipo`
+ * o buscando palabras clave en su nombre, material o descripción.
+ */
+export function isSoapProduct(product: {
+  tipo?: string | null;
+  nombre?: string | null;
+  material?: string | null;
+  descripcion?: string | null;
+}): boolean {
+  if (product.tipo) {
+    const normTipo = normalize(product.tipo);
+    if (normTipo.includes('jabon') || normTipo.includes('soap')) return true;
+    if (normTipo.includes('vela') || normTipo.includes('candle')) return false;
+  }
+  const text = normalize(`${product.nombre || ''} ${product.material || ''} ${product.descripcion || ''}`);
+  return text.includes('jabon') || text.includes('soap');
+}
+
+/**
+ * Determina si un producto es una vela artesanal.
+ */
+export function isCandleProduct(product: {
+  tipo?: string | null;
+  nombre?: string | null;
+  material?: string | null;
+  descripcion?: string | null;
+}): boolean {
+  if (product.tipo) {
+    const normTipo = normalize(product.tipo);
+    if (normTipo.includes('vela') || normTipo.includes('candle')) return true;
+    if (normTipo.includes('jabon') || normTipo.includes('soap')) return false;
+  }
+  const text = normalize(`${product.nombre || ''} ${product.material || ''} ${product.descripcion || ''}`);
+  if (text.includes('vela') || text.includes('candle')) return true;
+  return !isSoapProduct(product);
 }
 
 export default function CatalogShell({ products }: CatalogShellProps) {
@@ -92,10 +134,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   const filteredAndSortedProducts = useMemo(() => {
     let result = products.filter((p) => {
-      const soap = isSoapProduct(p);
       // Type filter
-      if (selectedType === 'velas' && soap) return false;
-      if (selectedType === 'jabones' && !soap) return false;
+      if (selectedType === 'velas' && !isCandleProduct(p)) return false;
+      if (selectedType === 'jabones' && !isSoapProduct(p)) return false;
 
       // Material filter
       if (

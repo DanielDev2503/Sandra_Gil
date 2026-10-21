@@ -41,6 +41,7 @@ export default async function CatalogPage() {
       slug: true,
       nombre: true,
       descripcion: true,
+      tipo: true,
       aroma: true,
       material: true,
       dimensiones: true,

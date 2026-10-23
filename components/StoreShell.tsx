@@ -2,12 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'motion/react';
-import { Sparkles, Star, ArrowRight, MessageCircle, Heart, CheckCircle2, Droplets } from 'lucide-react';
+import { Sparkles, Star, MessageCircle, CheckCircle2 } from 'lucide-react';
 import Header from './Header';
 import HeroSection from './HeroSection';
 import BrandPillarsBento from './BrandPillarsBento';
-import InteractiveProductShowcase from './InteractiveProductShowcase';
 import ProductCatalog from './ProductCatalog';
 import SensoryWorkshopSection from './SensoryWorkshopSection';
 import CartDrawer from './CartDrawer';
@@ -61,72 +59,12 @@ interface StoreShellProps {
   resenas?: ResenaItem[];
 }
 
-const FEATURED_AROMAS = [
-  {
-    name: 'Lavanda & Manzanilla',
-    tag: 'Aromaterapia · Calma',
-    mood: 'Relajación profunda y descanso',
-    notes: 'Lavanda silvestre · Azahar · Maderas suaves',
-    bgClass: 'from-purple-50/90 to-indigo-50/50 border-purple-200/60 hover:border-purple-300',
-    badgeClass: 'bg-purple-100 text-purple-900 border-purple-200',
-    accentText: 'text-purple-800',
-  },
-  {
-    name: 'Cítricos & Caléndula',
-    tag: 'Energía · Vitalidad',
-    mood: 'Claridad mental y optimismo',
-    notes: 'Mandarina verde · Bergamota · Caléndula',
-    bgClass: 'from-amber-50/90 to-orange-50/50 border-amber-200/60 hover:border-amber-300',
-    badgeClass: 'bg-amber-100 text-amber-900 border-amber-200',
-    accentText: 'text-amber-800',
-  },
-  {
-    name: 'Jazmín Imperial',
-    tag: 'Floral Noble · Lujo',
-    mood: 'Serenidad, calidez e introspección',
-    notes: 'Jazmín blanco · Flor de azahar · Sándalo',
-    bgClass: 'from-stone-50/90 to-amber-50/40 border-stone-200/70 hover:border-amber-300',
-    badgeClass: 'bg-stone-100 text-stone-800 border-stone-200',
-    accentText: 'text-stone-800',
-  },
-  {
-    name: 'Rosas Silvestres',
-    tag: 'Floral Romántico',
-    mood: 'Amor propio y armonía',
-    notes: 'Pétalos de rosa · Peonía · Almizcle floral',
-    bgClass: 'from-rose-50/90 to-pink-50/50 border-rose-200/60 hover:border-rose-300',
-    badgeClass: 'bg-rose-100 text-rose-900 border-rose-200',
-    accentText: 'text-rose-800',
-  },
-  {
-    name: 'Canela & Manzana',
-    tag: 'Cálido · Especiado',
-    mood: 'Sensación acogedora de hogar',
-    notes: 'Canela de Ceilán · Manzana · Nuez moscada',
-    bgClass: 'from-orange-50/90 to-amber-100/40 border-orange-200/60 hover:border-orange-300',
-    badgeClass: 'bg-orange-100 text-orange-900 border-orange-200',
-    accentText: 'text-orange-900',
-  },
-  {
-    name: 'Vainilla Dulce',
-    tag: 'Gourmet · Confort',
-    mood: 'Dulzura reconfortante y calidez',
-    notes: 'Vainilla bourbon · Azúcar moreno · Caramelo',
-    bgClass: 'from-yellow-50/70 to-stone-50/70 border-yellow-200/60 hover:border-yellow-300',
-    badgeClass: 'bg-yellow-100 text-yellow-900 border-yellow-200',
-    accentText: 'text-yellow-900',
-  },
-];
-
 export default function StoreShell({
   products,
   heroProduct,
   availableAromas = [],
   resenas = [],
 }: StoreShellProps) {
-  // Select featured showcase product (heroProduct or first product with stock)
-  const showcaseProduct = heroProduct || products[0] || null;
-
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-[#FAF8F5]">
       {/* Navigation Header */}
@@ -139,74 +77,14 @@ export default function StoreShell({
         {/* 2. Brand Pillars Bento Grid (100% Cera de Soya, Flores Artesanales, Hecho a Mano, Aromaterapia) */}
         <BrandPillarsBento />
 
-        {/* 3. Interactive Product Spotlight & Olfactory Pyramid Experience */}
-        {showcaseProduct && (
-          <InteractiveProductShowcase
-            product={showcaseProduct}
-            availableAromas={availableAromas}
-          />
-        )}
-
-        {/* 4. SECCIÓN VISUAL ENRIQUECIDA: "Explorar por Aroma" (Paletas suaves editoriales) */}
-        <section className="bg-white py-16 sm:py-20 border-b border-brand-gold/15">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-stone-50 rounded-full border border-brand-gold/25 mb-3">
-                <Droplets className="w-3.5 h-3.5 text-brand-gold" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-brand-gold font-bold font-sans">
-                  Familias Aromáticas Selectas
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900">
-                Explora Nuestra Colección por Aroma
-              </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 mb-3" />
-              <p className="text-stone-500 text-xs sm:text-sm font-sans font-light">
-                Cada fragancia ha sido formulada con aceites botánicos puros para armonizar emociones y transformar espacios.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 font-sans">
-              {FEATURED_AROMAS.map((item) => (
-                <Link
-                  key={item.name}
-                  href={`/catalogo?aroma=${encodeURIComponent(item.name)}`}
-                  className={`group relative rounded-xl p-5 sm:p-6 bg-gradient-to-br ${item.bgClass} border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className={`text-[10px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full border ${item.badgeClass}`}>
-                        {item.tag}
-                      </span>
-                      <ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-stone-900 group-hover:translate-x-1 transition-all" />
-                    </div>
-
-                    <h3 className={`font-serif text-lg sm:text-xl font-medium mb-1 ${item.accentText}`}>
-                      {item.name}
-                    </h3>
-                    <p className="text-xs text-stone-600 font-light mb-3">
-                      {item.mood}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-stone-200/50 flex items-center justify-between text-[11px] text-stone-500">
-                    <span className="truncate max-w-[200px]">{item.notes}</span>
-                    <span className="font-semibold text-stone-800 group-hover:text-brand-brown">Ver velas →</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 5. Complete Product Catalog */}
+        {/* 3. Complete Product Catalog */}
         <ProductCatalog products={products} showFilters={false} />
 
-        {/* 6. NUEVA SECCIÓN DE ALTO TICKET: "Velas Personalizadas y Eventos" */}
+        {/* 4. SECCIÓN DE ALTO TICKET: "Velas Personalizadas y Eventos" */}
         <section className="bg-[#2C2A29] text-[#FAF8F5] py-16 sm:py-24 relative overflow-hidden border-b border-stone-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              
+
               <div className="lg:col-span-7 space-y-5 text-center lg:text-left">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-stone-800/80 rounded-full border border-brand-gold/30">
                   <Sparkles className="w-3 h-3 text-brand-gold" />
@@ -221,7 +99,7 @@ export default function StoreShell({
                 </h2>
 
                 <p className="text-stone-300 text-sm sm:text-base font-light font-sans max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  Creamos piezas botánicas únicas para celebraciones inolvidables en Bogotá y la Sabana. Diseñamos etiquetas personalizadas con nombres y fechas, selección de flores preservadas temáticas, aromas insignia y empaques artesanales listos para regalar.
+                  Creamos piezas artesanales únicas para celebraciones inolvidables en Bogotá y la Sabana. Diseñamos etiquetas personalizadas con nombres y fechas, selección de flores artesanales temáticas, aromas insignia y empaques artesanales listos para regalar.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-left font-sans">
@@ -292,10 +170,10 @@ export default function StoreShell({
           </div>
         </section>
 
-        {/* 7. Sensory Workshops & Experiences */}
+        {/* 5. Sensory Workshops & Experiences */}
         <SensoryWorkshopSection />
 
-        {/* 8. NUEVA SECCIÓN DE PRUEBA SOCIAL: "Testimonios y Reseñas de Clientes en Bogotá" */}
+        {/* 6. SECCIÓN DE PRUEBA SOCIAL: "Testimonios y Reseñas de Clientes en Bogotá" */}
         <section className="bg-white py-16 sm:py-24 border-b border-brand-gold/15">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
@@ -337,7 +215,7 @@ export default function StoreShell({
                   id: 'default-3',
                   autor: 'Valentina Gómez · Bogotá (Rosales)',
                   calificacion: 5,
-                  comentario: 'Mandé a hacer 30 recordatorios personalizados para el bautizo de mi hija y todas las invitadas quedaron enamoradas. El detalle de las flores botánicas preservadas es único.',
+                  comentario: 'Mandé a hacer 30 recordatorios personalizados para el bautizo de mi hija y todas las invitadas quedaron enamoradas. El detalle de las flores artesanales es único.',
                   producto: { nombre: 'Vela Aromática Jazmín Imperial', slug: 'vela-aromatica-jazmin-imperial' }
                 }
               ]).map((rev) => (

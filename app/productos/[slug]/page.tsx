@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       slug: true,
       nombre: true,
       descripcion: true,
+      tipo: true,
       activo: true,
       url_imagen: true,
       imagenes: true,
@@ -38,6 +39,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
         slug: true,
         nombre: true,
         descripcion: true,
+        tipo: true,
         activo: true,
         url_imagen: true,
         imagenes: true,
@@ -52,8 +54,13 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
-  const title = `${product.nombre} | Vela Artesanal de Cera de Soya`;
-  const rawDesc = product.descripcion || 'Vela artesanal vertida a mano con cera de soya natural y esencias exclusivas en Bogotá.';
+  const isJabon = product.tipo?.toUpperCase() === 'JABON' || (product as { categoria?: string }).categoria?.toLowerCase().includes('jabon');
+  const title = isJabon
+    ? `${product.nombre} | Jabón Artesanal Botánico Natural`
+    : `${product.nombre} | Vela Artesanal de Cera de Soya`;
+  const rawDesc = product.descripcion || (isJabon
+    ? 'Jabón artesanal botánico formulado con extractos naturales y aceites nutritivos en Bogotá.'
+    : 'Vela artesanal vertida a mano con cera de soya natural y esencias exclusivas en Bogotá.');
   const description = rawDesc.length > 155 ? `${rawDesc.substring(0, 152)}...` : rawDesc;
   const imageUrl = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : (product.url_imagen || '/logo-sandra.png');
   const canonicalUrl = `https://sandragilvelas.com/productos/${product.slug}`;
@@ -102,6 +109,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       slug: true,
       nombre: true,
       descripcion: true,
+      tipo: true,
       aroma: true,
       material: true,
       dimensiones: true,
@@ -177,6 +185,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     slug: string;
     nombre: string;
     descripcion: string;
+    tipo?: string | null;
     precio: number | null;
     esBajoPedido: boolean;
     stock: number;
@@ -198,6 +207,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         slug: true,
         nombre: true,
         descripcion: true,
+        tipo: true,
         precio: true,
         esBajoPedido: true,
         stock: true,
@@ -243,7 +253,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       '@type': 'Brand',
       name: 'Sandra Gil',
     },
-    material: product.material || '100% Cera de Soya Natural',
+    material: product.material || (product.tipo?.toUpperCase() === 'JABON' ? 'Glicerina vegetal y extractos botánicos' : '100% Cera de Soya Natural'),
     offers: {
       '@type': 'Offer',
       url: `${baseUrl}/productos/${product.slug}`,
@@ -365,6 +375,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     slug: product.slug,
     nombre: product.nombre,
     descripcion: product.descripcion,
+    tipo: product.tipo,
     aroma: product.aroma,
     material: product.material,
     dimensiones: product.dimensiones,

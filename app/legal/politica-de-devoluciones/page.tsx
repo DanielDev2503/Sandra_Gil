@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { 
-  RotateCcw, 
-  ShieldCheck, 
-  Truck, 
-  AlertTriangle, 
-  CheckCircle2, 
-  Clock, 
-  FileText, 
-  Sparkles, 
+import {
+  RotateCcw,
+  ShieldCheck,
+  Truck,
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Sparkles,
   HelpCircle,
   ExternalLink
 } from 'lucide-react';
@@ -47,7 +47,7 @@ export default function PoliticaDevolucionesPage() {
           Última actualización: enero de {currentYear} · Sandra Gil Velas Artesanales · Bogotá D.C., Colombia
         </p>
         <p className="text-sm sm:text-base text-stone-600 leading-relaxed font-light">
-          En <strong>Sandra Gil Velas Artesanales</strong> elaboramos cada vela de forma individual, con 100% cera de soya vegetal, flores botánicas preservadas y esencias finas vertidas a mano. Respaldamos la calidad de nuestras creaciones y protegemos tus derechos como consumidor de conformidad con las leyes colombianas.
+          En <strong>Sandra Gil Velas Artesanales</strong> elaboramos cada vela de forma individual, con 100% cera de soya vegetal, flores artesanales y esencias finas vertidas a mano. Respaldamos la calidad de nuestras creaciones y protegemos tus derechos como consumidor de conformidad con las leyes colombianas.
         </p>
       </header>
 
@@ -110,14 +110,14 @@ export default function PoliticaDevolucionesPage() {
             Naturaleza de los Productos Artesanales
           </p>
           <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
-            Nuestras velas son piezas artesanales vertidas una a una con cera de soya 100% natural, aceites aromáticos de alta pureza y flores botánicas secas o preservadas. Las ligeras variaciones en tonalidad de la cera, la disposición exacta de los pétalos o la textura de cristalización (frosting) son sellos auténticos del trabajo botánico manual y no constituyen defectos de calidad.
+            Nuestras velas son piezas artesanales vertidas una a una con cera de soya 100% natural, aceites aromáticos de alta pureza y flores artesanales. Las ligeras variaciones en tonalidad de la cera, la disposición exacta de los pétalos o la textura de cristalización (frosting) son sellos auténticos del trabajo artesanal y no constituyen defectos de calidad.
           </p>
         </div>
       </div>
 
       {/* Detailed Policy Sections */}
       <div className="space-y-8 bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-xs">
-        
+
         {/* Section 1: Derecho de Retracto */}
         <section className="space-y-3.5">
           <h2 className="text-lg sm:text-xl font-serif font-semibold text-stone-900 flex items-center gap-2">
@@ -127,7 +127,7 @@ export default function PoliticaDevolucionesPage() {
           <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
             De conformidad con el artículo 47 de la Ley 1480 de 2011 (Estatuto del Consumidor de Colombia), en las compras efectuadas mediante comercio electrónico o venta a distancia, el consumidor tiene el derecho de retractarse de la compra y solicitar la devolución íntegra del dinero pagado.
           </p>
-          
+
           <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-4 space-y-2.5">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-800">
               Condiciones Obligatorias para la Validez del Retracto:
@@ -351,7 +351,7 @@ export default function PoliticaDevolucionesPage() {
             Escríbenos directamente por WhatsApp. Te brindamos atención personalizada de lunes a sábado de 8:00 a.m. a 6:00 p.m. (hora Colombia).
           </p>
         </div>
-        
+
         <div className="pt-2 flex flex-col sm:flex-row gap-3">
           <a
             href={WA_DEVOLUCION_LINK}

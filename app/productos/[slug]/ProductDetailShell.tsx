@@ -38,6 +38,8 @@ interface Product {
   slug: string;
   nombre: string;
   descripcion: string;
+  tipo?: string | null;
+  categoria?: string | null;
   aroma?: string | null;
   material?: string | null;
   dimensiones?: string | null;
@@ -143,7 +145,13 @@ export default function ProductDetailShell({
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
 
-  const isSoap = isSoapProduct(product);
+  const isJabon = Boolean(
+    product.tipo?.toUpperCase() === 'JABON' ||
+    product.categoria?.toLowerCase().includes('jabon') ||
+    isSoapProduct(product)
+  );
+  const isVela = !isJabon;
+  const isSoap = isJabon;
 
   const aromasList: string[] = useMemo(() => {
     if (availableAromas && availableAromas.length > 0) {
@@ -205,7 +213,7 @@ export default function ProductDetailShell({
       ...product,
       url_imagen: activeImage || product.url_imagen,
     };
-    addToCart(productForCart, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma, selectedVariation);
+    addToCart(productForCart, Math.max(1, quantity), selectedAroma, selectedVariation);
     router.push('/checkout');
   };
 
@@ -214,7 +222,7 @@ export default function ProductDetailShell({
       ...product,
       url_imagen: activeImage || product.url_imagen,
     };
-    addToCart(productForCart, Math.max(1, quantity), isSoap ? 'Jabón Sin Aroma' : selectedAroma, selectedVariation);
+    addToCart(productForCart, Math.max(1, quantity), selectedAroma, selectedVariation);
   };
 
   const toggleAccordion = (section: string) => {
@@ -434,15 +442,14 @@ export default function ProductDetailShell({
               dangerouslySetInnerHTML={{ __html: product.descripcion }}
             />
 
-            {/* ── AROMA SELECTOR (For VELAS only - Hidden for JABON) ── */}
-            {!isSoap && (
-              <AromaDropdownSelector
-                aromas={aromasList}
-                selectedAroma={selectedAroma}
-                onSelectAroma={setSelectedAroma}
-                productName={product.nombre}
-              />
-            )}
+            {/* ── AROMA SELECTOR (Active for both VELAS and JABONES) ── */}
+            <AromaDropdownSelector
+              aromas={aromasList}
+              selectedAroma={selectedAroma}
+              onSelectAroma={setSelectedAroma}
+              productName={product.nombre}
+              isJabon={isJabon}
+            />
 
             {/* ── VARIATION SELECTOR ── */}
             {hasVariaciones && !isBajoPedido && (
@@ -534,18 +541,23 @@ export default function ProductDetailShell({
 
 
             {/* ── INDEPENDENT DIMENSIONS CARD ── */}
-            <div className="bg-white p-4 rounded-xl border border-stone-200/80 shadow-xs flex items-center gap-3 font-sans">
-              <div className="p-2.5 rounded-lg bg-amber-50 text-brand-gold shrink-0">
-                <Ruler className="w-5 h-5" />
+            <div className="bg-white p-4 rounded-xl border border-stone-200/80 shadow-xs font-sans">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-amber-50 text-brand-gold shrink-0">
+                  <Ruler className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
+                    Dimensiones del Producto
+                  </span>
+                  <span className="text-sm font-semibold text-stone-900">
+                    {product.dimensiones || 'Tamaño Estándar Artesanal'}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
-                  Dimensiones del Producto
-                </span>
-                <span className="text-sm font-semibold text-stone-900">
-                  {product.dimensiones || 'Tamaño Estándar Artesanal'}
-                </span>
-              </div>
+              <p className="text-xs text-stone-500/90 font-light mt-2 italic">
+                * Nota: Las dimensiones reales del producto corresponden a las especificadas en esta tarjeta técnica. Por favor, no tome como referencia visual las proporciones de las imágenes ilustrativas.
+              </p>
             </div>
 
             {/* Actions */}
@@ -636,95 +648,38 @@ export default function ProductDetailShell({
               </div>
             </div>
 
-            {/* Accordion: Especificaciones Técnicas, Cuidado & FAQ */}
-            <div className="border border-stone-200 rounded-sm overflow-hidden bg-white divide-y divide-stone-200 font-sans text-sm">
-              {[
-                {
-                  key: 'specs',
-                  label: 'Ficha Técnica & Especificaciones',
-                  content: (
-                    <div className="text-xs text-stone-600 leading-relaxed font-light space-y-3">
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                          <tbody className="divide-y divide-stone-100">
-                            <tr>
-                              <th className="py-2 pr-3 font-semibold text-stone-800 w-1/3">Formato / Peso:</th>
-                              <td className="py-2 text-stone-600">{product.dimensiones || '220g (aprox. 8 oz)'}</td>
-                            </tr>
-                            <tr>
-                              <th className="py-2 pr-3 font-semibold text-stone-800">Combustión:</th>
-                              <td className="py-2 text-stone-600">{isSoap ? 'Larga duración' : '45 a 50 horas de combustión limpia'}</td>
-                            </tr>
-                            <tr>
-                              <th className="py-2 pr-3 font-semibold text-stone-800">Cera / Base:</th>
-                              <td className="py-2 text-stone-600">{product.material || '100% Cera de Soya Botánica Natural (libre de parafina)'}</td>
-                            </tr>
-                            <tr>
-                              <th className="py-2 pr-3 font-semibold text-stone-800">Pabilo:</th>
-                              <td className="py-2 text-stone-600">Algodón orgánico trenzado (libre de plomo)</td>
-                            </tr>
-                            <tr>
-                              <th className="py-2 pr-3 font-semibold text-stone-800">Fragancia:</th>
-                              <td className="py-2 text-stone-600">{selectedAroma || product.aroma || 'Esencias botánicas finas sin ftalatos'}</td>
-                            </tr>
-                            <tr>
-                              <th className="py-2 pr-3 font-semibold text-stone-800">Origen:</th>
-                              <td className="py-2 text-stone-600">Vertido a mano en Taller Sandra Gil · Bogotá D.C.</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  ),
-                },
-                {
-                  key: 'care',
-                  label: 'Consejos de Cuidado & Seguridad',
-                  content: (
-                    <div className="text-xs text-stone-600 leading-relaxed font-light space-y-2.5">
-                      <p className="font-medium text-stone-800">Para aprovechar al máximo tu producto artesanal:</p>
-                      <ul className="list-disc pl-4 space-y-1.5">
-                        <li><strong>Pabilo Corto:</strong> Recorta el pabilo a 5 mm antes de cada encendido.</li>
-                        <li><strong>Tiempo Máximo:</strong> No dejar la vela encendida por más de 2 horas continuas.</li>
-                        <li><strong>Superficie Segura:</strong> Encender siempre sobre una superficie plana y resistente al calor.</li>
-                        <li><strong>Precaución:</strong> Mantener fuera del alcance de niños, mascotas y materiales inflamables.</li>
-                      </ul>
-                    </div>
-                  ),
-                },
-                {
-                  key: 'faq',
-                  label: 'Preguntas Frecuentes del Producto',
-                  content: (
-                    <div className="text-xs text-stone-600 leading-relaxed font-light space-y-3">
-                      <div>
-                        <p className="font-semibold text-stone-800">¿Cómo asegurar la memoria de quemado en el primer uso?</p>
-                        <p className="text-stone-500 mt-0.5">En el primer encendido, deja actuar la vela entre 2 y 3 horas hasta que la cera forme una piscina líquida de extremo a extremo del frasco, evitando túneles futuros.</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-stone-800">¿Qué pasa con las flores botánicas cuando se funde la cera?</p>
-                        <p className="text-stone-500 mt-0.5">Son flores naturales preservadas. A medida que la cera se derrite se sumergen naturalmente; si alguna flor queda cerca del pabilo, puedes retirarla con una pinza.</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-stone-800">¿El envase es reutilizable?</p>
-                        <p className="text-stone-500 mt-0.5">Sí. Una vez consumida la vela, lava el vaso con agua tibia y jabón para retirar cualquier resto de cera vegetal y reutilízalo como vaso organizador o mini florero.</p>
-                      </div>
-                    </div>
-                  ),
-                },
-              ].map(({ key, label, content }) => (
-                <div key={key}>
+            {/* Accordion: Consejos de Cuidado & Seguridad (Solo para Velas) */}
+            {!isJabon && (
+              <div className="border border-stone-200 rounded-sm overflow-hidden bg-white font-sans text-sm">
+                <div>
                   <button
-                    onClick={() => toggleAccordion(key)}
+                    type="button"
+                    onClick={() => toggleAccordion('care')}
                     className="w-full px-4 sm:px-5 py-3.5 sm:py-4 min-h-[44px] flex items-center justify-between font-semibold text-stone-800 hover:bg-stone-50/50 transition text-left cursor-pointer"
                   >
-                    <span className="text-xs sm:text-sm">{label}</span>
-                    {activeAccordion === key ? <ChevronUp className="w-4 h-4 text-stone-500 shrink-0" /> : <ChevronDown className="w-4 h-4 text-stone-500 shrink-0" />}
+                    <span className="text-xs sm:text-sm">Consejos de Cuidado & Seguridad</span>
+                    {activeAccordion === 'care' ? (
+                      <ChevronUp className="w-4 h-4 text-stone-500 shrink-0" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-stone-500 shrink-0" />
+                    )}
                   </button>
-                  {activeAccordion === key && <div className="px-4 sm:px-5 pb-4 sm:pb-5">{content}</div>}
+                  {activeAccordion === 'care' && (
+                    <div className="px-4 sm:px-5 pb-4 sm:pb-5">
+                      <div className="text-xs text-stone-600 leading-relaxed font-light space-y-2.5">
+                        <p className="font-medium text-stone-800">Para aprovechar al máximo tu producto artesanal:</p>
+                        <ul className="list-disc pl-4 space-y-1.5">
+                          <li><strong>Pabilo Corto:</strong> Recorta el pabilo a 5 mm antes de cada encendido.</li>
+                          <li><strong>Tiempo Máximo:</strong> No dejar la vela encendida por más de 2 horas continuas.</li>
+                          <li><strong>Superficie Segura:</strong> Encender siempre sobre una superficie plana y resistente al calor.</li>
+                          <li><strong>Precaución:</strong> Mantener fuera del alcance de niños, mascotas y materiales inflamables.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 

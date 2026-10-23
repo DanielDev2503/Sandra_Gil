@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: '%s | Sandra Gil Velas',
   },
   description:
-    'Tienda artesanal de velas decorativas y aromáticas 100% cera de soya natural vertidas a mano con flores botánicas en Bogotá. Envíos gratis locales y despachos a toda Colombia.',
+    'Tienda artesanal de velas decorativas y aromáticas 100% cera de soya natural vertidas a mano con flores artesanales en Bogotá. Envíos gratis locales y despachos a toda Colombia.',
   keywords: [
     'velas artesanales bogota',
     'velas de cera de soya bogota',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Sandra Gil | Velas Artesanales y Aromáticas en Bogotá',
     description:
-      'Velas ecológicas de cera de soya vertidas a mano con flores botánicas y esencias exclusivas. Combustión limpia.',
+      'Velas ecológicas de cera de soya vertidas a mano con flores artesanales y esencias exclusivas. Combustión limpia.',
     url: siteUrl,
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Sandra Gil | Velas Decorativas y Aromáticas Artesanales Bogotá',
     description:
-      'Velas artesanales premium vertidas a mano con cera de soya natural, flores botánicas y aromas exclusivos en Bogotá, Colombia. Envíos locales y nacionales.',
+      'Velas artesanales premium vertidas a mano con cera de soya natural, flores artesanales y aromas exclusivos en Bogotá, Colombia. Envíos locales y nacionales.',
     images: ['/logo-sandra.png'],
   },
   robots: {
@@ -106,7 +106,7 @@ const jsonLdGraph = {
       logo: `${siteUrl}/logo-sandra.png`,
       image: `${siteUrl}/logo-sandra.png`,
       description:
-        'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores botánicas naturales.',
+        'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores artesanales.',
       telephone: '+573175752029',
       priceRange: '$$',
       currenciesAccepted: 'COP',

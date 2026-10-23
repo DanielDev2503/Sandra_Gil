@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Sparkles, Flame, ArrowRight } from 'lucide-react';
+import { Sparkles, Leaf, Flame, ShieldCheck, ArrowRight } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 import SkeletonImage from './SkeletonImage';
 

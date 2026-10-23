@@ -430,7 +430,7 @@ export default function ProductDetailShell({
             </div>
 
             <div 
-              className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans font-light space-y-2 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:my-2.5 [&_li]:text-stone-600 [&_small]:text-[11px] [&_small]:text-stone-500 [&_small]:block [&_small]:mt-3 [&_small]:pt-2.5 [&_small]:border-t [&_small]:border-stone-150"
+              className="text-stone-700 text-base md:text-[17px] leading-relaxed font-sans font-light space-y-4 [&>p]:leading-relaxed [&>p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:my-2.5 [&_li]:text-stone-700 [&>small]:text-xs [&>small]:text-stone-500 [&>small]:block [&>small]:mt-4 [&_small]:text-xs [&_small]:text-stone-500 [&_small]:block [&_small]:mt-4 [&_small]:pt-2.5 [&_small]:border-t [&_small]:border-stone-200"
               dangerouslySetInnerHTML={{ __html: product.descripcion }}
             />
 

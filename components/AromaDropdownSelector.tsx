@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Sparkles, ChevronDown, Check, Wind, Droplets, Search, X } from 'lucide-react';
+import { ChevronDown, Check, Wind, Droplets, Search, X } from 'lucide-react';
 import { getAromaProfile } from '@/lib/aromas';
 
 interface AromaDropdownSelectorProps {
@@ -18,8 +18,6 @@ export default function AromaDropdownSelector({
   aromas,
   selectedAroma,
   onSelectAroma,
-  productName,
-  showNotice = true,
   showOlfactoryCard = true,
   className = '',
 }: AromaDropdownSelectorProps) {
@@ -91,37 +89,7 @@ export default function AromaDropdownSelector({
 
   return (
     <div className={`space-y-3 font-sans ${className}`} ref={dropdownRef}>
-      {/* ── 1. NOTICE: INFORMS THE USER THEY CAN CHOOSE THE SCENT ── */}
-      {showNotice && (
-        <div className="bg-amber-50/90 border border-amber-200/80 rounded-xl p-3 sm:p-4 shadow-xs transition-all">
-          <div className="flex items-start gap-2.5 sm:gap-3">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 text-brand-gold flex items-center justify-center shrink-0 mt-0.5 border border-amber-200/50">
-              <Sparkles className="w-4 h-4 text-brand-gold animate-pulse" />
-            </div>
-            <div className="text-xs space-y-1">
-              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span className="font-bold text-stone-900 text-xs sm:text-sm tracking-tight">
-                  ¡Escoge el aroma para tu vela!
-                </span>
-                <span className="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider bg-brand-gold/15 text-brand-brown px-2 py-0.5 rounded-full">
-                  Sin costo adicional
-                </span>
-              </div>
-              <p className="text-stone-600 leading-relaxed text-[11px] sm:text-xs font-light">
-                {productName ? (
-                  <>
-                    Puedes personalizar tu vela <strong className="font-semibold text-stone-800">{productName}</strong> eligiendo entre nuestros <strong className="font-semibold text-stone-800">{aromas.length} aromas botánicos</strong> en el menú desplegable. Todas nuestras velas se elaboran a mano con cera 100% de soya y esencias botánicas puras.
-                  </>
-                ) : (
-                  `Puedes escoger libremente entre nuestros ${aromas.length} aromas botánicos con los que elaboramos tu vela artesanal. Selecciona tu fragancia favorita en el menú desplegable.`
-                )}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── 2. DROPDOWN MENU SELECTOR ── */}
+      {/* ── DROPDOWN MENU SELECTOR ── */}
       <div className="bg-white rounded-xl border border-stone-200/90 p-3.5 sm:p-4 shadow-xs space-y-2 relative">
         <label 
           id="aroma-dropdown-label"

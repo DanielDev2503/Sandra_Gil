@@ -21,8 +21,6 @@ interface NavLink {
 const NAV_LINKS: NavLink[] = [
   { href: '/', label: 'Inicio' },
   { href: '/catalogo', label: 'Catálogo' },
-  { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
-  { href: '/nosotros', label: 'Nosotros' },
   { href: '/personalizadas', label: 'Velas Personalizadas', highlight: true },
   { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
   { href: '/nosotros', label: 'Nosotros' },
@@ -59,16 +57,15 @@ export default function Header() {
 
   return (
     <>
-      {/* Top micro-banner */}
-      <div className="bg-brand-brown text-[#FAF8F5] text-[10px] sm:text-[11px] text-center py-1.5 px-3 font-sans tracking-wide">
-        🕯️ 100% Cera de Soya Natural · Vertido a Mano en Bogotá · Flores Artesanales ·{' '}
-        <a
-          href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20tus%20velas`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline underline-offset-2 hover:text-brand-accent transition inline-flex items-center gap-1 font-semibold"
+      {/* Top micro-banner orientado a Conversión y Confianza Logística */}
+      <div className="bg-[#2C2A29] text-[#FAF8F5] text-[11px] sm:text-xs text-center py-2 px-3 font-sans tracking-wide border-b border-stone-800 flex items-center justify-center gap-1.5 flex-wrap">
+        <span>🚚 Envío Express en Bogotá · Paga seguro con Wompi, Nequi, PSE y Tarjetas</span>
+        <span className="hidden sm:inline text-stone-500">|</span>
+        <Link
+          href="/envio-express"
+          className="text-amber-300 hover:text-amber-200 underline underline-offset-2 font-medium transition inline-flex items-center gap-1"
         >
-          Ver Envío Express →
+          Ver Envío Express &rarr;
         </Link>
       </div>
 

@@ -33,7 +33,7 @@ const WA_NUMBER = '573175752029';
 
 const ARTISAN_PILLARS = [
   { icon: Leaf, title: '100% Cera de Soya', subtitle: 'Biodegradable & limpia' },
-  { icon: Sparkles, title: 'Flores Botánicas', subtitle: 'Diseño botánico natural' },
+  { icon: Sparkles, title: 'Flores Artesanales', subtitle: 'Diseño botánico natural' },
   { icon: Flame, title: 'Combustión Limpia', subtitle: 'Pabilo de algodón sin plomo' },
   { icon: ShieldCheck, title: 'Hecho a Mano', subtitle: 'Vertido en Bogotá' },
 ];
@@ -47,18 +47,18 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden bg-[#FAF8F5] pt-8 pb-16 sm:pt-14 sm:pb-24 lg:pt-18 lg:pb-28 border-b border-brand-gold/15">
       {/* Ambient background warm glows */}
-      <div 
-        aria-hidden="true" 
-        className="absolute top-0 right-1/4 w-96 h-96 bg-brand-gold/8 rounded-full blur-3xl pointer-events-none -z-0 transform -translate-y-1/2" 
+      <div
+        aria-hidden="true"
+        className="absolute top-0 right-1/4 w-96 h-96 bg-brand-gold/8 rounded-full blur-3xl pointer-events-none -z-0 transform -translate-y-1/2"
       />
-      <div 
-        aria-hidden="true" 
-        className="absolute bottom-0 left-10 w-80 h-80 bg-brand-accent/10 rounded-full blur-2xl pointer-events-none -z-0" 
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-10 w-80 h-80 bg-brand-accent/10 rounded-full blur-2xl pointer-events-none -z-0"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          
+
           {/* Left Column: Editorial Copy */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -87,7 +87,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
 
             {/* Subtitle / Value Thesis */}
             <p className="text-stone-600 text-sm sm:text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed font-sans font-light">
-              Taller artesanal en Bogotá especializado en velas aromáticas vertidas a mano con 100% cera de soya natural pura, flores botánicas naturales y pabilo de algodón sin plomo. Disfruta de una combustión limpia y no tóxica con envíos en Bogotá, Chía, Cajicá y despacho nacional a toda Colombia.
+              Taller artesanal en Bogotá especializado en velas aromáticas vertidas a mano con 100% cera de soya natural pura, flores artesanales hechas a mano y pabilo de algodón sin plomo. Disfruta de una combustión limpia y no tóxica con envíos en Bogotá, Chía, Cajicá y despacho nacional a toda Colombia.
             </p>
 
             {/* Action CTAs */}
@@ -114,8 +114,8 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
             {/* 4 Pillars Strip */}
             <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 border-t border-brand-gold/15">
               {ARTISAN_PILLARS.map(({ icon: Icon, title, subtitle }) => (
-                <div 
-                  key={title} 
+                <div
+                  key={title}
                   className="bg-white/60 backdrop-blur-xs p-3 rounded-md border border-brand-gold/15 hover:border-brand-gold/40 transition-colors text-left"
                 >
                   <Icon className="w-4 h-4 text-brand-gold mb-1.5" />

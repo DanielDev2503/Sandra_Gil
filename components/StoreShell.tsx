@@ -55,7 +55,7 @@ export default function StoreShell({ products, heroProduct, availableAromas = []
         {/* 1. Hero Section with split balance & animated floating badge */}
         <HeroSection heroProduct={heroProduct} />
 
-        {/* 2. Brand Pillars Bento Grid (100% Cera de Soya, Flores Botánicas Naturales, Hecho a Mano, Aromaterapia) */}
+        {/* 2. Brand Pillars Bento Grid (100% Cera de Soya, Flores Artesanales, Hecho a Mano, Aromaterapia) */}
         <BrandPillarsBento />
 
         {/* 3. Interactive Product Spotlight & Olfactory Pyramid Experience */}

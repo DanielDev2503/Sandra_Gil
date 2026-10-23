@@ -20,12 +20,12 @@ const PILLARS = [
   {
     id: 'flores',
     badge: 'Arte Botánico',
-    title: 'Flores Botánicas Naturales',
+    title: 'Flores Artesanales',
     description:
-      'Incorporamos hortensias, eucalipto, lavanda y siemprevivas botánicas naturales seleccionadas que mantienen su frescura y textura, convirtiendo cada vela en una pieza decorativa única.',
+      'Incorporamos diseños inspirados en hortensias, eucalipto, lavanda y siemprevivas seleccionadas que mantienen su frescura y textura, convirtiendo cada vela en una pieza decorativa única.',
     icon: Sparkles,
     colSpan: 'lg:col-span-4',
-    highlight: 'Botánica natural seleccionada',
+    highlight: 'Diseños naturales y artesanales',
     tag: 'Diseño Único',
   },
   {
@@ -56,13 +56,13 @@ export default function BrandPillarsBento() {
   return (
     <section className="bg-white py-16 sm:py-24 border-b border-brand-gold/15 relative overflow-hidden">
       {/* Decorative ambient backdrop */}
-      <div 
-        aria-hidden="true" 
-        className="absolute top-1/2 left-0 w-72 h-72 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none transform -translate-y-1/2" 
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 left-0 w-72 h-72 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none transform -translate-y-1/2"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-stone-50 rounded-full border border-brand-gold/25 mb-3">
@@ -79,8 +79,8 @@ export default function BrandPillarsBento() {
           </h2>
           <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-4 mb-4" />
           <p className="text-stone-500 text-xs sm:text-sm font-sans font-light leading-relaxed">
-            Cada vela es el resultado de un proceso consciente que fusiona la pureza de la cera vegetal, 
-            el arte de las flores botánicas naturales y la sutileza de la perfumería fina.
+            Cada vela es el resultado de un proceso consciente que fusiona la pureza de la cera vegetal,
+            el arte de las flores artesanales y la sutileza de la perfumería fina.
           </p>
         </div>
 

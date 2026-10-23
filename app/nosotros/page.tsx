@@ -8,14 +8,14 @@ import Image from 'next/image';
 export const metadata: Metadata = {
   title: 'Sobre Sandra Gil | Taller Artesanal de Velas Botánicas en Bogotá',
   description:
-    'Conoce la historia de Sandra Gil Velas Artesanales: taller artesanal en Bogotá dedicado a crear velas de cera de soya con flores botánicas naturales y aromas exclusivos.',
+    'Conoce la historia de Sandra Gil Velas Artesanales: taller artesanal en Bogotá dedicado a crear velas de cera de soya con flores artesanales y aromas exclusivos.',
   alternates: {
     canonical: 'https://sandragilvelas.com/nosotros',
   },
   openGraph: {
     title: 'Sobre Nosotros | Sandra Gil Velas Artesanales Bogotá',
     description:
-      'Taller artesanal en Bogotá dedicado a la creación consciente de velas de cera de soya natural, flores botánicas y aromas de bienestar.',
+      'Taller artesanal en Bogotá dedicado a la creación consciente de velas de cera de soya natural, flores artesanales y aromas de bienestar.',
     url: 'https://sandragilvelas.com/nosotros',
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Sobre Nosotros | Sandra Gil Velas Artesanales',
     description:
-      'Conoce el taller artesanal de Sandra Gil en Bogotá: cera de soya 100% natural y flores botánicas.',
+      'Conoce el taller artesanal de Sandra Gil en Bogotá: cera de soya 100% natural y flores artesanales.',
   },
 };
 
@@ -40,7 +40,7 @@ const PILLARS = [
     icon: Sparkles,
     title: 'Diseño Artesanal',
     description:
-      'Cada vela es moldeada y vertida a mano, con flores botánicas naturales que la hacen irrepetible.',
+      'Cada vela es moldeada y vertida a mano, con flores artesanales que la hacen irrepetible.',
   },
   {
     icon: Heart,
@@ -102,6 +102,41 @@ export default function NosotrosPage() {
           </div>
         </section>
 
+        {/* ── QUIÉNES SOMOS ──────────────────────────────── */}
+        <section className="py-10 sm:py-16 md:py-20 bg-white border-b border-stone-200/30">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8 sm:mb-12">
+              <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
+                Conócenos
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">
+                Quiénes Somos
+              </h2>
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4" />
+            </div>
+
+            <div className="space-y-4 sm:space-y-6 text-stone-600 text-xs sm:text-sm md:text-base leading-relaxed font-sans font-light max-w-3xl mx-auto">
+              <p>
+                Bienvenidos a <strong className="font-normal text-stone-800">SG Candle</strong>,
+                un refugio artesanal donde la magia de la luz, la pureza de la naturaleza y el autocuidado
+                se encuentran. Para nosotros, encender una vela o disfrutar de un jabón botánico no es un simple
+                detalle cotidiano: es abrir la puerta a un ritual íntimo, una pausa creada solo para ti
+                donde cada fragancia tiene el poder de calmar la mente y renovar el alma.
+              </p>
+              <p>
+                Nos apasiona dar vida a piezas que enamoran a primera vista por su delicadeza escultórica
+                y que, al liberar sus aromas, despiertan una atmósfera de gratitud, calma y serenidad absoluta.
+                Elaboramos cada jabón y cada vela a mano en Bogotá con ingredientes 100% naturales, puros y
+                amigables con el medio ambiente, llevando siempre el sello del amor y el respeto por tu bienestar.
+              </p>
+              <p>
+                Te invitamos a descubrir el arte de regalarte tiempo, bajar el ritmo y dejarte envolver
+                por creaciones pensadas para transformar lo cotidiano en un instante verdaderamente inolvidable.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* ── OUR STORY ──────────────────────────────────── */}
         <section className="py-10 sm:py-16 md:py-20 bg-white border-b border-stone-200/30">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -124,10 +159,10 @@ export default function NosotrosPage() {
               </p>
               <p>
                 Hoy cada vela que sale de nuestro taller es vertida a mano, decorada con flores
-                botánicas naturales seleccionadas artesanalmente y perfumada con mezclas de aromaterapia
+                esculpidas artesanalmente y perfumada con mezclas de aromaterapia
                 diseñadas para transformar cualquier espacio. Trabajamos en lotes pequeños para
                 cuidar cada detalle: desde la temperatura exacta de vertido hasta la selección
-                individual de cada flor y cristal.
+                individual de cada recipiente, material, cristal, etc.
               </p>
               <p>
                 Creemos que la belleza auténtica no necesita prisa. Por eso ofrecemos también un
@@ -199,7 +234,7 @@ export default function NosotrosPage() {
                 </h2>
 
                 <p className="mt-4 sm:mt-6 text-xs sm:text-sm md:text-base text-stone-300 max-w-xl mx-auto leading-relaxed font-sans font-light">
-                  Aprende a crear tu propia vela aromática de cera de soya con flores botánicas naturales.
+                  Aprende a crear tu propia vela aromática de cera de soya con flores artesanales hechas a mano.
                   Una experiencia sensorial guiada por Sandra Gil donde descubrirás las técnicas
                   artesanales, el arte de la aromaterapia y te llevarás una pieza única hecha por
                   tus propias manos. Ideal para regalar, para equipos corporativos o para una tarde

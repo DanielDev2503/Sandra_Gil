@@ -39,13 +39,13 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs text-stone-400">
               <li><Link href="/" className="hover:text-white transition">Inicio</Link></li>
               <li><Link href="/catalogo" className="hover:text-white transition">Catálogo</Link></li>
+              <li><Link href="/personalizadas" className="hover:text-white transition font-medium text-amber-300">Velas Personalizadas</Link></li>
               <li>
-                <Link href="/envio-express" className="hover:text-amber-300 text-amber-400/90 font-medium transition inline-flex items-center gap-1.5">
+                <Link href="/envio-express" className="hover:text-amber-300 text-stone-400 transition inline-flex items-center gap-1.5">
                   <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
-                  <span>Envío Express (Bogotá)</span>
+                  <span>Envío Express en Bogotá</span>
                 </Link>
               </li>
-              <li><Link href="/personalizadas" className="hover:text-white transition">Velas Bajo Pedido</Link></li>
               <li><Link href="/nosotros" className="hover:text-white transition">Sobre Nosotros</Link></li>
               <li><Link href="/preguntas-frecuentes" className="hover:text-white transition">Preguntas Frecuentes</Link></li>
             </ul>
@@ -55,12 +55,12 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Legal</h4>
             <ul className="space-y-2.5 text-xs text-stone-400">
+              <li><Link href="/legal/politica-de-envios" className="hover:text-white transition font-medium text-amber-300">Política de Envíos</Link></li>
+              <li><Link href="/legal/politica-de-devoluciones" className="hover:text-white transition">Política de Devoluciones</Link></li>
               <li><Link href="/legal/aviso-legal" className="hover:text-white transition">Aviso Legal</Link></li>
               <li><Link href="/legal/politica-de-privacidad" className="hover:text-white transition">Política de Privacidad</Link></li>
               <li><Link href="/legal/politica-de-cookies" className="hover:text-white transition">Política de Cookies</Link></li>
               <li><Link href="/legal/terminos-y-condiciones" className="hover:text-white transition">Términos y Condiciones</Link></li>
-              <li><Link href="/legal/politica-de-devoluciones" className="hover:text-white transition">Política de Devoluciones</Link></li>
-              <li><Link href="/legal/politica-de-envios" className="hover:text-white transition font-medium text-amber-300">Política de Envíos</Link></li>
             </ul>
           </div>
 
@@ -68,18 +68,19 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Contáctanos</h4>
             <p className="text-xs text-stone-400 leading-relaxed">
-              Síguenos en Instagram y escríbenos por WhatsApp para asesoría personalizada y pedidos especiales.
+              Síguenos en Instagram y escríbenos por WhatsApp para asesoría personalizada, cotización de eventos y pedidos especiales.
             </p>
             <div className="flex space-x-3">
               {/* Instagram */}
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/sandragilvelas"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-stone-800 text-stone-300 hover:text-white hover:bg-brand-gold transition flex items-center justify-center"
-                aria-label="Instagram de Sandra Gil Velas"
+                className="p-2.5 min-w-[44px] min-h-[44px] rounded-full bg-stone-800 text-stone-300 hover:text-white hover:bg-brand-gold transition flex items-center justify-center cursor-pointer"
+                aria-label="Síguenos en Instagram"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                <span className="sr-only">Síguenos en Instagram</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
                   <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                   <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
@@ -90,8 +91,8 @@ export default function Footer() {
                 href={WA_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-stone-800 text-stone-300 hover:text-white hover:bg-[#25D366] transition flex items-center justify-center"
-                aria-label="WhatsApp de Sandra Gil Velas"
+                className="p-2.5 min-w-[44px] min-h-[44px] rounded-full bg-stone-800 text-stone-300 hover:text-white hover:bg-[#25D366] transition flex items-center justify-center cursor-pointer"
+                aria-label="Escríbenos por WhatsApp"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
@@ -105,8 +106,8 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
           <p>© {new Date().getFullYear()} Sandra Gil Velas Artesanales. Todos los derechos reservados.</p>
-          <p className="flex items-center gap-1">
-            Hecho con <Heart className="w-3.5 h-3.5 text-red-400 fill-current" /> en Bogotá, Colombia.
+          <p className="flex items-center gap-1 font-sans">
+            Hecho con ❤️ a mano en Bogotá, Colombia.
           </p>
         </div>
       </div>

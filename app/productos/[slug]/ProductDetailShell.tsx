@@ -636,9 +636,47 @@ export default function ProductDetailShell({
               </div>
             </div>
 
-            {/* Accordion: Consejos de Cuidado & Seguridad */}
+            {/* Accordion: Especificaciones Técnicas, Cuidado & FAQ */}
             <div className="border border-stone-200 rounded-sm overflow-hidden bg-white divide-y divide-stone-200 font-sans text-sm">
               {[
+                {
+                  key: 'specs',
+                  label: 'Ficha Técnica & Especificaciones',
+                  content: (
+                    <div className="text-xs text-stone-600 leading-relaxed font-light space-y-3">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <tbody className="divide-y divide-stone-100">
+                            <tr>
+                              <th className="py-2 pr-3 font-semibold text-stone-800 w-1/3">Formato / Peso:</th>
+                              <td className="py-2 text-stone-600">{product.dimensiones || '220g (aprox. 8 oz)'}</td>
+                            </tr>
+                            <tr>
+                              <th className="py-2 pr-3 font-semibold text-stone-800">Combustión:</th>
+                              <td className="py-2 text-stone-600">{isSoap ? 'Larga duración' : '45 a 50 horas de combustión limpia'}</td>
+                            </tr>
+                            <tr>
+                              <th className="py-2 pr-3 font-semibold text-stone-800">Cera / Base:</th>
+                              <td className="py-2 text-stone-600">{product.material || '100% Cera de Soya Botánica Natural (libre de parafina)'}</td>
+                            </tr>
+                            <tr>
+                              <th className="py-2 pr-3 font-semibold text-stone-800">Pabilo:</th>
+                              <td className="py-2 text-stone-600">Algodón orgánico trenzado (libre de plomo)</td>
+                            </tr>
+                            <tr>
+                              <th className="py-2 pr-3 font-semibold text-stone-800">Fragancia:</th>
+                              <td className="py-2 text-stone-600">{selectedAroma || product.aroma || 'Esencias botánicas finas sin ftalatos'}</td>
+                            </tr>
+                            <tr>
+                              <th className="py-2 pr-3 font-semibold text-stone-800">Origen:</th>
+                              <td className="py-2 text-stone-600">Vertido a mano en Taller Sandra Gil · Bogotá D.C.</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ),
+                },
                 {
                   key: 'care',
                   label: 'Consejos de Cuidado & Seguridad',
@@ -651,6 +689,26 @@ export default function ProductDetailShell({
                         <li><strong>Superficie Segura:</strong> Encender siempre sobre una superficie plana y resistente al calor.</li>
                         <li><strong>Precaución:</strong> Mantener fuera del alcance de niños, mascotas y materiales inflamables.</li>
                       </ul>
+                    </div>
+                  ),
+                },
+                {
+                  key: 'faq',
+                  label: 'Preguntas Frecuentes del Producto',
+                  content: (
+                    <div className="text-xs text-stone-600 leading-relaxed font-light space-y-3">
+                      <div>
+                        <p className="font-semibold text-stone-800">¿Cómo asegurar la memoria de quemado en el primer uso?</p>
+                        <p className="text-stone-500 mt-0.5">En el primer encendido, deja actuar la vela entre 2 y 3 horas hasta que la cera forme una piscina líquida de extremo a extremo del frasco, evitando túneles futuros.</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-stone-800">¿Qué pasa con las flores botánicas cuando se funde la cera?</p>
+                        <p className="text-stone-500 mt-0.5">Son flores naturales preservadas. A medida que la cera se derrite se sumergen naturalmente; si alguna flor queda cerca del pabilo, puedes retirarla con una pinza.</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-stone-800">¿El envase es reutilizable?</p>
+                        <p className="text-stone-500 mt-0.5">Sí. Una vez consumida la vela, lava el vaso con agua tibia y jabón para retirar cualquier resto de cera vegetal y reutilízalo como vaso organizador o mini florero.</p>
+                      </div>
                     </div>
                   ),
                 },

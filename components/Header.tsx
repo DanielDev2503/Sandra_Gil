@@ -24,8 +24,9 @@ const NAV_LINKS: NavLink[] = [
   { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/personalizadas', label: 'Velas Personalizadas', highlight: true },
+  { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
+  { href: '/nosotros', label: 'Nosotros' },
   { href: '/preguntas-frecuentes', label: 'Preguntas Frecuentes' },
-  { href: '/legal/aviso-legal', label: 'Legal' },
 ];
 
 export default function Header() {
@@ -67,16 +68,20 @@ export default function Header() {
           rel="noopener noreferrer"
           className="underline underline-offset-2 hover:text-brand-accent transition inline-flex items-center gap-1 font-semibold"
         >
-          Escríbenos
-        </a>
+          Ver Envío Express →
+        </Link>
       </div>
 
-      <header className="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-stone-200/50 shadow-xs">
+      <header className="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-stone-200/60 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex items-center justify-between">
 
-          {/* Left: Logo + Brand */}
+          {/* Left: Logo + Brand (Accesible sin duplicidad de texto) */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <Link href="/" className="flex items-center gap-2.5 group" aria-label="Ir al inicio – Sandra Gil Velas Artesanales">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 group"
+              aria-label="Sandra Gil Velas Artesanales - Inicio"
+            >
               <div className="relative w-10 h-10 md:w-14 md:h-14 shrink-0">
                 <Image
                   src="/logo-sandra.png"
@@ -88,7 +93,10 @@ export default function Header() {
                   sizes="(max-width: 768px) 40px, 56px"
                 />
               </div>
-              <span className="font-serif font-light text-base md:text-xl text-stone-900 tracking-wider hidden xs:inline-block">
+              <span
+                className="font-serif font-light text-base md:text-xl text-stone-900 tracking-wider hidden xs:inline-block"
+                aria-hidden="true"
+              >
                 SANDRA GIL
               </span>
             </Link>
@@ -131,11 +139,11 @@ export default function Header() {
             <button
               onClick={openCart}
               className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-brand-brown hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer"
-              aria-label="Abrir Carrito"
+              aria-label="Abrir carrito de compras"
             >
-              <ShoppingBag className="w-5 h-5" />
+              <ShoppingBag className="w-5 h-5 text-stone-800" />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 bg-brand-gold text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs font-sans">
+                <span className="absolute top-0.5 right-0.5 bg-brand-brown text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md font-sans border-2 border-white">
                   {cartCount}
                 </span>
               )}
@@ -176,7 +184,7 @@ export default function Header() {
                   unoptimized
                   className="object-contain"
                 />
-                <span className="font-serif text-sm font-light tracking-wider text-stone-900">SANDRA GIL</span>
+                <span className="font-serif text-sm font-light tracking-wider text-stone-900" aria-hidden="true">SANDRA GIL</span>
               </div>
               <button
                 onClick={closeMobileMenu}

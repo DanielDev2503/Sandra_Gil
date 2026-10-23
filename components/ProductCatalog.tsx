@@ -200,56 +200,40 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                 transition={{ duration: 0.4, delay: idx * 0.05 }}
                 className="group bg-white rounded-xl border border-brand-gold/20 overflow-hidden flex flex-col h-full hover:shadow-xl hover:border-brand-gold/60 transition-all duration-300"
               >
-                {/* Product Image Box */}
+                {/* ── BLOQUE 1: Imagen con aspect-[4/5] fijo y único badge estratégico ── */}
                 <Link 
                   href={`/productos/${product.slug}`} 
-                  className="relative aspect-square block overflow-hidden bg-[#FAF8F5]"
+                  className="relative aspect-[4/5] block overflow-hidden bg-[#FAF8F5]"
                   aria-label={`Ver detalles de ${product.nombre}`}
                 >
                   <SkeletonImage
                     src={displayImage ?? ''}
                     alt={soap ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                   />
 
-                  {/* Top-Left Dynamic Badge */}
-                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-brand-gold/30 flex items-center gap-1.5 z-10">
-                    <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                    <span className="text-[10px] font-semibold text-brand-brown uppercase tracking-wider font-sans truncate max-w-[160px] sm:max-w-[180px]">
-                      {product.esBajoPedido
-                        ? 'Bajo Pedido'
-                        : soap
-                          ? 'Jabón Artesanal'
-                          : product.aroma
-                            ? product.aroma
-                            : 'Vela Artesanal'}
-                    </span>
-                  </div>
-
-                  {/* Top-Right Stock Badge */}
-                  {!product.esBajoPedido && (
-                    isOutOfStock ? (
-                      <div className="absolute top-3 right-3 bg-rose-600/90 backdrop-blur-xs text-white px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wider z-10 shadow-xs">
+                  {/* 1 Único Badge Estratégico en esquina superior */}
+                  <div className="absolute top-3 left-3 z-10">
+                    {isOutOfStock ? (
+                      <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs">
                         Agotado
-                      </div>
+                      </span>
                     ) : isLowStock ? (
-                      <div className="absolute top-3 right-3 bg-amber-500/95 backdrop-blur-xs text-white px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wider z-10 shadow-xs flex items-center gap-1">
+                      <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                        Últimas {product.stock}
-                      </div>
-                    ) : null
-                  )}
-
-                  {/* Bottom Badges: Authentic Material & Scent Attributes */}
-                  <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center gap-1.5 z-10 max-w-[90%]">
-                    <span className="bg-brand-gold/85 backdrop-blur-xs text-white px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest truncate shadow-xs">
-                      {product.material || (soap ? 'Base Botánica Vegetal' : '100% Cera de Soya Natural')}
-                    </span>
-                    {product.esBajoPedido && !soap && product.aroma && (
-                      <span className="bg-brand-brown/85 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest truncate shadow-xs">
-                        {product.aroma}
+                        Últimas {product.stock} unidades
+                      </span>
+                    ) : product.esBajoPedido ? (
+                      <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2.5 py-1 rounded-sm text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                        Bajo Pedido
+                      </span>
+                    ) : (
+                      <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                        {soap ? 'Jabón Botánico' : 'Vela Artesanal'}
                       </span>
                     )}
                   </div>
@@ -263,29 +247,34 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                   </div>
                 </Link>
 
-                {/* Product Info */}
+                {/* ── BLOQUES 2, 3 Y 4: Información, Descripción y Compra ── */}
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
+                    {/* BLOQUE 2: Categoría / Aroma + Nombre H3 + Medida / Duración limpia */}
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold font-sans block mb-1">
+                      {product.aroma || (soap ? 'Jabón Botánico' : '100% Cera de Soya')}
+                    </span>
+
                     <Link href={`/productos/${product.slug}`} className="block group/title">
                       <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-brown transition-colors duration-200 line-clamp-2 leading-snug">
                         {product.nombre}
                       </h3>
                     </Link>
 
-                    <div className="flex items-center gap-2 mt-1.5 text-[11px] text-stone-400 font-sans">
-                      <span>{product.dimensiones || 'Tamaño estándar'}</span>
+                    <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-stone-500 font-sans">
+                      <span>{product.dimensiones || '220g · 45h de combustión'}</span>
                       <span>•</span>
-                      <span>100% Artesanal</span>
+                      <span>{product.material || 'Cera 100% Vegetal'}</span>
                     </div>
 
+                    {/* BLOQUE 3: Descripción corta limitada a 2 líneas */}
                     <p className="text-xs text-stone-500 mt-2.5 line-clamp-2 leading-relaxed font-sans font-light">
                       {product.descripcion ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : ''}
                     </p>
                   </div>
 
+                  {/* BLOQUE 4: Precio en COP + Acciones con alineación mt-auto */}
                   <div className="mt-5 pt-4 border-t border-brand-gold/15 font-sans">
-                    
-                    {/* Price & Stock status */}
                     <div className="flex justify-between items-center mb-3">
                       {product.esBajoPedido ? (
                         <span className="font-sans text-xs font-bold text-brand-brown uppercase tracking-wider">
@@ -315,7 +304,7 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                       )}
                     </div>
 
-                    {/* Action Buttons: Direct Cart / WhatsApp purchase */}
+                    {/* Botones de Acción */}
                     {product.esBajoPedido ? (
                       <a
                         href={waLink}

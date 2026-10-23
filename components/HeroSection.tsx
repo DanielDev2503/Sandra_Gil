@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Sparkles, Leaf, Flame, ShieldCheck, ArrowRight, MessageCircle } from 'lucide-react';
+import { Sparkles, Flame, ArrowRight } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 import SkeletonImage from './SkeletonImage';
 
@@ -76,39 +76,37 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
               </span>
             </div>
 
-            {/* Main Editorial Headline */}
+            {/* Main Editorial Headline with dominant H1 hierarchy */}
             <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-serif font-light text-stone-900 tracking-tight leading-[1.12]">
-              El Arte de Iluminar con{' '}
+              Velas Artesanales y Aromáticas de{' '}
               <span className="font-normal italic text-brand-gold relative inline-block">
-                Naturaleza & Alma
+                Cera de Soya en Bogotá
                 <span className="absolute left-0 bottom-1 w-full h-[2px] bg-brand-gold/30 -z-10 rounded-full" />
               </span>
             </h1>
 
             {/* Subtitle / Value Thesis */}
             <p className="text-stone-600 text-sm sm:text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed font-sans font-light">
-              Taller artesanal en Bogotá especializado en velas aromáticas vertidas a mano con 100% cera de soya natural pura, flores artesanales hechas a mano y pabilo de algodón sin plomo. Disfruta de una combustión limpia y no tóxica con envíos en Bogotá, Chía, Cajicá y despacho nacional a toda Colombia.
+              Taller artesanal en Bogotá especializado en velas aromáticas vertidas a mano con 100% cera de soya natural pura, flores artesanales y pabilo de algodón sin plomo. Disfruta de una combustión limpia y no tóxica con envíos en Bogotá, Chía, Cajicá y despacho nacional a toda Colombia.
             </p>
 
             {/* Action CTAs */}
             <div className="pt-2 flex flex-col sm:flex-row justify-center lg:justify-start gap-3.5 sm:gap-4 w-full">
-              <a
-                href="#catalogo"
+              <Link
+                href="/catalogo"
                 className="group w-full sm:w-auto px-8 py-4 min-h-[48px] bg-brand-brown hover:bg-stone-900 text-[#FAF8F5] text-xs uppercase tracking-widest font-semibold transition-all duration-300 shadow-md hover:shadow-xl text-center flex items-center justify-center gap-2 cursor-pointer active:scale-98 rounded-sm"
               >
-                <span>Explorar Colección</span>
+                <span>Explorar Catálogo</span>
                 <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
 
-              <a
-                href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20recibir%20asesor%C3%ADa%20personalizada%20sobre%20tus%20velas%20artesanales`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-8 py-4 min-h-[48px] bg-white hover:bg-stone-50 border border-brand-brown/40 hover:border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold transition-all duration-300 text-center flex items-center justify-center gap-2.5 cursor-pointer active:scale-98 shadow-xs rounded-sm"
+              <Link
+                href="/personalizadas"
+                className="w-full sm:w-auto px-8 py-4 min-h-[48px] bg-white hover:bg-stone-50 border border-brand-brown/40 hover:border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold transition-all duration-300 text-center flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-xs rounded-sm"
               >
-                <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                <span>Asesoría por WhatsApp</span>
-              </a>
+                <Sparkles className="w-4 h-4 text-brand-gold" />
+                <span>Cotizar Velas Personalizadas</span>
+              </Link>
             </div>
 
             {/* 4 Pillars Strip */}

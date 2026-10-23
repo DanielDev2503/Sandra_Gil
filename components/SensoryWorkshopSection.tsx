@@ -13,7 +13,7 @@ const EXPERIENCES = [
     title: 'Eventos & Recordatorios Exclusivos',
     subtitle: 'Bodas, Bautizos y Ocasiones Especiales',
     description:
-      'Personalizamos aromas botánicos, etiquetas de diseño, cuarzos y flores botánicas naturales para que tus invitados se lleven un recuerdo inolvidable lleno de luz.',
+      'Personalizamos aromas botánicos, etiquetas de diseño, cuarzos y flores artesanales para que tus invitados se lleven un recuerdo inolvidable lleno de luz.',
     ctaText: 'Cotizar para mi Evento',
     waMessage: 'Hola Sandra, quiero cotizar velas personalizadas para un evento especial.',
   },
@@ -22,7 +22,7 @@ const EXPERIENCES = [
     title: 'Talleres de Creación & Vertido',
     subtitle: 'Experiencia Presencial en Bogotá',
     description:
-      'Aprende a formular tus propios aromas, manipular cera de soya botánica y encapsular flores botánicas naturales en un espacio íntimo de relajación y bienestar.',
+      'Aprende a formular tus propios aromas, manipular cera de soya botánica y crear flores artesanales en un espacio íntimo de relajación y bienestar.',
     ctaText: 'Consultar Próximas Fechas',
     waMessage: 'Hola Sandra, me gustaría información sobre los próximos talleres presenciales de velas.',
   },
@@ -41,13 +41,13 @@ export default function SensoryWorkshopSection() {
   return (
     <section className="bg-[#FAF8F5] py-16 sm:py-24 border-b border-brand-gold/15 relative overflow-hidden">
       {/* Decorative ambient elements */}
-      <div 
-        aria-hidden="true" 
-        className="absolute bottom-0 right-0 w-96 h-96 bg-brand-gold/8 rounded-full blur-3xl pointer-events-none" 
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 right-0 w-96 h-96 bg-brand-gold/8 rounded-full blur-3xl pointer-events-none"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white rounded-full border border-brand-gold/30 shadow-xs mb-3">
@@ -64,7 +64,7 @@ export default function SensoryWorkshopSection() {
           </h2>
           <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 mb-4" />
           <p className="text-stone-600 text-xs sm:text-sm font-sans font-light leading-relaxed max-w-xl mx-auto">
-            Taller artesanal en Bogotá dedicado a la creación de velas aromáticas en 100% cera de soya natural pura y flores botánicas naturales. Diseñamos recordatorios exclusivos para bodas y eventos, regalos corporativos y talleres presenciales con envíos locales y a toda Colombia.
+            Taller artesanal en Bogotá dedicado a la creación de velas aromáticas en 100% cera de soya natural pura y flores artesanales. Diseñamos recordatorios exclusivos para bodas y eventos, regalos corporativos y talleres presenciales con envíos locales y a toda Colombia.
           </p>
         </div>
 

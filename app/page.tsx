@@ -10,19 +10,19 @@ export const revalidate = 0; // SSR en tiempo real: consulta directa a Supabase 
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ||
-      process.env.NEXT_PUBLIC_APP_URL ||
-      'https://sandragilvelas.com'
+    process.env.NEXT_PUBLIC_APP_URL ||
+    'https://sandragilvelas.com'
   ),
   title: 'Sandra Gil | Velas Decorativas y Aromáticas de Cera de Soya en Bogotá',
   description:
-    'Velas aromáticas y botánicas artesanales vertidas a mano en Bogotá con 100% cera de soya natural, flores preservadas y pabilo de algodón. Envíos express locales y despachos a toda Colombia.',
+    'Velas aromáticas y botánicas artesanales vertidas a mano en Bogotá con 100% cera de soya natural, flores artesanales y pabilo de algodón. Envíos express locales y despachos a toda Colombia.',
   alternates: {
     canonical: 'https://sandragilvelas.com',
   },
   openGraph: {
     title: 'Sandra Gil Velas Artesanales | Cera de Soya en Bogotá',
     description:
-      'Velas botánicas artesanales con flores preservadas y esencias puras. Hechas a mano en Bogotá con cera 100% de soya.',
+      'Velas botánicas artesanales con flores hechas a mano y esencias puras. Hechas a mano en Bogotá con cera 100% de soya.',
     url: 'https://sandragilvelas.com',
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
@@ -117,7 +117,7 @@ export default async function Home() {
         logo: `${siteUrl}/logo-sandra.png`,
         image: `${siteUrl}/logo-sandra.png`,
         description:
-          'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores botánicas preservadas.',
+          'Taller artesanal en Bogotá especializado en velas decorativas y aromáticas vertidas a mano con 100% cera de soya natural y flores artesanales.',
         telephone: '+573175752029',
         priceRange: '$$',
         currenciesAccepted: 'COP',

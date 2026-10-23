@@ -9,14 +9,14 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Velas Personalizadas para Eventos y Recordatorios en Bogotá | Sandra Gil',
   description:
-    'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores botánicas y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
+    'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores artesanales y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
   alternates: {
     canonical: 'https://sandragilvelas.com/personalizadas',
   },
   openGraph: {
     title: 'Velas Personalizadas para Eventos y Recordatorios en Bogotá | Sandra Gil',
     description:
-      'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores botánicas y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
+      'Velas decorativas elaboradas bajo pedido con cera de soya natural, flores artesanales y aromas exclusivos. Cotiza recordatorios para bodas y eventos en Bogotá.',
     url: 'https://sandragilvelas.com/personalizadas',
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Velas Personalizadas para Eventos | Sandra Gil Velas Artesanales',
     description:
-      'Diseñamos velas únicas y recuerdos personalizados con cera de soya pura y flores botánicas en Bogotá.',
+      'Diseñamos velas únicas y recuerdos personalizados con cera de soya pura y flores artesanales en Bogotá.',
   },
 };
 
@@ -69,7 +69,7 @@ export default async function PersonalizadasPage() {
             </h1>
 
             <p className="text-stone-600 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-light">
-              Creamos velas únicas y completamente personalizadas para ti: elige el aroma, el tamaño, las flores botánicas y el mensaje. Cada pieza es una obra artesanal irrepetible, elaborada con cera de soya pura 100% natural.
+              Creamos velas únicas y completamente personalizadas para ti: elige el aroma, el tamaño, las flores artesanales y el mensaje. Cada pieza es una obra artesanal irrepetible, elaborada con cera de soya pura 100% natural.
             </p>
 
             {/* Process steps: grid-cols-1 on mobile, sm:grid-cols-3 on tablet/desktop */}

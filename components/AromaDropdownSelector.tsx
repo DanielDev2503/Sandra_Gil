@@ -9,6 +9,7 @@ interface AromaDropdownSelectorProps {
   selectedAroma: string;
   onSelectAroma: (aroma: string) => void;
   productName?: string;
+  isJabon?: boolean;
   showNotice?: boolean;
   showOlfactoryCard?: boolean;
   className?: string;
@@ -18,7 +19,7 @@ export default function AromaDropdownSelector({
   aromas,
   selectedAroma,
   onSelectAroma,
-  showOlfactoryCard = true,
+  isJabon = false,
   className = '',
 }: AromaDropdownSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -97,7 +98,11 @@ export default function AromaDropdownSelector({
         >
           <span className="flex items-center gap-1.5">
             <Wind className="w-4 h-4 text-brand-gold shrink-0" />
-            <span>Selecciona el Aroma de tu Vela ({aromas.length} disponibles):</span>
+            <span>
+              {isJabon
+                ? `Selecciona el Aroma de tu Jabón (${aromas.length} disponibles):`
+                : `Selecciona el Aroma de tu Vela (${aromas.length} disponibles):`}
+            </span>
           </span>
           <span className="text-[11px] font-normal text-stone-400 normal-case hidden sm:inline">
             Menú desplegable
@@ -264,31 +269,7 @@ export default function AromaDropdownSelector({
           )}
         </div>
 
-        {/* ── 3. SELECTION CONFIRMATION & SENSORY DETAIL CARD ── */}
-        {showOlfactoryCard && (
-          <div className="bg-[#FAF8F5] border border-brand-gold/20 rounded-lg p-2.5 sm:p-3 space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5 text-stone-800 font-medium">
-                <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>
-                  Tu vela será elaborada con aroma a:{' '}
-                  <strong className="text-brand-brown font-bold underline decoration-brand-gold/40 capitalize">
-                    {selectedAroma}
-                  </strong>
-                </span>
-              </div>
-              <span className="text-[10px] font-semibold text-brand-gold uppercase tracking-wider bg-white px-2 py-0.5 rounded border border-brand-gold/20 hidden sm:inline">
-                100% Cera de Soya
-              </span>
-            </div>
 
-            {activeProfile.top && (
-              <p className="text-[11px] text-stone-500 font-light leading-relaxed pl-5">
-                <span className="font-semibold text-stone-700">Notas:</span> {activeProfile.top} · {activeProfile.heart}
-              </p>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

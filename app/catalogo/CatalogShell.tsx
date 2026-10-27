@@ -12,7 +12,8 @@ import SkeletonImage from '@/components/SkeletonImage';
 
 const WA_NUMBER = '573175752029';
 
-export type TipoProducto = 'VELA' | 'JABON';
+export type TipoProducto = 'VELA' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON';
+export type FilterType = 'todos' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON';
 
 export interface Product {
   id: string;
@@ -86,7 +87,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
   // Read initial filters from URL query params
-  const [selectedType, setSelectedType] = useState<'todos' | 'velas' | 'jabones'>('todos');
+  const [selectedType, setSelectedType] = useState<FilterType>('todos');
   const rawUrlMat = searchParams.get('material') || '';
   const rawUrlAroma = searchParams.get('aroma') || '';
   const normalizedInitialMat = rawUrlMat.toLowerCase().includes('preservad') ? 'Flores Botánicas' : rawUrlMat;
@@ -106,6 +107,41 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     setPrevSearchAroma(rawUrlAroma);
     setSelectedAroma(rawUrlAroma);
   }
+
+  // Contadores para cada categoría de productos
+  const counts = useMemo(() => {
+    let todos = products.length;
+    let velasEnvase = 0;
+    let velasEsculpida = 0;
+    let jabones = 0;
+
+    for (const p of products) {
+      if (p.tipo === 'VELA_ENVASE') {
+        velasEnvase++;
+      } else if (p.tipo === 'VELA_ESCULPIDA' || p.tipo === 'VELA') {
+        velasEsculpida++;
+      } else if (p.tipo === 'JABON' || isSoapProduct(p)) {
+        jabones++;
+      } else {
+        // Respaldo seguro: agrupar en Velas Esculpidas
+        velasEsculpida++;
+      }
+    }
+
+    return {
+      todos,
+      VELA_ENVASE: velasEnvase,
+      VELA_ESCULPIDA: velasEsculpida,
+      JABON: jabones,
+    };
+  }, [products]);
+
+  const tabs: { id: FilterType; label: string; count: number }[] = [
+    { id: 'todos', label: 'Todos los productos', count: counts.todos },
+    { id: 'VELA_ENVASE', label: 'Velas en Envase', count: counts.VELA_ENVASE },
+    { id: 'VELA_ESCULPIDA', label: 'Velas Esculpidas', count: counts.VELA_ESCULPIDA },
+    { id: 'JABON', label: 'Jabones Artesanales', count: counts.JABON },
+  ];
 
   // Derive unique materials and aromas from the product list
   const materials = useMemo(() => {
@@ -159,8 +195,18 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const filteredAndSortedProducts = useMemo(() => {
     let result = products.filter((p) => {
       // Type filter
-      if (selectedType === 'velas' && !isCandleProduct(p)) return false;
-      if (selectedType === 'jabones' && !isSoapProduct(p)) return false;
+      if (selectedType === 'VELA_ENVASE') {
+        if (p.tipo !== 'VELA_ENVASE') return false;
+      } else if (selectedType === 'VELA_ESCULPIDA') {
+        const isEsculpida =
+          p.tipo === 'VELA_ESCULPIDA' ||
+          p.tipo === 'VELA' ||
+          (!p.tipo && isCandleProduct(p) && !isSoapProduct(p));
+        if (!isEsculpida) return false;
+      } else if (selectedType === 'JABON') {
+        const isJabon = p.tipo === 'JABON' || isSoapProduct(p);
+        if (!isJabon) return false;
+      }
 
       // Material filter
       if (
@@ -202,14 +248,14 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   const handleAddToCart = (product: Product) => {
     const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-    const defaultAroma = product.aroma || (isSoapProduct(product) ? null : 'Lavanda & Manzanilla');
+    const defaultAroma = product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
     addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
   };
 
   const handleBuyNow = (product: Product) => {
     clearCart();
     const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-    const defaultAroma = product.aroma || (isSoapProduct(product) ? null : 'Lavanda & Manzanilla');
+    const defaultAroma = product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
     addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
     router.push('/checkout');
   };
@@ -234,28 +280,34 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
       {/* ── FILTER PANEL ───────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 w-full space-y-4">
-        {/* Type Tabs: Todos, Velas Artesanales, Jabones Artesanales */}
+        {/* Type Tabs: Todos los productos, Velas en Envase, Velas Esculpidas, Jabones Artesanales */}
         <div className="flex flex-wrap items-center justify-center gap-2 border-b border-stone-200 pb-4">
-          {(
-            [
-              { id: 'todos', label: 'Todos los Productos' },
-              { id: 'velas', label: 'Velas Artesanales' },
-              { id: 'jabones', label: 'Jabones Artesanales' },
-            ] as const
-          ).map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setSelectedType(tab.id)}
-              className={`px-5 py-2.5 min-h-[44px] text-xs uppercase tracking-wider font-semibold rounded-full transition-all duration-300 cursor-pointer flex items-center gap-2 ${
-                selectedType === tab.id
-                  ? 'bg-brand-brown text-white shadow-md'
-                  : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200/80'
-              }`}
-            >
-              <Tag className="w-3.5 h-3.5" />
-              <span>{tab.label}</span>
-            </button>
-          ))}
+          {tabs.map((tab) => {
+            const isSelected = selectedType === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setSelectedType(tab.id)}
+                className={`px-4 sm:px-5 py-2.5 min-h-[44px] text-xs uppercase tracking-wider font-semibold rounded-full transition-all duration-300 cursor-pointer flex items-center gap-2 ${
+                  isSelected
+                    ? 'bg-brand-brown text-white shadow-md'
+                    : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200/80'
+                }`}
+              >
+                <Tag className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[11px] px-2 py-0.5 rounded-full font-mono font-medium transition-colors ${
+                    isSelected
+                      ? 'bg-white/20 text-white'
+                      : 'bg-stone-100 text-stone-600'
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Filters & Sorting Bar */}
@@ -364,7 +416,13 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                   <Link href={`/productos/${product.slug}`} className="relative aspect-[4/5] block overflow-hidden bg-stone-100">
                     <SkeletonImage
                       src={displayImage ?? ''}
-                      alt={soap ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
+                      alt={
+                        soap
+                          ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá`
+                          : product.tipo === 'VELA_ENVASE'
+                          ? `Vela en envase ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`
+                          : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`
+                      }
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -390,7 +448,13 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                       ) : (
                         <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
                           <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                          {soap ? 'Jabón Botánico' : 'Vela Artesanal'}
+                          {product.tipo === 'VELA_ENVASE'
+                            ? 'Vela en Envase'
+                            : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
+                            ? 'Vela Esculpida'
+                            : soap
+                            ? 'Jabón Botánico'
+                            : 'Vela Artesanal'}
                         </span>
                       )}
                     </div>

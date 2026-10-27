@@ -12,6 +12,8 @@ datasource db {
 
 enum TipoProducto {
   VELA
+  VELA_ENVASE
+  VELA_ESCULPIDA
   JABON
 }
 

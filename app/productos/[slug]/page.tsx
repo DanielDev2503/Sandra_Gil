@@ -54,7 +54,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
-  const isJabon = product.tipo?.toUpperCase() === 'JABON' || (product as { categoria?: string }).categoria?.toLowerCase().includes('jabon');
+  const isVela = product.tipo === 'VELA' || product.tipo === 'VELA_ENVASE' || product.tipo === 'VELA_ESCULPIDA';
+  const isJabon = product.tipo === 'JABON';
   const title = isJabon
     ? `${product.nombre} | Jabón Artesanal Botánico Natural`
     : `${product.nombre} | Vela Artesanal de Cera de Soya`;
@@ -241,6 +242,9 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const baseUrl = 'https://sandragilvelas.com';
   const productCanonicalUrl = `${baseUrl}/productos/${product.slug}`;
 
+  const isVela = product.tipo === 'VELA' || product.tipo === 'VELA_ENVASE' || product.tipo === 'VELA_ESCULPIDA';
+  const isJabon = product.tipo === 'JABON';
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -253,7 +257,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       '@type': 'Brand',
       name: 'Sandra Gil',
     },
-    material: product.material || (product.tipo?.toUpperCase() === 'JABON' ? 'Glicerina vegetal y extractos botánicos' : '100% Cera de Soya Natural'),
+    material: product.material || (isJabon ? 'Glicerina vegetal y extractos botánicos' : '100% Cera de Soya Natural'),
     offers: {
       '@type': 'Offer',
       url: `${baseUrl}/productos/${product.slug}`,

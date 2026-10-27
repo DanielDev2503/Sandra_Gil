@@ -13,7 +13,7 @@ interface Product {
   slug: string;
   nombre: string;
   descripcion: string;
-  tipo?: 'VELA' | 'JABON';
+  tipo?: 'VELA' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON' | string;
   aroma?: string | null;
   material?: string | null;
   dimensiones?: string | null;

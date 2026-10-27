@@ -145,12 +145,8 @@ export default function ProductDetailShell({
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
 
-  const isJabon = Boolean(
-    product.tipo?.toUpperCase() === 'JABON' ||
-    product.categoria?.toLowerCase().includes('jabon') ||
-    isSoapProduct(product)
-  );
-  const isVela = !isJabon;
+  const isVela = product.tipo === 'VELA' || product.tipo === 'VELA_ENVASE' || product.tipo === 'VELA_ESCULPIDA';
+  const isJabon = product.tipo === 'JABON';
   const isSoap = isJabon;
 
   const aromasList: string[] = useMemo(() => {

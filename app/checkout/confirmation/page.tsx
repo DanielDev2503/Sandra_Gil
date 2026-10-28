@@ -119,8 +119,8 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
           <div className="text-center space-y-3 pb-6 border-b border-stone-200">
             {isPaid && (
               <div className="flex flex-col items-center">
-                <CheckCircle2 className="w-16 h-16 text-emerald-500 mb-2" />
-                <span className="text-xs uppercase tracking-widest font-semibold text-emerald-600">Pago Aprobado</span>
+                <CheckCircle2 className="w-16 h-16 text-amber-500 mb-2" />
+                <span className="text-xs uppercase tracking-widest font-semibold text-amber-600">Pago Aprobado</span>
                 <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mt-1">¡Gracias por tu compra!</h2>
                 <p className="text-sm text-stone-500 mt-2 max-w-md">
                   Hemos confirmado tu pago. Ya estamos preparando tus velas aromáticas artesanales con todo el amor y detalle.
@@ -150,7 +150,7 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
                 {/* Refresh button */}
                 <Link
                   href={`/checkout/confirmation?orderId=${pedido.id}`}
-                  className="mt-4 px-4 py-2 border border-stone-300 text-stone-700 text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-stone-50 hover:text-stone-900 transition"
+                  className="mt-4 px-6 py-2.5 border border-stone-300 text-stone-700 text-xs font-semibold uppercase tracking-wider rounded-full hover:bg-stone-50 hover:text-stone-900 transition"
                 >
                   Verificar Estado Nuevamente
                 </Link>
@@ -231,7 +231,7 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
                 </div>
                 <div className="flex justify-between">
                   <span>Costo de Envío</span>
-                  <span className={pedido.costo_envio === 0 ? "font-semibold text-emerald-700" : ""}>
+                  <span className={pedido.costo_envio === 0 ? "font-semibold text-amber-700" : ""}>
                     {pedido.costo_envio === 0 ? 'GRATIS' : `$${pedido.costo_envio.toLocaleString('es-CO')} COP`}
                   </span>
                 </div>
@@ -249,13 +249,13 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-3.5 bg-[#25D366] hover:bg-[#20ba59] text-white text-center font-semibold text-xs uppercase tracking-widest rounded-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2"
+              className="flex-1 py-3.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-center font-semibold text-xs uppercase tracking-widest rounded-full shadow-md transition-all duration-300 flex items-center justify-center gap-2 border border-amber-400/50"
             >
               <MessageSquare className="w-4 h-4" /> Soporte por WhatsApp
             </a>
             <Link
               href="/"
-              className="flex-1 py-3.5 border border-stone-300 hover:border-stone-800 text-stone-700 hover:text-stone-900 text-center font-semibold text-xs uppercase tracking-widest rounded-sm transition-all duration-300 flex items-center justify-center"
+              className="flex-1 py-3.5 border border-stone-300 hover:border-stone-800 text-stone-700 hover:text-stone-900 text-center font-semibold text-xs uppercase tracking-widest rounded-full transition-all duration-300 flex items-center justify-center"
             >
               Volver al Catálogo
             </Link>

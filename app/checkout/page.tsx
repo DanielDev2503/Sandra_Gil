@@ -274,7 +274,7 @@ export default function CheckoutPage() {
                       <Truck className="w-4 h-4 text-amber-700 shrink-0" />
                       <span>Zona: {SHIPPING_ZONES[selectedCity.zone].name}</span>
                     </span>
-                    <span className={shippingCost === 0 ? 'text-emerald-700 font-bold' : 'text-amber-900 font-bold'}>
+                    <span className={shippingCost === 0 ? 'text-amber-700 font-bold' : 'text-amber-900 font-bold'}>
                       {shippingCost === 0 ? 'Envío GRATIS ($0 COP)' : `$${shippingCost.toLocaleString('es-CO')} COP`}
                     </span>
                   </div>
@@ -323,7 +323,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-4 min-h-[44px] mt-6 text-xs sm:text-sm uppercase tracking-widest font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 rounded-sm cursor-pointer active:scale-98 ${
+                className={`w-full py-4 min-h-[44px] mt-6 text-xs sm:text-sm uppercase tracking-widest font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 rounded-full cursor-pointer active:scale-98 ${
                   isLoading
                     ? 'bg-[#A68F81] cursor-not-allowed'
                     : 'bg-[#2C2A29] hover:bg-[#A68F81] shadow-md hover:shadow-lg'
@@ -400,7 +400,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-stone-600 items-center">
                 <span className="flex items-center gap-1">Envío a {selectedCity.name}</span>
                 {shippingCost === 0 ? (
-                  <span className="font-bold text-emerald-700">GRATIS ($0 COP)</span>
+                  <span className="font-bold text-amber-700">GRATIS ($0 COP)</span>
                 ) : (
                   <span className="font-semibold text-stone-900">${shippingCost.toLocaleString('es-CO')} COP</span>
                 )}
@@ -420,7 +420,7 @@ export default function CheckoutPage() {
               <div>
                 <p className="text-xs font-semibold text-stone-850">Transacción 100% Protegida</p>
                 <p className="text-[10px] text-stone-500 mt-1 leading-relaxed">
-                  Pago seguro procesado por Wompi (Bancolombia) 🔒. Aceptamos Nequi, PSE y Tarjetas. Tus datos están completamente encriptados.
+                  Pago seguro procesado por Wompi (Bancolombia). Aceptamos Nequi, PSE y Tarjetas. Tus datos están completamente encriptados.
                 </p>
               </div>
             </div>
@@ -431,7 +431,7 @@ export default function CheckoutPage() {
               <div>
                 <p className="text-xs font-semibold text-stone-850">Garantía de Entrega Perfecta</p>
                 <p className="text-[11px] text-stone-600 mt-1 leading-relaxed">
-                  Despachos protegidos con embalaje especial en alianzas con Servientrega 📦. Garantía de entrega impecable.
+                  Despachos protegidos con embalaje especial en alianzas con Servientrega. Garantía de entrega impecable.
                 </p>
               </div>
             </div>

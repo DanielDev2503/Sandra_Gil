@@ -1,12 +1,48 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Heart, Zap } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { MapPin } from 'lucide-react';
 
 const WA_NUMBER = '573175752029';
 const WA_LINK = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20obtener%20informaci%C3%B3n%20sobre%20tus%20velas%20artesanales`;
 
+interface FooterLink {
+  href: string;
+  label: string;
+  exact?: boolean;
+}
+
+const TIENDA_LINKS: FooterLink[] = [
+  { href: '/', label: 'Inicio', exact: true },
+  { href: '/catalogo', label: 'Catálogo' },
+  { href: '/personalizadas', label: 'Velas Personalizadas' },
+  { href: '/envio-express', label: 'Envío Express en Bogotá' },
+  { href: '/nosotros', label: 'Sobre Nosotros' },
+  { href: '/preguntas-frecuentes', label: 'Preguntas Frecuentes' },
+];
+
+const LEGAL_LINKS: FooterLink[] = [
+  { href: '/legal/politica-de-envios', label: 'Política de Envíos', exact: true },
+  { href: '/legal/politica-de-devoluciones', label: 'Política de Devoluciones', exact: true },
+  { href: '/legal/aviso-legal', label: 'Aviso Legal', exact: true },
+  { href: '/legal/politica-de-privacidad', label: 'Política de Privacidad', exact: true },
+  { href: '/legal/politica-de-cookies', label: 'Política de Cookies', exact: true },
+  { href: '/legal/terminos-y-condiciones', label: 'Términos y Condiciones', exact: true },
+];
+
 export default function Footer() {
+  const pathname = usePathname();
+
+  const isLinkActive = (link: FooterLink): boolean => {
+    if (link.exact || link.href === '/') {
+      return pathname === link.href;
+    }
+    return pathname.startsWith(link.href);
+  };
+
   return (
     <footer className="bg-[#2C2A29] text-[#FAF8F5] border-t border-stone-800 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -36,31 +72,48 @@ export default function Footer() {
           {/* Column 2: Navigation */}
           <div className="space-y-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Tienda</h4>
-            <ul className="space-y-2.5 text-xs text-stone-400">
-              <li><Link href="/" className="hover:text-white transition">Inicio</Link></li>
-              <li><Link href="/catalogo" className="hover:text-white transition">Catálogo</Link></li>
-              <li><Link href="/personalizadas" className="hover:text-white transition font-medium text-amber-300">Velas Personalizadas</Link></li>
-              <li>
-                <Link href="/envio-express" className="hover:text-amber-300 text-stone-400 transition inline-flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
-                  <span>Envío Express en Bogotá</span>
-                </Link>
-              </li>
-              <li><Link href="/nosotros" className="hover:text-white transition">Sobre Nosotros</Link></li>
-              <li><Link href="/preguntas-frecuentes" className="hover:text-white transition">Preguntas Frecuentes</Link></li>
+            <ul className="space-y-2.5 text-xs">
+              {TIENDA_LINKS.map((link) => {
+                const active = isLinkActive(link);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`transition-colors duration-200 ${
+                        active
+                          ? 'text-amber-400 font-medium'
+                          : 'text-stone-400 hover:text-amber-400'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
           {/* Column 3: Legal */}
           <div className="space-y-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Legal</h4>
-            <ul className="space-y-2.5 text-xs text-stone-400">
-              <li><Link href="/legal/politica-de-envios" className="hover:text-white transition font-medium text-amber-300">Política de Envíos</Link></li>
-              <li><Link href="/legal/politica-de-devoluciones" className="hover:text-white transition">Política de Devoluciones</Link></li>
-              <li><Link href="/legal/aviso-legal" className="hover:text-white transition">Aviso Legal</Link></li>
-              <li><Link href="/legal/politica-de-privacidad" className="hover:text-white transition">Política de Privacidad</Link></li>
-              <li><Link href="/legal/politica-de-cookies" className="hover:text-white transition">Política de Cookies</Link></li>
-              <li><Link href="/legal/terminos-y-condiciones" className="hover:text-white transition">Términos y Condiciones</Link></li>
+            <ul className="space-y-2.5 text-xs">
+              {LEGAL_LINKS.map((link) => {
+                const active = isLinkActive(link);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`transition-colors duration-200 ${
+                        active
+                          ? 'text-amber-400 font-medium'
+                          : 'text-stone-400 hover:text-amber-400'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -91,7 +144,7 @@ export default function Footer() {
                 href={WA_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 min-w-[44px] min-h-[44px] rounded-full bg-stone-800 text-stone-300 hover:text-white hover:bg-[#25D366] transition flex items-center justify-center cursor-pointer"
+                className="p-2.5 min-w-[44px] min-h-[44px] rounded-full bg-stone-800 text-stone-300 hover:text-stone-950 hover:bg-amber-400 transition flex items-center justify-center cursor-pointer"
                 aria-label="Escríbenos por WhatsApp"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -106,8 +159,8 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
           <p>© {new Date().getFullYear()} Sandra Gil Velas Artesanales. Todos los derechos reservados.</p>
-          <p className="flex items-center gap-1 font-sans">
-            Hecho con ❤️ a mano en Bogotá, Colombia.
+          <p className="font-sans">
+            Hecho a mano en Bogotá, Colombia.
           </p>
         </div>
       </div>

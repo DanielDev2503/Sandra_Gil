@@ -342,7 +342,7 @@ export default function ProductDetailShell({
               )}
 
               {/* Badge */}
-              <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-stone-100 flex items-center gap-1">
+              <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full shadow-xs border border-stone-100 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
                 <span className="text-[10px] font-bold text-stone-700 uppercase tracking-widest font-sans">
                   {isSoap ? 'Jabón Artesanal' : isBajoPedido ? 'Elaboración Bajo Pedido' : 'Hecho a Mano en Bogotá'}
@@ -404,9 +404,9 @@ export default function ProductDetailShell({
 
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3">
                 {isBajoPedido ? (
-                  <div className="inline-flex items-center gap-2 bg-[#F0FDF4] border border-[#25D366]/30 px-3 py-1.5 rounded-sm">
-                    <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
-                    <span className="text-xs sm:text-sm font-semibold text-[#16a34a] font-sans">Elaboración Bajo Pedido</span>
+                  <div className="inline-flex items-center gap-2 bg-amber-50/80 border border-amber-300/80 px-3.5 py-1.5 rounded-full">
+                    <MessageCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span className="text-xs sm:text-sm font-semibold text-amber-900 font-sans">Elaboración Bajo Pedido</span>
                   </div>
                 ) : (
                   <p className="text-xl sm:text-2xl font-serif font-semibold text-brand-brown transition-all duration-300">
@@ -416,7 +416,7 @@ export default function ProductDetailShell({
 
                 {/* Show material badge if present AND not a soap */}
                 {!isSoap && product.material && (
-                  <div className="bg-brand-brown/80 text-[#FAF8F5] px-2.5 py-0.5 rounded-sm text-[9px] uppercase tracking-widest font-sans">
+                  <div className="bg-brand-brown/80 text-[#FAF8F5] px-3 py-0.5 rounded-full text-[9px] uppercase tracking-widest font-sans">
                     {product.material}
                   </div>
                 )}
@@ -568,9 +568,9 @@ export default function ProductDetailShell({
                     href={waLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3.5 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] text-white text-xs sm:text-sm uppercase tracking-widest font-bold transition-all duration-300 shadow-md hover:shadow-lg text-center flex items-center justify-center gap-2 rounded-sm cursor-pointer active:scale-98"
+                    className="w-full py-3.5 min-h-[44px] bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 text-xs sm:text-sm uppercase tracking-widest font-bold transition-all duration-300 shadow-sm text-center flex items-center justify-center gap-2 rounded-full cursor-pointer active:scale-98"
                   >
-                    <MessageCircle className="w-5 h-5 shrink-0" />
+                    <MessageCircle className="w-5 h-5 shrink-0 text-amber-700" />
                     Cotizar por WhatsApp
                   </a>
                 </div>
@@ -579,7 +579,7 @@ export default function ProductDetailShell({
                 <>
                   <div className="flex items-center gap-4">
                     <span className="text-xs uppercase font-semibold text-stone-600 font-sans">Cantidad:</span>
-                    <div className="flex items-center border border-stone-300 rounded-sm bg-white font-sans min-h-[44px]">
+                    <div className="flex items-center border border-stone-300 rounded-full bg-white font-sans min-h-[44px] px-1">
                       <button
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                         disabled={isOutOfStock}
@@ -602,7 +602,7 @@ export default function ProductDetailShell({
                     ) : isLowStock ? (
                       <span className="text-xs text-amber-600 font-medium uppercase tracking-wider font-sans animate-pulse">Últimas {product.stock} unidades</span>
                     ) : (
-                      <span className="text-xs text-emerald-600 font-medium uppercase tracking-wider font-sans">Disponible</span>
+                      <span className="text-xs text-stone-600 font-medium uppercase tracking-wider font-sans">Disponible</span>
                     )}
                   </div>
 
@@ -610,14 +610,14 @@ export default function ProductDetailShell({
                     <button
                       onClick={handleBuyNow}
                       disabled={isOutOfStock}
-                      className="w-full py-3.5 min-h-[44px] bg-brand-gold hover:bg-brand-brown text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:bg-stone-300 disabled:cursor-not-allowed"
+                      className="w-full py-3.5 min-h-[44px] bg-brand-gold hover:bg-brand-brown text-white text-xs uppercase tracking-widest font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:bg-stone-300 disabled:cursor-not-allowed"
                     >
                       Comprar Ahora
                     </button>
                     <button
                       onClick={handleAddToCart}
                       disabled={isOutOfStock}
-                      className="w-full py-3.5 min-h-[44px] bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed"
+                      className="w-full py-3.5 min-h-[44px] bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-full transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed"
                     >
                       Añadir al Carrito
                     </button>
@@ -632,14 +632,14 @@ export default function ProductDetailShell({
                 <CreditCard className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-stone-800">Transacción 100% Segura</p>
-                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Procesado por Wompi (Bancolombia) 🔒. Aceptamos Nequi, PSE y Tarjetas de Crédito.</p>
+                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Procesado por Wompi (Bancolombia). Aceptamos Nequi, PSE y Tarjetas de Crédito.</p>
                 </div>
               </div>
               <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
                 <Truck className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-stone-800">Envíos Seguros con Servientrega</p>
-                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Despachos locales y nacionales con empaque reforzado contra impactos 📦.</p>
+                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Despachos locales y nacionales con empaque reforzado contra impactos.</p>
                 </div>
               </div>
             </div>
@@ -700,7 +700,7 @@ export default function ProductDetailShell({
           <div className="max-w-xl mx-auto mb-10 sm:mb-12">
             <div className="bg-white rounded-lg border border-stone-200/60 p-4 sm:p-6 shadow-xs">
               <h3 className="text-sm font-semibold text-stone-800 font-sans mb-4">
-                {resenas.length === 0 ? '✨ Sé el primero en compartir tu experiencia' : 'Deja tu opinión'}
+                {resenas.length === 0 ? 'Sé el primero en compartir tu experiencia' : 'Deja tu opinión'}
               </h3>
 
               <form onSubmit={handleSubmitReview} className="space-y-4">
@@ -744,7 +744,7 @@ export default function ProductDetailShell({
                 )}
 
                 {reviewSuccess && (
-                  <p className="text-xs text-emerald-600 font-sans font-medium">
+                  <p className="text-xs text-amber-700 font-sans font-medium">
                     ¡Gracias por tu opinión! Tu reseña ha sido publicada.
                   </p>
                 )}
@@ -752,7 +752,7 @@ export default function ProductDetailShell({
                 <button
                   type="submit"
                   disabled={reviewSubmitting}
-                  className="w-full py-3.5 min-h-[44px] bg-brand-brown hover:bg-brand-gold text-white text-xs uppercase tracking-widest font-bold rounded-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-98"
+                  className="w-full py-3.5 min-h-[44px] bg-brand-brown hover:bg-brand-gold text-white text-xs uppercase tracking-widest font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer disabled:bg-stone-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-98"
                 >
                   <Send className="w-4 h-4 shrink-0" />
                   {reviewSubmitting ? 'Enviando...' : 'Publicar Opinión'}
@@ -818,7 +818,7 @@ export default function ProductDetailShell({
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       />
-                      <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-sm shadow-xs border border-stone-100">
+                      <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full shadow-xs border border-stone-100">
                         <span className="text-[9px] font-bold text-stone-600 uppercase tracking-wider">
                           {soap ? 'Jabón' : p.esBajoPedido ? 'Especial' : 'Vela'}
                         </span>

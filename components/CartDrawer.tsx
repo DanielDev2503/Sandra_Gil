@@ -52,7 +52,7 @@ export default function CartDrawer() {
                 </div>
                 <button
                   onClick={closeCart}
-                  className="px-6 py-3 bg-brand-brown hover:bg-brand-gold text-white text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer font-sans rounded-sm"
+                  className="px-6 py-3 bg-brand-brown hover:bg-brand-gold text-white text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer font-sans rounded-full"
                 >
                   Explorar Catálogo
                 </button>
@@ -87,7 +87,7 @@ export default function CartDrawer() {
 
                     <div className="flex items-center justify-between mt-2 pt-1">
                       {/* Quantity Selector */}
-                      <div className="flex items-center border border-stone-300 rounded-sm bg-white shadow-2xs">
+                      <div className="flex items-center border border-stone-300 rounded-full bg-white shadow-2xs px-1">
                         <button
                           onClick={() => updateQuantity(item.id, item.cantidad - 1, item.aroma || undefined, item.variacionId)}
                           aria-label="Disminuir cantidad"
@@ -157,7 +157,7 @@ export default function CartDrawer() {
                 <Link
                   href="/checkout"
                   onClick={closeCart}
-                  className="w-full block text-center py-3.5 bg-brand-brown hover:bg-brand-gold text-white font-semibold text-xs uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg font-sans rounded-sm cursor-pointer active:scale-98"
+                  className="w-full block text-center py-3.5 bg-brand-brown hover:bg-brand-gold text-white font-semibold text-xs uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg font-sans rounded-full cursor-pointer active:scale-98"
                 >
                   Proceder al Checkout
                 </Link>

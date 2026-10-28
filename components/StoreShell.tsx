@@ -89,7 +89,7 @@ export default function StoreShell({
                 <div className="pt-4 flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
                   <Link
                     href="/personalizadas"
-                    className="px-8 py-4 bg-brand-gold hover:bg-amber-500 text-stone-900 text-xs uppercase tracking-widest font-bold rounded-sm transition-all duration-300 shadow-md text-center flex items-center justify-center gap-2"
+                    className="px-8 py-4 bg-brand-gold hover:bg-amber-500 text-stone-900 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md text-center flex items-center justify-center gap-2"
                   >
                     <span>Cotizar Velas para Eventos →</span>
                   </Link>
@@ -97,9 +97,9 @@ export default function StoreShell({
                     href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20cotizar%20velas%20personalizadas%20para%20un%20evento%20en%20Bogot%C3%A1`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-8 py-4 bg-stone-800 hover:bg-stone-700 border border-stone-600 text-white text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 text-center flex items-center justify-center gap-2"
+                    className="px-8 py-4 bg-stone-800 hover:bg-stone-700 border border-stone-600 text-white text-xs uppercase tracking-widest font-semibold rounded-full transition-all duration-300 text-center flex items-center justify-center gap-2"
                   >
-                    <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                    <MessageCircle className="w-4 h-4 text-amber-400" />
                     <span>Asesoría Directa por WhatsApp</span>
                   </a>
                 </div>
@@ -196,7 +196,7 @@ export default function StoreShell({
                           <Star key={i} className="w-3.5 h-3.5 fill-current" />
                         ))}
                       </div>
-                      <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-medium">
+                      <span className="text-[10px] text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 font-medium">
                         ✓ Compra Verificada
                       </span>
                     </div>

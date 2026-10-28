@@ -94,7 +94,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
             <div className="pt-2 flex flex-col sm:flex-row justify-center lg:justify-start gap-3.5 sm:gap-4 w-full">
               <Link
                 href="/catalogo"
-                className="group w-full sm:w-auto px-8 py-4 min-h-[48px] bg-brand-brown hover:bg-stone-900 text-[#FAF8F5] text-xs uppercase tracking-widest font-semibold transition-all duration-300 shadow-md hover:shadow-xl text-center flex items-center justify-center gap-2 cursor-pointer active:scale-98 rounded-sm"
+                className="group w-full sm:w-auto px-8 py-4 min-h-[48px] bg-brand-brown hover:bg-stone-900 text-[#FAF8F5] text-xs uppercase tracking-widest font-semibold transition-all duration-300 shadow-md hover:shadow-xl text-center flex items-center justify-center gap-2 cursor-pointer active:scale-98 rounded-full"
               >
                 <span>Explorar Catálogo</span>
                 <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform" />
@@ -102,7 +102,7 @@ export default function HeroSection({ heroProduct }: HeroSectionProps) {
 
               <Link
                 href="/personalizadas"
-                className="w-full sm:w-auto px-8 py-4 min-h-[48px] bg-white hover:bg-stone-50 border border-brand-brown/40 hover:border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold transition-all duration-300 text-center flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-xs rounded-sm"
+                className="w-full sm:w-auto px-8 py-4 min-h-[48px] bg-white hover:bg-stone-50 border border-brand-brown/40 hover:border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold transition-all duration-300 text-center flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-xs rounded-full"
               >
                 <Sparkles className="w-4 h-4 text-brand-gold" />
                 <span>Cotizar Velas Personalizadas</span>

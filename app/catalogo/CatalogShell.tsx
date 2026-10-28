@@ -341,7 +341,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
             <select
               value={selectedAroma}
               onChange={handleAromaChange}
-              className="px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
+              className="px-4 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-full text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
             >
               <option value="">Todos los aromas</option>
               {aromas.map((a) => (
@@ -355,7 +355,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
             <select
               value={selectedMaterial}
               onChange={handleMaterialChange}
-              className="px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
+              className="px-4 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-full text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
             >
               <option value="">Todos los materiales</option>
               {materials.map((mat) => (
@@ -376,7 +376,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                   e.target.value as 'predeterminado' | 'precio-asc' | 'precio-desc'
                 )
               }
-              className="px-3.5 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
+              className="px-4 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-full text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
             >
               <option value="predeterminado">Ordenar por: Relevancia</option>
               <option value="precio-asc">Precio: Menor a Mayor</option>
@@ -386,7 +386,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="p-2 text-xs text-red-500 hover:text-red-700 font-medium transition cursor-pointer min-h-[44px] flex items-center justify-center rounded-lg hover:bg-red-50"
+                className="p-2 text-xs text-red-500 hover:text-red-700 font-medium transition cursor-pointer min-h-[44px] flex items-center justify-center rounded-full hover:bg-red-50"
                 title="Limpiar filtros"
               >
                 <X className="w-4 h-4" />
@@ -410,7 +410,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
             <p className="text-stone-500 text-sm font-sans">No se encontraron productos con los criterios seleccionados.</p>
             <button
               onClick={clearFilters}
-              className="mt-4 text-brand-gold hover:text-brand-brown text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer min-h-[44px] px-6 py-2 border border-brand-gold rounded-lg"
+              className="mt-4 text-brand-gold hover:text-brand-brown text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer min-h-[44px] px-6 py-2.5 border border-brand-gold rounded-full"
             >
               Ver todos los productos
             </button>
@@ -451,21 +451,21 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                     {/* Único badge estratégico */}
                     <div className="absolute top-3 left-3 z-10">
                       {isOutOfStock ? (
-                        <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                        <span className="bg-rose-700/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
                           Agotado
                         </span>
                       ) : isLowStock ? (
-                        <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
+                        <span className="bg-amber-600/95 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                           Últimas {product.stock}
                         </span>
                       ) : product.esBajoPedido ? (
-                        <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2.5 py-1 rounded-sm text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                        <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
                           <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                           Bajo Pedido
                         </span>
                       ) : (
-                        <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                        <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
                           <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                           {product.tipo === 'VELA_ENVASE'
                             ? 'Vela en Envase'
@@ -480,7 +480,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
                     {hoveredProduct === product.id && (
                       <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
-                        <span className="bg-white text-stone-900 text-xs font-semibold px-4 py-2 rounded-sm shadow-md flex items-center gap-2">
+                        <span className="bg-white text-stone-900 text-xs font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2">
                           <Eye className="w-4 h-4 text-stone-700" /> Ver Detalles
                         </span>
                       </div>
@@ -529,7 +529,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                           ) : isLowStock ? (
                             <span className="text-[10px] text-amber-600 font-medium uppercase tracking-wider">Últimas {product.stock}</span>
                           ) : (
-                            <span className="text-[10px] text-emerald-600 font-medium uppercase tracking-wider">En Stock</span>
+                            <span className="text-[10px] text-stone-600 font-medium uppercase tracking-wider">En Stock</span>
                           )
                         )}
                       </div>
@@ -539,16 +539,16 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                           href={waLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm bg-[#25D366] hover:bg-[#1da851] text-white transition-all duration-300 flex items-center justify-center gap-1.5 active:scale-98"
+                          className="w-full py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-medium rounded-full bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-all duration-300 flex items-center justify-center gap-2 active:scale-98 shadow-xs"
                         >
-                          <MessageCircle className="w-4 h-4" /> Cotizar por WhatsApp
+                          <MessageCircle className="w-4 h-4 text-amber-700" /> Cotizar por WhatsApp
                         </a>
                       ) : (
                         <div className="grid grid-cols-2 gap-2 mt-2">
                           <button
                             onClick={() => handleAddToCart(product)}
                             disabled={isOutOfStock}
-                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm border border-brand-brown transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
+                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-full border border-brand-brown transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
                               isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed' : 'bg-white hover:bg-stone-50 text-brand-brown'
                             }`}
                           >
@@ -557,7 +557,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                           <button
                             onClick={() => handleBuyNow(product)}
                             disabled={isOutOfStock}
-                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-sm text-white transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
+                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-full text-white transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
                               isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed' : 'bg-brand-gold hover:bg-brand-brown'
                             }`}
                           >

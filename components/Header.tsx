@@ -1,8 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useCart } from '@/context/CartContext';
-import { ShoppingBag, Menu, X, MessageCircle, Zap } from 'lucide-react';
+import {
+  ShoppingBag,
+  Menu,
+  X,
+  MessageCircle,
+  ChevronDown,
+  ChevronRight,
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -13,17 +20,14 @@ const WA_NUMBER = '573175752029';
 interface NavLink {
   href: string;
   label: string;
-  icon?: React.ComponentType<{ className?: string }>;
-  isExpress?: boolean;
-  highlight?: boolean;
   isExternal?: boolean;
 }
 
 const NAV_LINKS: NavLink[] = [
   { href: '/', label: 'Inicio' },
   { href: '/catalogo', label: 'Catálogo' },
-  { href: '/personalizadas', label: 'Velas Personalizadas', highlight: true },
-  { href: '/envio-express', label: 'Envío Express', icon: Zap, isExpress: true },
+  { href: '/personalizadas', label: 'Velas Personalizadas' },
+  { href: '/envio-express', label: 'Envío Express' },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/preguntas-frecuentes', label: 'Preguntas Frecuentes' },
 ];
@@ -34,11 +38,53 @@ export default function Header() {
   const pathname = usePathname();
   const [prevPathname, setPrevPathname] = useState(pathname);
 
-  // Close mobile menu on route change during render
+  // Estado para el menú desplegable de Catálogo (desktop)
+  const [catalogDropdownOpen, setCatalogDropdownOpen] = useState(false);
+  const [velasFlyoutOpen, setVelasFlyoutOpen] = useState(false);
+
+  // Estado para el acordeón de Catálogo en drawer móvil
+  const isCatalogoActive = pathname.startsWith('/catalogo');
+  const [mobileCatalogoOpen, setMobileCatalogoOpen] = useState(isCatalogoActive);
+
+  const catalogContainerRef = useRef<HTMLDivElement>(null);
+
+  // Sincronizar estados al cambiar de ruta durante el render (patrón recomendado por React)
   if (prevPathname !== pathname) {
     setPrevPathname(pathname);
     setMobileMenuOpen(false);
+    setCatalogDropdownOpen(false);
+    setVelasFlyoutOpen(false);
+    if (pathname.startsWith('/catalogo')) {
+      setMobileCatalogoOpen(true);
+    }
   }
+
+  // Click outside listener y tecla Escape para cerrar dropdown en desktop
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        catalogContainerRef.current &&
+        !catalogContainerRef.current.contains(event.target as Node)
+      ) {
+        setCatalogDropdownOpen(false);
+        setVelasFlyoutOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setCatalogDropdownOpen(false);
+        setVelasFlyoutOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -55,6 +101,12 @@ export default function Header() {
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
   }, []);
+
+  // Detección estandarizada de ruta activa
+  const isLinkActive = (href: string): boolean => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -92,7 +144,7 @@ export default function Header() {
           </div>
 
           {/* Center: Desktop Navigation (md and up) */}
-          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 text-xs font-medium uppercase tracking-wider text-stone-600">
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 text-xs uppercase tracking-wider text-stone-700">
             {NAV_LINKS.map((link) => {
               if (link.isExternal) {
                 return (
@@ -101,23 +153,200 @@ export default function Header() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-brand-brown transition duration-200 min-h-[44px] inline-flex items-center"
+                    className="hover:text-amber-500 transition-colors duration-200 min-h-[44px] inline-flex items-center font-normal"
                   >
                     {link.label}
                   </a>
                 );
               }
-              const LinkIcon = link.icon;
+
+              // Elemento especial para Catálogo con Menú Desplegable y Flyout lateral limpio (sin emojis ni badges)
+              if (link.href === '/catalogo') {
+                return (
+                  <div
+                    key={link.href}
+                    ref={catalogContainerRef}
+                    className="relative group min-h-[44px] flex items-center"
+                    onMouseEnter={() => setCatalogDropdownOpen(true)}
+                    onMouseLeave={() => {
+                      setCatalogDropdownOpen(false);
+                      setVelasFlyoutOpen(false);
+                    }}
+                  >
+                    <Link
+                      href="/catalogo"
+                      id="catalog-menu-button"
+                      aria-haspopup="true"
+                      aria-expanded={catalogDropdownOpen}
+                      className={`min-h-[44px] inline-flex items-center gap-1.5 transition-colors duration-200 uppercase tracking-wider ${
+                        isCatalogoActive
+                          ? 'text-amber-500 font-medium'
+                          : 'text-stone-700 hover:text-amber-500 group-hover:text-amber-500 font-normal'
+                      }`}
+                    >
+                      <span className="relative py-1">
+                        {link.label}
+                        {isCatalogoActive && (
+                          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full" />
+                        )}
+                      </span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 ${
+                          isCatalogoActive
+                            ? 'text-amber-500'
+                            : 'text-stone-400 group-hover:text-amber-500'
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </Link>
+
+                    {/* Menú Desplegable Principal (Dropdown) */}
+                    <div
+                      role="menu"
+                      aria-labelledby="catalog-menu-button"
+                      className={`absolute left-0 top-full pt-2 w-60 z-50 transition-all duration-200 ease-out ${
+                        catalogDropdownOpen
+                          ? 'opacity-100 translate-y-0 visible pointer-events-auto'
+                          : 'opacity-0 -translate-y-1 invisible pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:visible group-focus-within:pointer-events-auto'
+                      }`}
+                    >
+                      <div className="bg-[#FAF8F5]/98 backdrop-blur-md border border-stone-200/80 rounded-2xl shadow-xl shadow-stone-900/10 p-2 text-stone-700">
+                        {/* Opción 1: Ver Todo el Catálogo (Enlace directo superior sin emojis) */}
+                        <Link
+                          href="/catalogo"
+                          role="menuitem"
+                          onClick={() => {
+                            setCatalogDropdownOpen(false);
+                            setVelasFlyoutOpen(false);
+                          }}
+                          className="block px-3.5 py-2.5 rounded-xl text-xs font-medium uppercase tracking-wider text-stone-800 hover:bg-amber-50 hover:text-amber-900 transition-colors"
+                        >
+                          Ver Todo el Catálogo
+                        </Link>
+
+                        {/* Separador elegante */}
+                        <div className="my-1 border-t border-stone-200/60" />
+
+                        {/* Opción 2: Velas con Submenú Lateral (Flyout sin emojis) */}
+                        <div
+                          className="relative group/sub"
+                          onMouseEnter={() => setVelasFlyoutOpen(true)}
+                          onMouseLeave={() => setVelasFlyoutOpen(false)}
+                        >
+                          <div
+                            role="button"
+                            tabIndex={0}
+                            aria-haspopup="true"
+                            aria-expanded={velasFlyoutOpen}
+                            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium uppercase tracking-wider text-stone-700 hover:bg-amber-50 hover:text-amber-900 cursor-pointer transition-colors group-hover/sub:bg-amber-50 group-hover/sub:text-amber-900"
+                          >
+                            <span>Velas</span>
+                            <ChevronRight className="w-4 h-4 text-stone-400 group-hover/sub:text-amber-700 group-hover/sub:translate-x-0.5 transition-all" />
+                          </div>
+
+                          {/* Submenú lateral (Flyout) con puente invisible seguro */}
+                          <div
+                            role="menu"
+                            aria-label="Submenú de Velas"
+                            className={`absolute left-full top-0 pl-2 w-64 z-50 transition-all duration-200 ease-out before:absolute before:-left-2 before:top-0 before:w-4 before:h-full before:content-[''] ${
+                              velasFlyoutOpen
+                                ? 'opacity-100 translate-x-0 visible pointer-events-auto'
+                                : 'opacity-0 -translate-x-1 invisible pointer-events-none group-hover/sub:opacity-100 group-hover/sub:translate-x-0 group-hover/sub:visible group-hover/sub:pointer-events-auto group-focus-within/sub:opacity-100 group-focus-within/sub:translate-x-0 group-focus-within/sub:visible group-focus-within/sub:pointer-events-auto'
+                            }`}
+                          >
+                            <div className="bg-[#FAF8F5]/98 backdrop-blur-md border border-stone-200/80 rounded-2xl shadow-xl shadow-stone-900/10 p-2 space-y-1">
+                              {/* Velas Esculpidas */}
+                              <Link
+                                href="/catalogo?tipo=VELA_ESCULPIDA"
+                                role="menuitem"
+                                onClick={() => {
+                                  setCatalogDropdownOpen(false);
+                                  setVelasFlyoutOpen(false);
+                                }}
+                                className="block px-3.5 py-2 rounded-xl transition-colors hover:bg-amber-50 group/subitem"
+                              >
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-800 group-hover/subitem:text-amber-800">
+                                  Velas Esculpidas
+                                </p>
+                                <p className="text-[11px] text-stone-500 font-normal tracking-normal lowercase first-letter:uppercase">
+                                  Figuras botánicas y artesanales
+                                </p>
+                              </Link>
+
+                              {/* Velas en Envase */}
+                              <Link
+                                href="/catalogo?tipo=VELA_ENVASE"
+                                role="menuitem"
+                                onClick={() => {
+                                  setCatalogDropdownOpen(false);
+                                  setVelasFlyoutOpen(false);
+                                }}
+                                className="block px-3.5 py-2 rounded-xl transition-colors hover:bg-amber-50 group/subitem"
+                              >
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-800 group-hover/subitem:text-amber-800">
+                                  Velas en Envase
+                                </p>
+                                <p className="text-[11px] text-stone-500 font-normal tracking-normal lowercase first-letter:uppercase">
+                                  Aromaterapia en frascos de vidrio
+                                </p>
+                              </Link>
+
+                              {/* Velas Bajo Pedido (Sin badge "A MEDIDA") */}
+                              <Link
+                                href="/personalizadas"
+                                role="menuitem"
+                                onClick={() => {
+                                  setCatalogDropdownOpen(false);
+                                  setVelasFlyoutOpen(false);
+                                }}
+                                className="block px-3.5 py-2 rounded-xl transition-colors hover:bg-amber-50 group/subitem"
+                              >
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-800 group-hover/subitem:text-amber-800">
+                                  Velas Bajo Pedido
+                                </p>
+                                <p className="text-[11px] text-stone-500 font-normal tracking-normal lowercase first-letter:uppercase">
+                                  Diseños únicos para eventos
+                                </p>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Opción 3: Jabones Artesanales (Sin emojis ni texto secundario "botánicos") */}
+                        <Link
+                          href="/catalogo?tipo=JABON"
+                          role="menuitem"
+                          onClick={() => {
+                            setCatalogDropdownOpen(false);
+                            setVelasFlyoutOpen(false);
+                          }}
+                          className="block px-3.5 py-2.5 rounded-xl text-xs font-medium uppercase tracking-wider text-stone-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                        >
+                          Jabones Artesanales
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              const isActive = isLinkActive(link.href);
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`hover:text-brand-brown transition duration-200 min-h-[44px] inline-flex items-center gap-1.5 ${link.isExpress ? 'text-amber-700 font-semibold hover:text-amber-800' : ''
-                    } ${link.highlight ? 'text-brand-gold font-semibold' : ''} ${pathname === link.href ? 'text-brand-brown font-bold' : ''
-                    }`}
+                  className={`transition-colors duration-200 min-h-[44px] inline-flex items-center ${
+                    isActive
+                      ? 'text-amber-500 font-medium'
+                      : 'text-stone-700 hover:text-amber-500 font-normal'
+                  }`}
                 >
-                  {LinkIcon && <LinkIcon className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />}
-                  <span>{link.label}</span>
+                  <span className="relative py-1">
+                    {link.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full" />
+                    )}
+                  </span>
                 </Link>
               );
             })}
@@ -127,7 +356,7 @@ export default function Header() {
           <div className="flex items-center space-x-1 sm:space-x-2">
             <button
               onClick={openCart}
-              className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-brand-brown hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer"
+              className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-amber-500 hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer"
               aria-label="Abrir carrito de compras"
             >
               <ShoppingBag className="w-5 h-5 text-stone-800" />
@@ -141,7 +370,7 @@ export default function Header() {
             {/* Mobile hamburger button (visible up to md breakpoint: block md:hidden) */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="block md:hidden p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-brand-brown hover:bg-stone-100/80 rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer"
+              className="block md:hidden p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-amber-500 hover:bg-stone-100/80 rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer"
               aria-label="Abrir menú de navegación"
             >
               <Menu className="w-6 h-6" />
@@ -195,27 +424,99 @@ export default function Header() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={closeMobileMenu}
-                      className="flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-100 hover:text-brand-brown transition-all duration-200"
+                      className="flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-100 hover:text-amber-500 transition-all duration-200"
                     >
                       <span>{link.label}</span>
-                      <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                      <MessageCircle className="w-4 h-4 text-amber-600" />
                     </a>
                   );
                 }
 
-                const LinkIcon = link.icon;
+                // Acordeón de Catálogo en Drawer Móvil (sin emojis ni badges)
+                if (link.href === '/catalogo') {
+                  return (
+                    <div key={link.href} className="space-y-1">
+                      <button
+                        type="button"
+                        onClick={() => setMobileCatalogoOpen((prev) => !prev)}
+                        aria-expanded={mobileCatalogoOpen}
+                        className={`w-full flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 cursor-pointer ${
+                          isCatalogoActive
+                            ? 'bg-amber-50 text-amber-600 font-medium'
+                            : 'text-stone-700 hover:bg-stone-100 hover:text-amber-500 font-normal'
+                        }`}
+                      >
+                        <span>{link.label}</span>
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform duration-200 text-stone-500 ${
+                            mobileCatalogoOpen ? 'rotate-180 text-amber-600' : ''
+                          }`}
+                        />
+                      </button>
+
+                      {mobileCatalogoOpen && (
+                        <div className="pl-4 pr-1 py-1 space-y-1 border-l-2 border-amber-200/70 ml-4">
+                          <Link
+                            href="/catalogo"
+                            onClick={closeMobileMenu}
+                            className="block px-3 py-2 rounded-md text-xs font-semibold text-stone-800 hover:bg-amber-50 hover:text-amber-900"
+                          >
+                            Ver Todo el Catálogo
+                          </Link>
+
+                          <div className="pt-2 pb-0.5 px-3 text-[10px] uppercase font-bold tracking-wider text-amber-800/80">
+                            Velas
+                          </div>
+                          <Link
+                            href="/catalogo?tipo=VELA_ESCULPIDA"
+                            onClick={closeMobileMenu}
+                            className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
+                          >
+                            Velas Esculpidas
+                          </Link>
+                          <Link
+                            href="/catalogo?tipo=VELA_ENVASE"
+                            onClick={closeMobileMenu}
+                            className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
+                          >
+                            Velas en Envase
+                          </Link>
+                          <Link
+                            href="/personalizadas"
+                            onClick={closeMobileMenu}
+                            className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
+                          >
+                            Velas Bajo Pedido
+                          </Link>
+
+                          <div className="pt-2 pb-0.5 px-3 text-[10px] uppercase font-bold tracking-wider text-amber-800/80">
+                            Cuidado Personal
+                          </div>
+                          <Link
+                            href="/catalogo?tipo=JABON"
+                            onClick={closeMobileMenu}
+                            className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
+                          >
+                            Jabones Artesanales
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                const isActive = isLinkActive(link.href);
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={closeMobileMenu}
-                    className={`flex items-center gap-2.5 px-4 py-3.5 min-h-[44px] rounded-lg text-sm font-medium transition-all duration-200 ${pathname === link.href
-                      ? 'bg-brand-gold/15 text-brand-brown font-bold'
-                      : 'text-stone-700 hover:bg-stone-100 hover:text-brand-brown'
-                      } ${link.isExpress && pathname !== link.href ? 'text-amber-800 font-semibold' : ''} ${link.highlight && pathname !== link.href ? 'text-brand-gold font-semibold' : ''
-                      }`}
+                    className={`flex items-center px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 ${
+                      isActive
+                        ? 'bg-amber-50 text-amber-600 font-medium'
+                        : 'text-stone-700 hover:bg-stone-100 hover:text-amber-500 font-normal'
+                    }`}
                   >
-                    {LinkIcon && <LinkIcon className="w-4 h-4 text-amber-500 fill-amber-400 shrink-0" />}
                     <span>{link.label}</span>
                   </Link>
                 );
@@ -228,9 +529,9 @@ export default function Header() {
                 href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20tus%20velas`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3.5 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] text-white text-xs uppercase tracking-widest font-bold rounded-lg transition-all duration-300 shadow-md active:scale-98"
+                className="flex items-center justify-center gap-2 w-full py-3.5 min-h-[44px] bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md active:scale-98 border border-amber-400/50"
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-4 h-4 text-stone-950" />
                 Asesoría por WhatsApp
               </a>
             </div>
@@ -240,4 +541,3 @@ export default function Header() {
     </>
   );
 }
-

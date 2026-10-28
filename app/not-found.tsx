@@ -36,7 +36,7 @@ export default function NotFound() {
           <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/catalogo"
-              className="px-6 py-3.5 bg-brand-brown hover:bg-brand-gold text-white text-xs uppercase tracking-widest font-semibold transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 rounded-sm font-sans"
+              className="px-8 py-3.5 bg-brand-brown hover:bg-brand-gold text-white text-xs uppercase tracking-widest font-semibold transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 rounded-full font-sans"
             >
               <ArrowLeft className="w-4 h-4" />
               Explorar Catálogo
@@ -45,9 +45,9 @@ export default function NotFound() {
               href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20estaba%20buscando%20un%20producto%20y%20no%20lo%20encontré.`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3.5 bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold transition-all duration-300 flex items-center justify-center gap-2 rounded-sm font-sans"
+              className="px-8 py-3.5 bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold transition-all duration-300 flex items-center justify-center gap-2 rounded-full font-sans"
             >
-              <MessageCircle className="w-4 h-4 text-[#25D366]" />
+              <MessageCircle className="w-4 h-4 text-amber-700" />
               Ayuda por WhatsApp
             </a>
           </div>

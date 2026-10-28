@@ -69,7 +69,7 @@ export default function PoliticaDeEnviosPage() {
           <h3 className="font-serif text-base font-semibold text-stone-900">
             Envío Express en Bogotá
           </h3>
-          <div className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded inline-block">
+          <div className="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full inline-block">
             Mismo Día / Entrega Rápida
           </div>
           <p className="text-xs text-stone-600 leading-relaxed font-light">
@@ -122,7 +122,7 @@ export default function PoliticaDeEnviosPage() {
           <div className="pt-2">
             <Link
               href="/envio-express"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition shadow-xs"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-xs uppercase tracking-wider rounded-full transition shadow-xs"
             >
               <span>Solicitar Envío Express en Bogotá</span>
               <ChevronRight className="w-4 h-4" />

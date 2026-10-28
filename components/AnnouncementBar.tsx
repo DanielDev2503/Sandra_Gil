@@ -13,17 +13,17 @@ interface Announcement {
 const ANNOUNCEMENTS: Announcement[] = [
   {
     id: 'envio-express',
-    text: '🚚 Envío Express en Bogotá el mismo día',
+    text: 'Envío Express en Bogotá el mismo día',
     linkText: 'Ver detalles →',
     linkHref: '/envio-express',
   },
   {
     id: 'pagos-seguros',
-    text: '🔒 Paga seguro con Wompi, Nequi, PSE y Tarjetas de Crédito',
+    text: 'Paga seguro con Wompi, Nequi, PSE y Tarjetas de Crédito',
   },
   {
     id: 'marca-artesanal',
-    text: '🕯️ 100% Cera de Soya Natural & Vertido a Mano en Bogotá',
+    text: '100% Cera de Soya Natural & Vertido a Mano en Bogotá',
   },
 ];
 

@@ -108,9 +108,9 @@ export default function SensoryWorkshopSection() {
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3.5 min-h-[44px] bg-[#FAF8F5] hover:bg-[#25D366] text-brand-brown hover:text-white border border-brand-gold/30 hover:border-[#25D366] text-xs uppercase tracking-wider font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-2xs group/btn"
+                    className="w-full py-3.5 min-h-[44px] bg-amber-50/80 hover:bg-amber-100 text-amber-900 border border-amber-300/80 hover:border-amber-400 text-xs uppercase tracking-wider font-semibold rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-xs group/btn"
                   >
-                    <MessageCircle className="w-4 h-4 text-[#25D366] group-hover/btn:text-white transition-colors" />
+                    <MessageCircle className="w-4 h-4 text-amber-700 transition-colors" />
                     <span>{exp.ctaText}</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-60 group-hover/btn:translate-x-1 transition-transform" />
                   </a>

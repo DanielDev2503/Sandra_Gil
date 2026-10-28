@@ -7,22 +7,21 @@ export default function WhatsAppButton() {
   const message = encodeURIComponent('Hola Sandra, estoy viendo la página web y tengo una pregunta sobre las velas...');
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
-
   return (
     <div className="fixed bottom-5 right-5 z-50">
       <a
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-transform duration-200 ease-out"
-        style={{ boxShadow: '0 6px 24px rgba(37, 211, 102, 0.35)' }}
+        className="flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba59] active:bg-[#1da850] text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 ease-out"
+        style={{ boxShadow: '0 6px 20px rgba(37, 211, 102, 0.4)' }}
         aria-label="Contactar por WhatsApp"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="w-6 h-6"
+          className="w-6 h-6 text-white fill-white"
         >
           <path
             fillRule="evenodd"

@@ -4,41 +4,14 @@ import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Star, MessageCircle, CheckCircle2 } from 'lucide-react';
 import Header from './Header';
-import HeroSection from './HeroSection';
-import BrandPillarsBento from './BrandPillarsBento';
-import ProductCatalog from './ProductCatalog';
+import HeroBannerCarousel from './HeroBannerCarousel';
+import HomeTypeCarousels, { GroupedProducts } from './HomeTypeCarousels';
 import SensoryWorkshopSection from './SensoryWorkshopSection';
 import CartDrawer from './CartDrawer';
 import Footer from './Footer';
 import CandleGlowPulse from './CandleGlowPulse';
 
 const WA_NUMBER = '573175752029';
-
-interface Variacion {
-  id: string;
-  nombre: string;
-  imagen: string;
-  precio: number | null;
-  activo: boolean;
-}
-
-interface Product {
-  id: string;
-  slug: string;
-  nombre: string;
-  descripcion: string;
-  tipo?: 'VELA' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON' | string;
-  aroma?: string | null;
-  material?: string | null;
-  dimensiones?: string | null;
-  precio: number | null;
-  esBajoPedido: boolean;
-  stock: number;
-  url_imagen: string | null;
-  imagenes?: string[];
-  activo: boolean;
-  variaciones?: Variacion[];
-}
 
 interface ResenaItem {
   id: string;
@@ -53,16 +26,12 @@ interface ResenaItem {
 }
 
 interface StoreShellProps {
-  products: Product[];
-  heroProduct: Product | null;
-  availableAromas?: string[];
+  groupedProducts: GroupedProducts;
   resenas?: ResenaItem[];
 }
 
 export default function StoreShell({
-  products,
-  heroProduct,
-  availableAromas = [],
+  groupedProducts,
   resenas = [],
 }: StoreShellProps) {
   return (
@@ -71,14 +40,11 @@ export default function StoreShell({
       <Header />
 
       <main className="flex-1 flex flex-col">
-        {/* 1. Hero Section with split balance & animated floating badge */}
-        <HeroSection heroProduct={heroProduct} />
+        {/* 1. Hero Banner Carousel editorial e-commerce (MercadoLibre / luxury store style) */}
+        <HeroBannerCarousel />
 
-        {/* 2. Brand Pillars Bento Grid (100% Cera de Soya, Flores Artesanales, Hecho a Mano, Aromaterapia) */}
-        <BrandPillarsBento />
-
-        {/* 3. Complete Product Catalog */}
-        <ProductCatalog products={products} showFilters={false} />
+        {/* 2. Dynamic Carousels by Product Type (Randomized on each reload) */}
+        <HomeTypeCarousels groupedProducts={groupedProducts} />
 
         {/* 4. SECCIÓN DE ALTO TICKET: "Velas Personalizadas y Eventos" */}
         <section className="bg-[#2C2A29] text-[#FAF8F5] py-16 sm:py-24 relative overflow-hidden border-b border-stone-800">

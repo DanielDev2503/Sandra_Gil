@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import StoreShell from '@/components/StoreShell';
-import { OFFICIAL_AROMAS } from '@/lib/aromas';
 import { INITIAL_FAQS } from '@/lib/faqs-data';
 
 export const dynamic = 'force-dynamic';
@@ -31,42 +30,19 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  // Fetch active products with variations, official active aromas, and verified reviews
-  const [products, aromasDb, resenas] = await Promise.all([
+  // Consulta optimizada a Prisma: únicamente productos activos y campos estrictamente necesarios
+  const [rawProducts, resenas] = await Promise.all([
     prisma.producto.findMany({
       where: { activo: true },
       select: {
         id: true,
-        slug: true,
         nombre: true,
-        descripcion: true,
-        tipo: true,
-        aroma: true,
-        material: true,
-        dimensiones: true,
+        slug: true,
         precio: true,
-        esBajoPedido: true,
-        stock: true,
         url_imagen: true,
-        imagenes: true,
-        activo: true,
-        variaciones: {
-          where: { activo: true },
-          select: {
-            id: true,
-            nombre: true,
-            imagen: true,
-            precio: true,
-            activo: true,
-          },
-          orderBy: { createdAt: 'asc' },
-        },
+        tipo: true,
+        esBajoPedido: true,
       },
-      orderBy: { nombre: 'asc' },
-    }),
-    prisma.aroma.findMany({
-      where: { activo: true },
-      select: { nombre: true },
       orderBy: { nombre: 'asc' },
     }),
     prisma.resena.findMany({
@@ -88,18 +64,29 @@ export default async function Home() {
     }),
   ]);
 
-  const availableAromas =
-    aromasDb.length > 0 ? aromasDb.map((a: { nombre: string }) => a.nombre) : [...OFFICIAL_AROMAS];
+  // Clasificación estricta: aislar productos bajo pedido para evitar duplicidades
+  const isBajoPedido = (p: { esBajoPedido?: boolean | null }) => Boolean(p.esBajoPedido);
 
-  // Hero product: prioritize flagship candle, then in-stock non-custom candles
-  const heroProduct =
-    products.find((p) => p.slug === 'vela-botanica-lavanda-manzanilla') ??
-    products
-      .filter((p) => p.stock > 0 && !p.esBajoPedido)
-      .sort((a, b) => a.stock - b.stock)[0] ??
-    products.find((p) => !p.esBajoPedido) ??
-    products[0] ??
-    null;
+  const productosBajoPedido = rawProducts.filter(isBajoPedido);
+  const productosVelasEnvase = rawProducts.filter((p) => !isBajoPedido(p) && p.tipo === 'VELA_ENVASE');
+  const productosJabones = rawProducts.filter(
+    (p) => !isBajoPedido(p) && (p.tipo === 'JABON' || (p.nombre && p.nombre.toLowerCase().includes('jabon')))
+  );
+  const productosVelasEsculpidas = rawProducts.filter(
+    (p) =>
+      !isBajoPedido(p) &&
+      (p.tipo === 'VELA_ESCULPIDA' ||
+        p.tipo === 'VELA' ||
+        (!p.tipo && !p.nombre.toLowerCase().includes('jabon')))
+  );
+
+  // Agrupación estricta de productos por tipo para los 4 carruseles del Home
+  const groupedProducts = {
+    VELA_ENVASE: productosVelasEnvase,
+    VELA_ESCULPIDA: productosVelasEsculpidas,
+    JABON: productosJabones,
+    BAJO_PEDIDO: productosBajoPedido,
+  };
 
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ||
@@ -141,8 +128,8 @@ export default async function Home() {
         '@type': 'ItemList',
         '@id': `${siteUrl}/#catalogo-destacado`,
         name: 'Catálogo de Velas Artesanales Sandra Gil',
-        itemListElement: products
-          .filter((p) => !p.esBajoPedido && p.precio)
+        itemListElement: rawProducts
+          .filter((p) => p.precio)
           .slice(0, 10)
           .map((p, index) => ({
             '@type': 'ListItem',
@@ -150,8 +137,8 @@ export default async function Home() {
             item: {
               '@type': 'Product',
               name: p.nombre,
-              description: p.descripcion.replace(/<[^>]*>?/gm, '').slice(0, 180),
-              image: p.imagenes?.[0] || p.url_imagen || `${siteUrl}/logo-sandra.png`,
+              description: `Vela artesanal ${p.nombre} vertida a mano en Bogotá con cera 100% de soya natural.`,
+              image: p.url_imagen || `${siteUrl}/logo-sandra.png`,
               url: `${siteUrl}/productos/${p.slug}`,
               brand: {
                 '@type': 'Brand',
@@ -161,10 +148,7 @@ export default async function Home() {
                 '@type': 'Offer',
                 price: p.precio,
                 priceCurrency: 'COP',
-                availability:
-                  p.stock > 0
-                    ? 'https://schema.org/InStock'
-                    : 'https://schema.org/OutOfStock',
+                availability: 'https://schema.org/InStock',
                 url: `${siteUrl}/productos/${p.slug}`,
                 itemCondition: 'https://schema.org/NewCondition',
                 seller: {
@@ -197,9 +181,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }}
       />
       <StoreShell
-        products={products}
-        heroProduct={heroProduct}
-        availableAromas={availableAromas}
+        groupedProducts={groupedProducts}
         resenas={resenas}
       />
     </>

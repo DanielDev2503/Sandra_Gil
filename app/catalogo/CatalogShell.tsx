@@ -87,7 +87,15 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
   // Read initial filters from URL query params
-  const [selectedType, setSelectedType] = useState<FilterType>('todos');
+  const rawUrlTipo = searchParams.get('tipo') || '';
+  const validTypes: FilterType[] = ['VELA_ENVASE', 'VELA_ESCULPIDA', 'JABON'];
+  const normalizedInitialTipo: FilterType = validTypes.includes(rawUrlTipo as FilterType)
+    ? (rawUrlTipo as FilterType)
+    : 'todos';
+
+  const [selectedType, setSelectedType] = useState<FilterType>(normalizedInitialTipo);
+  const [prevSearchTipo, setPrevSearchTipo] = useState(rawUrlTipo);
+
   const rawUrlMat = searchParams.get('material') || '';
   const rawUrlAroma = searchParams.get('aroma') || '';
   const normalizedInitialMat = rawUrlMat.toLowerCase().includes('preservad') ? 'Flores Botánicas' : rawUrlMat;
@@ -97,6 +105,11 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const [prevSearchMat, setPrevSearchMat] = useState(rawUrlMat);
   const [prevSearchAroma, setPrevSearchAroma] = useState(rawUrlAroma);
   const [sortOrder, setSortOrder] = useState<'predeterminado' | 'precio-asc' | 'precio-desc'>('predeterminado');
+
+  if (prevSearchTipo !== rawUrlTipo) {
+    setPrevSearchTipo(rawUrlTipo);
+    setSelectedType(normalizedInitialTipo);
+  }
 
   if (prevSearchMat !== rawUrlMat) {
     setPrevSearchMat(rawUrlMat);
@@ -110,7 +123,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   // Contadores para cada categoría de productos
   const counts = useMemo(() => {
-    let todos = products.length;
+    const todos = products.length;
     let velasEnvase = 0;
     let velasEsculpida = 0;
     let jabones = 0;
@@ -160,8 +173,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   // Sync URL with filter state
   const syncUrl = useCallback(
-    (material: string, aroma: string) => {
+    (tipo: FilterType, material: string, aroma: string) => {
       const params = new URLSearchParams();
+      if (tipo && tipo !== 'todos') params.set('tipo', tipo);
       if (material) params.set('material', material);
       if (aroma) params.set('aroma', aroma);
       const qs = params.toString();
@@ -170,16 +184,21 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     [router]
   );
 
+  const handleTypeChange = (type: FilterType) => {
+    setSelectedType(type);
+    syncUrl(type, selectedMaterial, selectedAroma);
+  };
+
   const handleMaterialChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     setSelectedMaterial(val);
-    syncUrl(val, selectedAroma);
+    syncUrl(selectedType, val, selectedAroma);
   };
 
   const handleAromaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     setSelectedAroma(val);
-    syncUrl(selectedMaterial, val);
+    syncUrl(selectedType, selectedMaterial, val);
   };
 
   const clearFilters = () => {
@@ -187,7 +206,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     setSelectedMaterial('');
     setSelectedAroma('');
     setSortOrder('predeterminado');
-    syncUrl('', '');
+    syncUrl('todos', '', '');
   };
 
   const hasActiveFilters = selectedType !== 'todos' || selectedMaterial !== '' || selectedAroma !== '' || sortOrder !== 'predeterminado';
@@ -287,7 +306,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
             return (
               <button
                 key={tab.id}
-                onClick={() => setSelectedType(tab.id)}
+                onClick={() => handleTypeChange(tab.id)}
                 className={`px-4 sm:px-5 py-2.5 min-h-[44px] text-xs uppercase tracking-wider font-semibold rounded-full transition-all duration-300 cursor-pointer flex items-center gap-2 ${
                   isSelected
                     ? 'bg-brand-brown text-white shadow-md'

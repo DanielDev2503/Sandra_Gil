@@ -25,7 +25,7 @@ export default function ExpressShippingForm() {
     <div className="bg-white rounded-2xl border border-amber-200/80 shadow-md p-6 sm:p-8 space-y-6">
       <div className="border-b border-stone-100 pb-5">
         <div className="flex items-center gap-2.5 mb-2">
-          <div className="p-2 rounded-lg bg-emerald-50 text-[#25D366]">
+          <div className="p-2 rounded-full bg-amber-100 text-amber-800">
             <MessageCircle className="w-5 h-5" />
           </div>
           <h3 className="font-serif text-xl sm:text-2xl font-semibold text-stone-900">
@@ -98,10 +98,10 @@ export default function ExpressShippingForm() {
         href={waUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full min-h-[52px] py-4 px-6 bg-[#25D366] hover:bg-[#1da851] text-white text-sm sm:text-base font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-3 active:scale-[0.99] group"
+        className="w-full min-h-[52px] py-4 px-8 bg-amber-500 hover:bg-amber-400 text-stone-950 text-sm sm:text-base font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-3 active:scale-[0.99] group border border-amber-400/50"
       >
         <MessageCircle className="w-6 h-6 shrink-0 group-hover:scale-110 transition-transform" />
-        <span>Solicitar Envío Express por WhatsApp</span>
+        <span>Solicitar Envío Express</span>
         <Send className="w-4 h-4 shrink-0 opacity-80 group-hover:translate-x-1 transition-transform" />
       </a>
     </div>

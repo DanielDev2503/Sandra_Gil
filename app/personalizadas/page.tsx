@@ -109,9 +109,9 @@ export default async function PersonalizadasPage() {
                 href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20una%20vela%20personalizada`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] text-white text-xs uppercase tracking-widest font-bold transition-all duration-300 shadow-md active:scale-98"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-98 border border-amber-400/50"
               >
-                <MessageCircle className="w-4 h-4 shrink-0" />
+                <MessageCircle className="w-4 h-4 shrink-0 text-stone-950" />
                 Cotizar por WhatsApp
               </a>
             </div>
@@ -127,7 +127,7 @@ export default async function PersonalizadasPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {products.map((product: any) => {
+                {products.map((product) => {
                   const displayImage =
                     product.imagenes && product.imagenes.length > 0
                       ? product.imagenes[0]
@@ -144,11 +144,11 @@ export default async function PersonalizadasPage() {
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
-                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-sm shadow-xs border border-brand-gold/20 flex items-center gap-1 z-10">
+                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full shadow-xs border border-brand-gold/20 flex items-center gap-1 z-10">
                           <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                           <span className="text-[10px] font-bold text-brand-brown uppercase tracking-wider">Bajo Pedido</span>
                         </div>
-                        <div className="absolute bottom-3 left-3 bg-brand-brown/80 text-[#FAF8F5] px-2 py-0.5 rounded-sm text-[9px] uppercase tracking-widest z-10">
+                        <div className="absolute bottom-3 left-3 bg-brand-brown/80 text-[#FAF8F5] px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-widest z-10">
                           {product.aroma}
                         </div>
                       </Link>
@@ -165,16 +165,16 @@ export default async function PersonalizadasPage() {
 
                         <div className="mt-4 pt-4 border-t border-stone-100 space-y-3">
                           <div className="flex items-center gap-2">
-                            <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
+                            <MessageCircle className="w-4 h-4 text-amber-700 shrink-0" />
                             <span className="text-xs font-semibold text-stone-700">Elaboración Bajo Pedido</span>
                           </div>
                           <a
                             href={waLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full py-3.5 min-h-[44px] bg-[#25D366] hover:bg-[#1da851] text-white text-xs uppercase tracking-wider font-bold transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-98"
+                            className="w-full py-3.5 min-h-[44px] bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 text-xs uppercase tracking-wider font-bold rounded-full transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-98"
                           >
-                            <MessageCircle className="w-4 h-4 shrink-0" />
+                            <MessageCircle className="w-4 h-4 shrink-0 text-amber-700" />
                             Cotizar por WhatsApp
                           </a>
                         </div>
@@ -196,9 +196,9 @@ export default async function PersonalizadasPage() {
               href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20tengo%20una%20idea%20especial%20para%20una%20vela%20personalizada`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-white text-brand-brown text-xs uppercase tracking-widest font-bold transition-all duration-300 hover:bg-brand-cream shadow-md active:scale-98"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-white text-brand-brown text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 hover:bg-brand-cream shadow-md active:scale-98"
             >
-              <MessageCircle className="w-4 h-4 shrink-0 text-[#25D366]" />
+              <MessageCircle className="w-4 h-4 shrink-0 text-brand-gold" />
               Enviar Mensaje a Sandra
             </a>
           </div>

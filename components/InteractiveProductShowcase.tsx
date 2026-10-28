@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import Image from 'next/image';
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
@@ -261,7 +261,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                 <span className="text-2xl sm:text-3xl font-serif font-semibold text-brand-brown">
                   {effectivePrice ? `$${effectivePrice.toLocaleString('es-CO')} COP` : 'Bajo Pedido'}
                 </span>
-                <span className="text-xs text-emerald-700 font-medium bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                <span className="text-xs text-amber-800 font-medium bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
                   ✓ Envío Gratis en Bogotá
                 </span>
               </div>
@@ -283,7 +283,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                           setSelectedVariation(v);
                           setActiveImageIndex(0);
                         }}
-                        className={`px-4 py-2.5 min-h-[44px] rounded-lg text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer border ${
+                        className={`px-4 py-2.5 min-h-[44px] rounded-full text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer border ${
                           isSelected
                             ? 'bg-brand-brown text-white border-brand-brown shadow-sm'
                             : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-200'
@@ -371,7 +371,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
               <button
                 onClick={handleBuyNow}
                 disabled={product.stock <= 0}
-                className="w-full py-4 min-h-[48px] bg-brand-gold hover:bg-brand-brown text-white text-xs uppercase tracking-widest font-bold rounded-sm transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:bg-stone-300 disabled:cursor-not-allowed"
+                className="w-full py-4 min-h-[48px] bg-brand-gold hover:bg-brand-brown text-white text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:bg-stone-300 disabled:cursor-not-allowed"
               >
                 <Zap className="w-4 h-4 fill-current" />
                 <span>Comprar Ahora · Pago Seguro</span>
@@ -380,7 +380,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
               <button
                 onClick={handleAddToCart}
                 disabled={product.stock <= 0}
-                className="w-full py-3.5 min-h-[48px] bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed"
+                className="w-full py-3.5 min-h-[48px] bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed"
               >
                 <ShoppingBag className="w-4 h-4" />
                 <span>Añadir al Carrito</span>
@@ -390,24 +390,24 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
             {/* Sellos de Confianza Financiera & Logística */}
             <div className="pt-2 space-y-2.5">
               <p className="text-[11px] text-stone-500 text-center font-sans tracking-wide">
-                🚚 Despachos locales desde Bogotá · Pago protegido por <strong>Wompi (Bancolombia)</strong>
+                Despachos locales desde Bogotá · Pago protegido por <strong>Wompi (Bancolombia)</strong>
               </p>
               
               {/* Chips de Métodos de Pago Aceptados */}
               <div className="flex flex-wrap items-center justify-center gap-1.5 font-sans">
-                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                <span className="px-2.5 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-full">
                   Wompi
                 </span>
-                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                <span className="px-2.5 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-full">
                   Bancolombia
                 </span>
-                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                <span className="px-2.5 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-full">
                   Nequi
                 </span>
-                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                <span className="px-2.5 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-full">
                   PSE
                 </span>
-                <span className="px-2 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-sm">
+                <span className="px-2.5 py-0.5 bg-stone-100 border border-stone-200 text-stone-700 text-[10px] font-semibold rounded-full">
                   Tarjetas Débito / Crédito
                 </span>
               </div>

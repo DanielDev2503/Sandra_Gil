@@ -15,10 +15,10 @@ import {
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '⚡ Envío Express en Bogotá (Mismo Día / Entrega Rápida) | Sandra Gil Velas',
+  title: 'Envío Express en Bogotá (Mismo Día / Entrega Rápida) | Sandra Gil Velas',
   description: 'Solicita envío express el mismo día para tus velas artesanales en Bogotá D.C. Entrega rápida a través de plataformas digitales de mensajería.',
   openGraph: {
-    title: '⚡ Envío Express en Bogotá | Sandra Gil Velas Artesanales',
+    title: 'Envío Express en Bogotá | Sandra Gil Velas Artesanales',
     description: 'Servicio de entrega rápida el mismo día para Bogotá D.C. Cobertura local por mensajería digital.',
     url: 'https://sandragilvelas.com/envio-express',
   },
@@ -82,7 +82,7 @@ export default function ExpressShippingPage() {
             </div>
 
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 leading-tight">
-              ⚡ Envío Express en Bogotá{' '}
+              Envío Express en Bogotá{' '}
               <span className="block text-xl sm:text-2xl md:text-3xl italic font-normal text-brand-gold mt-1">
                 (Mismo Día / Entrega Rápida)
               </span>
@@ -95,7 +95,7 @@ export default function ExpressShippingPage() {
         </section>
 
         {/* Informational Cards Section */}
-        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
           <div className="text-center space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-gold">
               Condiciones del Servicio
@@ -107,14 +107,20 @@ export default function ExpressShippingPage() {
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
             {KEY_POINTS.map((point, index) => {
               const Icon = point.icon;
+              const gridSpanClass =
+                index === 3
+                  ? 'md:col-span-1 lg:col-span-2 lg:col-start-2'
+                  : index === 4
+                  ? 'md:col-span-2 lg:col-span-2 border-amber-300/80 bg-amber-50/20'
+                  : 'md:col-span-1 lg:col-span-2';
               return (
                 <div
                   key={index}
                   className={`bg-white rounded-xl border border-stone-200/80 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between ${
-                    index === 4 ? 'md:col-span-2 lg:col-span-1 border-amber-300/80 bg-amber-50/20' : ''
+                    gridSpanClass
                   }`}
                 >
                   <div className="space-y-3">
@@ -166,7 +172,7 @@ export default function ExpressShippingPage() {
 
             <Link
               href="/catalogo"
-              className="px-6 py-3 min-h-[44px] bg-brand-gold hover:bg-brand-brown text-white text-xs font-bold uppercase tracking-wider rounded-lg transition duration-300 inline-flex items-center gap-2 shrink-0 active:scale-98"
+              className="px-8 py-3.5 min-h-[44px] bg-brand-gold hover:bg-brand-brown text-white text-xs font-bold uppercase tracking-wider rounded-full transition duration-300 inline-flex items-center gap-2 shrink-0 active:scale-98"
             >
               <span>Ver Catálogo</span>
               <ChevronRight className="w-4 h-4" />

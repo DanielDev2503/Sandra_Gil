@@ -217,21 +217,21 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                   {/* 1 Único Badge Estratégico en esquina superior */}
                   <div className="absolute top-3 left-3 z-10">
                     {isOutOfStock ? (
-                      <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                      <span className="bg-rose-700/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
                         Agotado
                       </span>
                     ) : isLowStock ? (
-                      <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
+                      <span className="bg-amber-600/95 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                         Últimas {product.stock} unidades
                       </span>
                     ) : product.esBajoPedido ? (
-                      <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2.5 py-1 rounded-sm text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                      <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
                         <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                         Bajo Pedido
                       </span>
                     ) : (
-                      <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                      <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
                         <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
                         {soap ? 'Jabón Botánico' : 'Vela Artesanal'}
                       </span>
@@ -297,7 +297,7 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                             Últimas {product.stock}
                           </span>
                         ) : (
-                          <span className="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider">
+                          <span className="text-[10px] text-stone-600 font-medium uppercase tracking-wider">
                             En Stock
                           </span>
                         )
@@ -310,9 +310,9 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                         href={waLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-3.5 min-h-[44px] text-center text-xs uppercase tracking-wider font-bold rounded-lg transition-all duration-300 bg-[#25D366] hover:bg-[#1da851] text-white shadow-xs hover:shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                        className="w-full py-3.5 min-h-[44px] text-center text-xs uppercase tracking-wider font-medium rounded-full transition-all duration-300 bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 shadow-xs hover:shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                       >
-                        <MessageCircle className="w-4 h-4" />
+                        <MessageCircle className="w-4 h-4 text-amber-700" />
                         <span>Cotizar por WhatsApp</span>
                       </a>
                     ) : (
@@ -321,7 +321,7 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                           type="button"
                           onClick={(e) => handleAddToCart(product, e)}
                           disabled={isOutOfStock}
-                          className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-lg border border-brand-brown transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
+                          className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-full border border-brand-brown transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
                             isOutOfStock
                               ? 'border-stone-200 text-stone-400 cursor-not-allowed'
                               : 'bg-white hover:bg-stone-50 text-brand-brown hover:shadow-xs'
@@ -334,7 +334,7 @@ export default function ProductCatalog({ products, showFilters = false }: Produc
                           type="button"
                           onClick={(e) => handleBuyNow(product, e)}
                           disabled={isOutOfStock}
-                          className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-lg text-white transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 shadow-xs ${
+                          className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-full text-white transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 shadow-xs ${
                             isOutOfStock
                               ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
                               : 'bg-brand-gold hover:bg-brand-brown hover:shadow-md'

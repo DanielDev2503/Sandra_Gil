@@ -87,13 +87,13 @@ export default function PoliticaDevolucionesPage() {
 
         {/* Card 3: Garantía */}
         <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs space-y-2.5">
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5 text-emerald-600" />
+          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center">
+            <ShieldCheck className="w-5 h-5 text-amber-600" />
           </div>
           <h2 className="font-serif text-base font-semibold text-stone-900">
             Garantía Legal
           </h2>
-          <div className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md inline-block">
+          <div className="text-xs font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md inline-block">
             Ley 1480 de 2011
           </div>
           <p className="text-xs text-stone-600 leading-relaxed font-light">
@@ -134,23 +134,23 @@ export default function PoliticaDevolucionesPage() {
             </h3>
             <ul className="text-xs sm:text-sm text-stone-700 space-y-2 list-none pl-0">
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <span><strong>Plazo legal:</strong> La solicitud debe manifestarse dentro de los <strong>cinco (5) días hábiles</strong> siguientes a la fecha en que el cliente o tercero autorizado reciba el paquete.</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <span><strong>Estado del producto:</strong> La vela debe encontrarse totalmente intacta, <strong>sin encender</strong>, con la mecha sin chamuscar, sin aromas ajenos y en perfecto estado comercial.</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <span><strong>Empaquetado original:</strong> Debe devolverse con su embalaje primario original (caja de regalo, faja, etiquetas protectoras, amortiguadores y accesorios).</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <span><strong>Costos de flete y envío:</strong> De conformidad con el inciso segundo del Art. 47 de la Ley 1480, los costos de transporte y demás que conlleve la devolución del bien hacia nuestro taller en Bogotá D.C. serán <strong>asumidos por el comprador</strong>, salvo que la devolución derive de un defecto de fábrica o rotura en tránsito.</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <span><strong>Plazo de reintegro:</strong> Una vez recibido el producto en nuestro taller y verificado su estado conforme a los criterios señalados, se reintegrará la suma total pagada en un término máximo de <strong>treinta (30) días calendario</strong> a través del mismo medio de pago utilizado.</span>
               </li>
             </ul>
@@ -187,8 +187,8 @@ export default function PoliticaDevolucionesPage() {
             </div>
           </div>
 
-          <div className="bg-emerald-50/60 border border-emerald-200 rounded-xl p-4 space-y-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-900">
+          <div className="bg-amber-50/60 border border-amber-200 rounded-xl p-4 space-y-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-900">
               Opciones de Solución para el Cliente (Sin Costo Adicional):
             </h3>
             <p className="text-xs sm:text-sm text-stone-700 leading-relaxed font-light">
@@ -357,14 +357,14 @@ export default function PoliticaDevolucionesPage() {
             href={WA_DEVOLUCION_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold text-xs sm:text-sm uppercase tracking-wider rounded-xl transition shadow-xs"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-semibold text-xs sm:text-sm uppercase tracking-wider rounded-full transition shadow-md border border-amber-400/50"
           >
             <span>Iniciar Solicitud por WhatsApp</span>
             <ExternalLink className="w-4 h-4" />
           </a>
           <Link
             href="/preguntas-frecuentes"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold text-xs sm:text-sm uppercase tracking-wider rounded-xl transition"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold text-xs sm:text-sm uppercase tracking-wider rounded-full transition"
           >
             <span>Preguntas Frecuentes</span>
           </Link>

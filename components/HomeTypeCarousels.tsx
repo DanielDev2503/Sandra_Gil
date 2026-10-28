@@ -195,9 +195,9 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
                             href={waLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full py-2.5 px-3 text-center text-xs sm:text-sm font-semibold rounded-lg bg-[#25D366] hover:bg-[#1da851] text-white transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs hover:shadow-md cursor-pointer active:scale-98"
+                            className="w-full py-2.5 px-4 text-center text-xs sm:text-sm font-medium rounded-full bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs hover:shadow-md cursor-pointer active:scale-98"
                           >
-                            <MessageCircle className="w-4 h-4 shrink-0" />
+                            <MessageCircle className="w-4 h-4 shrink-0 text-amber-700" />
                             <span>Cotiza por WhatsApp</span>
                           </a>
                         </div>
@@ -259,9 +259,9 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
                 <p className="text-xs text-stone-600 font-light mb-4 font-sans">
                   {totalItems} piezas disponibles
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-brown group-hover:text-stone-900 transition-colors uppercase tracking-wider font-sans">
+                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/90 border border-amber-300/60 group-hover:bg-amber-500 group-hover:border-amber-400 group-hover:text-stone-950 text-xs font-semibold text-brand-brown transition-all duration-300 uppercase tracking-wider font-sans shadow-2xs">
                   <span>{category.viewMoreCta}</span>
-                  <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 text-brand-gold group-hover:text-stone-950 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Link>
             </div>

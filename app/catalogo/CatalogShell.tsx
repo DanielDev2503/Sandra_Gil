@@ -1,11 +1,21 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import Header from '@/components/Header';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
-import { Sparkles, Eye, MessageCircle, X, SlidersHorizontal, ArrowUpDown, Tag } from 'lucide-react';
+import {
+  Sparkles,
+  Eye,
+  MessageCircle,
+  X,
+  SlidersHorizontal,
+  ArrowUpDown,
+  ChevronDown,
+  RotateCcw,
+  Search,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SkeletonImage from '@/components/SkeletonImage';
@@ -13,7 +23,6 @@ import SkeletonImage from '@/components/SkeletonImage';
 const WA_NUMBER = '573175752029';
 
 export type TipoProducto = 'VELA' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON';
-export type FilterType = 'todos' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON';
 
 export interface Product {
   id: string;
@@ -43,8 +52,7 @@ export const normalize = (str?: string | null): string =>
   str ? str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() : '';
 
 /**
- * Determina de forma robusta si un producto es un jabón artesanal reconociendo su campo `tipo`
- * o buscando palabras clave en su nombre, material o descripción.
+ * Determina si un producto es un jabón artesanal.
  */
 export function isSoapProduct(product: {
   tipo?: string | null;
@@ -80,174 +88,275 @@ export function isCandleProduct(product: {
   return !isSoapProduct(product);
 }
 
+const CATEGORY_DEFINITIONS = [
+  { id: 'VELA_ENVASE', label: 'Velas en Envase' },
+  { id: 'VELA_ESCULPIDA', label: 'Velas Esculpidas' },
+  { id: 'JABON', label: 'Jabones Artesanales' },
+] as const;
+
 export default function CatalogShell({ products }: CatalogShellProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Read initial filters from URL query params
-  const rawUrlTipo = searchParams.get('tipo') || '';
-  const validTypes: FilterType[] = ['VELA_ENVASE', 'VELA_ESCULPIDA', 'JABON'];
-  const normalizedInitialTipo: FilterType = validTypes.includes(rawUrlTipo as FilterType)
-    ? (rawUrlTipo as FilterType)
-    : 'todos';
+  // ── 1. RANGOS ABSOLUTOS Y METADATOS EXTRAÍDOS ────────────────────────
+  const { minPriceAbsolute, maxPriceAbsolute } = useMemo(() => {
+    const validPrices = products
+      .map((p) => p.precio)
+      .filter((pr): pr is number => typeof pr === 'number' && pr > 0);
+    if (validPrices.length === 0) return { minPriceAbsolute: 0, maxPriceAbsolute: 120000 };
+    return {
+      minPriceAbsolute: Math.floor(Math.min(...validPrices)),
+      maxPriceAbsolute: Math.ceil(Math.max(...validPrices)),
+    };
+  }, [products]);
 
-  const [selectedType, setSelectedType] = useState<FilterType>(normalizedInitialTipo);
-  const [prevSearchTipo, setPrevSearchTipo] = useState(rawUrlTipo);
-
-  const rawUrlMat = searchParams.get('material') || '';
-  const rawUrlAroma = searchParams.get('aroma') || '';
-  const normalizedInitialMat = rawUrlMat.toLowerCase().includes('preservad') ? 'Flores Botánicas' : rawUrlMat;
-  
-  const [selectedMaterial, setSelectedMaterial] = useState<string>(normalizedInitialMat);
-  const [selectedAroma, setSelectedAroma] = useState<string>(rawUrlAroma);
-  const [prevSearchMat, setPrevSearchMat] = useState(rawUrlMat);
-  const [prevSearchAroma, setPrevSearchAroma] = useState(rawUrlAroma);
-  const [sortOrder, setSortOrder] = useState<'predeterminado' | 'precio-asc' | 'precio-desc'>('predeterminado');
-
-  if (prevSearchTipo !== rawUrlTipo) {
-    setPrevSearchTipo(rawUrlTipo);
-    setSelectedType(normalizedInitialTipo);
-  }
-
-  if (prevSearchMat !== rawUrlMat) {
-    setPrevSearchMat(rawUrlMat);
-    setSelectedMaterial(normalizedInitialMat);
-  }
-
-  if (prevSearchAroma !== rawUrlAroma) {
-    setPrevSearchAroma(rawUrlAroma);
-    setSelectedAroma(rawUrlAroma);
-  }
-
-  // Contadores para cada categoría de productos
-  const counts = useMemo(() => {
-    const todos = products.length;
-    let velasEnvase = 0;
-    let velasEsculpida = 0;
-    let jabones = 0;
+  // Contadores dinámicos por Categoría / Tipo
+  const categoryCounts = useMemo(() => {
+    let envase = 0;
+    let esculpida = 0;
+    let jabon = 0;
 
     for (const p of products) {
       if (p.tipo === 'VELA_ENVASE') {
-        velasEnvase++;
-      } else if (p.tipo === 'VELA_ESCULPIDA' || p.tipo === 'VELA') {
-        velasEsculpida++;
+        envase++;
       } else if (p.tipo === 'JABON' || isSoapProduct(p)) {
-        jabones++;
+        jabon++;
       } else {
-        // Respaldo seguro: agrupar en Velas Esculpidas
-        velasEsculpida++;
+        esculpida++;
       }
     }
 
     return {
-      todos,
-      VELA_ENVASE: velasEnvase,
-      VELA_ESCULPIDA: velasEsculpida,
-      JABON: jabones,
+      VELA_ENVASE: envase,
+      VELA_ESCULPIDA: esculpida,
+      JABON: jabon,
     };
   }, [products]);
 
-  const tabs: { id: FilterType; label: string; count: number }[] = [
-    { id: 'todos', label: 'Todos los productos', count: counts.todos },
-    { id: 'VELA_ENVASE', label: 'Velas en Envase', count: counts.VELA_ENVASE },
-    { id: 'VELA_ESCULPIDA', label: 'Velas Esculpidas', count: counts.VELA_ESCULPIDA },
-    { id: 'JABON', label: 'Jabones Artesanales', count: counts.JABON },
-  ];
-
-  // Derive unique materials and aromas from the product list
-  const materials = useMemo(() => {
-    const set = new Set(
-      products.map((p) => p.material).filter((m): m is string => !!m)
-    );
-    return Array.from(set).sort();
+  // Lista dinámica de aromas únicos con conteo
+  const aromaList = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const p of products) {
+      const raw = p.aroma?.trim();
+      if (raw) {
+        map.set(raw, (map.get(raw) || 0) + 1);
+      }
+    }
+    return Array.from(map.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   }, [products]);
 
-  const aromas = useMemo(() => {
-    const set = new Set(
-      products.map((p) => p.aroma).filter((a): a is string => !!a)
-    );
-    return Array.from(set).sort();
+  // Lista dinámica de materiales únicos con conteo
+  const materialList = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const p of products) {
+      const raw = p.material?.trim();
+      if (raw) {
+        map.set(raw, (map.get(raw) || 0) + 1);
+      }
+    }
+    return Array.from(map.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   }, [products]);
 
-  // Sync URL with filter state
+  // ── 2. ESTADO DE FILTROS SINCRONIZADO CON URL ───────────────────────
+  const rawUrlTipo = searchParams.get('tipo') || '';
+  const initialTypes = useMemo(() => {
+    if (!rawUrlTipo) return [];
+    const valid = ['VELA_ENVASE', 'VELA_ESCULPIDA', 'JABON'];
+    return rawUrlTipo
+      .split(',')
+      .map((t) => t.trim())
+      .filter((t) => valid.includes(t));
+  }, [rawUrlTipo]);
+
+  const rawUrlAroma = searchParams.get('aroma') || '';
+  const initialAromas = useMemo(() => (rawUrlAroma ? [rawUrlAroma] : []), [rawUrlAroma]);
+
+  const rawUrlMaterial = searchParams.get('material') || '';
+  const initialMaterials = useMemo(() => (rawUrlMaterial ? [rawUrlMaterial] : []), [rawUrlMaterial]);
+
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(initialTypes);
+  const [selectedAromas, setSelectedAromas] = useState<string[]>(initialAromas);
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>(initialMaterials);
+  const [priceRange, setPriceRange] = useState<[number, number]>([minPriceAbsolute, maxPriceAbsolute]);
+  const [sortOrder, setSortOrder] = useState<
+    'relevancia' | 'precio-asc' | 'precio-desc' | 'nombre-asc' | 'nombre-desc'
+  >('relevancia');
+
+  // Estado de apertura de acordeones
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    categoria: true,
+    precio: true,
+    aroma: true,
+    material: false,
+    orden: true,
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  // Sincronizar cambios de la URL hacia el estado local
+  useEffect(() => {
+    if (rawUrlTipo) {
+      const valid = ['VELA_ENVASE', 'VELA_ESCULPIDA', 'JABON'];
+      const parsed = rawUrlTipo.split(',').filter((t) => valid.includes(t.trim()));
+      setSelectedTypes(parsed);
+    }
+  }, [rawUrlTipo]);
+
+  // Sincronizar estado local hacia la URL
   const syncUrl = useCallback(
-    (tipo: FilterType, material: string, aroma: string) => {
+    (types: string[], aromas: string[], mats: string[]) => {
       const params = new URLSearchParams();
-      if (tipo && tipo !== 'todos') params.set('tipo', tipo);
-      if (material) params.set('material', material);
-      if (aroma) params.set('aroma', aroma);
+      if (types.length > 0) params.set('tipo', types.join(','));
+      if (aromas.length > 0) params.set('aroma', aromas[0]);
+      if (mats.length > 0) params.set('material', mats[0]);
       const qs = params.toString();
       router.replace(`/catalogo${qs ? `?${qs}` : ''}`, { scroll: false });
     },
     [router]
   );
 
-  const handleTypeChange = (type: FilterType) => {
-    setSelectedType(type);
-    syncUrl(type, selectedMaterial, selectedAroma);
+  // Controladores de selección de filtros
+  const handleToggleType = (typeId: string) => {
+    const next = selectedTypes.includes(typeId)
+      ? selectedTypes.filter((t) => t !== typeId)
+      : [...selectedTypes, typeId];
+    setSelectedTypes(next);
+    syncUrl(next, selectedAromas, selectedMaterials);
   };
 
-  const handleMaterialChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setSelectedMaterial(val);
-    syncUrl(selectedType, val, selectedAroma);
+  const handleToggleAroma = (aromaName: string) => {
+    const next = selectedAromas.includes(aromaName)
+      ? selectedAromas.filter((a) => a !== aromaName)
+      : [...selectedAromas, aromaName];
+    setSelectedAromas(next);
+    syncUrl(selectedTypes, next, selectedMaterials);
   };
 
-  const handleAromaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setSelectedAroma(val);
-    syncUrl(selectedType, selectedMaterial, val);
+  const handleToggleMaterial = (matName: string) => {
+    const next = selectedMaterials.includes(matName)
+      ? selectedMaterials.filter((m) => m !== matName)
+      : [...selectedMaterials, matName];
+    setSelectedMaterials(next);
+    syncUrl(selectedTypes, selectedAromas, next);
   };
 
-  const clearFilters = () => {
-    setSelectedType('todos');
-    setSelectedMaterial('');
-    setSelectedAroma('');
-    setSortOrder('predeterminado');
-    syncUrl('todos', '', '');
+  const clearAllFilters = () => {
+    setSelectedTypes([]);
+    setSelectedAromas([]);
+    setSelectedMaterials([]);
+    setPriceRange([minPriceAbsolute, maxPriceAbsolute]);
+    setSortOrder('relevancia');
+    setSearchQuery('');
+    syncUrl([], [], []);
   };
 
-  const hasActiveFilters = selectedType !== 'todos' || selectedMaterial !== '' || selectedAroma !== '' || sortOrder !== 'predeterminado';
+  // Bloquear scroll de fondo al abrir el Drawer móvil
+  useEffect(() => {
+    if (isMobileFilterOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileFilterOpen]);
 
+  // Cerrar Drawer con tecla ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileFilterOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Contador de filtros activos
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    count += selectedTypes.length;
+    count += selectedAromas.length;
+    count += selectedMaterials.length;
+    if (priceRange[0] > minPriceAbsolute || priceRange[1] < maxPriceAbsolute) count += 1;
+    if (sortOrder !== 'relevancia') count += 1;
+    if (searchQuery.trim() !== '') count += 1;
+    return count;
+  }, [
+    selectedTypes,
+    selectedAromas,
+    selectedMaterials,
+    priceRange,
+    minPriceAbsolute,
+    maxPriceAbsolute,
+    sortOrder,
+    searchQuery,
+  ]);
+
+  // ── 3. FILTRADO Y ORDENAMIENTO EN TIEMPO REAL ───────────────────────
   const filteredAndSortedProducts = useMemo(() => {
     let result = products.filter((p) => {
-      // Type filter
-      if (selectedType === 'VELA_ENVASE') {
-        if (p.tipo !== 'VELA_ENVASE') return false;
-      } else if (selectedType === 'VELA_ESCULPIDA') {
-        const isEsculpida =
-          p.tipo === 'VELA_ESCULPIDA' ||
-          p.tipo === 'VELA' ||
-          (!p.tipo && isCandleProduct(p) && !isSoapProduct(p));
-        if (!isEsculpida) return false;
-      } else if (selectedType === 'JABON') {
-        const isJabon = p.tipo === 'JABON' || isSoapProduct(p);
-        if (!isJabon) return false;
+      // Búsqueda por texto (nombre, aroma, material)
+      if (searchQuery.trim()) {
+        const queryNorm = normalize(searchQuery);
+        const searchable = normalize(`${p.nombre} ${p.aroma || ''} ${p.material || ''} ${p.descripcion || ''}`);
+        if (!searchable.includes(queryNorm)) return false;
       }
 
-      // Material filter
-      if (
-        selectedMaterial &&
-        (!p.material || !p.material.toLowerCase().includes(selectedMaterial.toLowerCase()))
-      ) {
-        return false;
+      // Filtro por tipo/categoría múltiple
+      if (selectedTypes.length > 0) {
+        const matchesType = selectedTypes.some((t) => {
+          if (t === 'VELA_ENVASE') return p.tipo === 'VELA_ENVASE';
+          if (t === 'VELA_ESCULPIDA') {
+            return (
+              p.tipo === 'VELA_ESCULPIDA' ||
+              p.tipo === 'VELA' ||
+              (!p.tipo && isCandleProduct(p) && !isSoapProduct(p))
+            );
+          }
+          if (t === 'JABON') {
+            return p.tipo === 'JABON' || isSoapProduct(p);
+          }
+          return false;
+        });
+        if (!matchesType) return false;
       }
 
-      // Aroma filter con normalización case-insensitive y sin fallos por tildes
-      if (selectedAroma) {
-        const normTarget = selectedAroma
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .trim();
-        const normProd = (p.aroma || '')
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .trim();
-        if (!normProd.includes(normTarget) && !normTarget.includes(normProd)) {
+      // Filtro por aromas múltiples
+      if (selectedAromas.length > 0) {
+        if (!p.aroma) return false;
+        const normProdAroma = normalize(p.aroma);
+        const matchesAroma = selectedAromas.some((a) => {
+          const normTarget = normalize(a);
+          return normProdAroma.includes(normTarget) || normTarget.includes(normProdAroma);
+        });
+        if (!matchesAroma) return false;
+      }
+
+      // Filtro por materiales múltiples
+      if (selectedMaterials.length > 0) {
+        if (!p.material) return false;
+        const normProdMat = normalize(p.material);
+        const matchesMat = selectedMaterials.some((m) => {
+          const normTarget = normalize(m);
+          return normProdMat.includes(normTarget) || normTarget.includes(normProdMat);
+        });
+        if (!matchesMat) return false;
+      }
+
+      // Filtro por rango de precio
+      if (p.precio !== null && p.precio !== undefined) {
+        if (p.precio < priceRange[0] || p.precio > priceRange[1]) {
           return false;
         }
       }
@@ -255,324 +364,764 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       return true;
     });
 
-    // Sorting
+    // Ordenamiento
     if (sortOrder === 'precio-asc') {
       result = [...result].sort((a, b) => (a.precio || 0) - (b.precio || 0));
     } else if (sortOrder === 'precio-desc') {
       result = [...result].sort((a, b) => (b.precio || 0) - (a.precio || 0));
+    } else if (sortOrder === 'nombre-asc') {
+      result = [...result].sort((a, b) => a.nombre.localeCompare(b.nombre));
+    } else if (sortOrder === 'nombre-desc') {
+      result = [...result].sort((a, b) => b.nombre.localeCompare(a.nombre));
     }
 
     return result;
-  }, [products, selectedType, selectedMaterial, selectedAroma, sortOrder]);
+  }, [
+    products,
+    searchQuery,
+    selectedTypes,
+    selectedAromas,
+    selectedMaterials,
+    priceRange,
+    sortOrder,
+  ]);
 
+  // Acciones de compra
   const handleAddToCart = (product: Product) => {
-    const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-    const defaultAroma = product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
+    const displayImage =
+      product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
+    const defaultAroma =
+      product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
     addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
   };
 
   const handleBuyNow = (product: Product) => {
     clearCart();
-    const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-    const defaultAroma = product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
+    const displayImage =
+      product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
+    const defaultAroma =
+      product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
     addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
     router.push('/checkout');
   };
+
+  // ── 4. COMPONENTE DE CONTENIDO DE FILTROS (REUTILIZABLE DESKTOP Y MÓVIL) ──
+  const FilterContent = (
+    <div className="space-y-6 text-stone-800">
+      {/* Cabecera del Panel */}
+      <div className="flex items-center justify-between pb-3 border-b border-stone-200/80">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal className="w-4 h-4 text-brand-gold" />
+          <span className="font-serif font-medium text-stone-900 text-base">Filtros</span>
+        </div>
+        {activeFiltersCount > 0 && (
+          <button
+            onClick={clearAllFilters}
+            className="text-xs text-amber-900 hover:text-amber-700 font-medium underline cursor-pointer transition"
+          >
+            Limpiar ({activeFiltersCount})
+          </button>
+        )}
+      </div>
+
+      {/* Buscador Rápido */}
+      <div className="relative">
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Buscar vela o jabón..."
+          className="w-full pl-9 pr-8 py-2 text-xs bg-stone-50 border border-stone-200 rounded-full text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/30 focus:border-brand-gold transition"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* ACORDEÓN 1: CATEGORÍA / TIPO DE PRODUCTO */}
+      <div className="border-b border-stone-200/70 pb-4">
+        <button
+          type="button"
+          onClick={() => toggleSection('categoria')}
+          className="w-full flex items-center justify-between py-1 text-left group cursor-pointer"
+        >
+          <span className="font-serif font-medium text-stone-900 text-sm group-hover:text-brand-brown transition">
+            Categoría
+          </span>
+          <div className="flex items-center gap-2">
+            {selectedTypes.length > 0 && (
+              <span className="w-2 h-2 rounded-full bg-brand-gold" />
+            )}
+            <ChevronDown
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                openSections.categoria ? 'rotate-180' : ''
+              }`}
+            />
+          </div>
+        </button>
+
+        {openSections.categoria && (
+          <div className="mt-3 space-y-2.5 pt-1">
+            {CATEGORY_DEFINITIONS.map((cat) => {
+              const isChecked = selectedTypes.includes(cat.id);
+              const count = categoryCounts[cat.id] || 0;
+              return (
+                <label
+                  key={cat.id}
+                  className="flex items-center justify-between gap-2.5 text-xs text-stone-700 hover:text-stone-950 cursor-pointer group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => handleToggleType(cat.id)}
+                      className="w-4 h-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500/30 cursor-pointer accent-brand-gold"
+                    />
+                    <span className={isChecked ? 'font-semibold text-stone-900' : ''}>
+                      {cat.label}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-stone-400 group-hover:text-stone-600 transition">
+                    ({count})
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ACORDEÓN 2: RANGO DE PRECIO */}
+      <div className="border-b border-stone-200/70 pb-4">
+        <button
+          type="button"
+          onClick={() => toggleSection('precio')}
+          className="w-full flex items-center justify-between py-1 text-left group cursor-pointer"
+        >
+          <span className="font-serif font-medium text-stone-900 text-sm group-hover:text-brand-brown transition">
+            Rango de Precio
+          </span>
+          <div className="flex items-center gap-2">
+            {(priceRange[0] > minPriceAbsolute || priceRange[1] < maxPriceAbsolute) && (
+              <span className="w-2 h-2 rounded-full bg-brand-gold" />
+            )}
+            <ChevronDown
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                openSections.precio ? 'rotate-180' : ''
+              }`}
+            />
+          </div>
+        </button>
+
+        {openSections.precio && (
+          <div className="mt-3 space-y-3 pt-1">
+            {/* Display de valor actual */}
+            <div className="flex items-center justify-between text-xs text-stone-600 font-mono">
+              <span className="px-2 py-1 bg-stone-100 rounded border border-stone-200">
+                ${priceRange[0].toLocaleString('es-CO')}
+              </span>
+              <span className="text-stone-400">—</span>
+              <span className="px-2 py-1 bg-stone-100 rounded border border-stone-200">
+                ${priceRange[1].toLocaleString('es-CO')}
+              </span>
+            </div>
+
+            {/* Slider continuo */}
+            <input
+              type="range"
+              min={minPriceAbsolute}
+              max={maxPriceAbsolute}
+              step={1000}
+              value={priceRange[1]}
+              onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
+              className="w-full h-1.5 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+              aria-label="Precio máximo"
+            />
+
+            <div className="flex justify-between text-[10px] text-stone-400">
+              <span>Mín: ${minPriceAbsolute.toLocaleString('es-CO')}</span>
+              <span>Máx: ${maxPriceAbsolute.toLocaleString('es-CO')}</span>
+            </div>
+
+            {(priceRange[0] > minPriceAbsolute || priceRange[1] < maxPriceAbsolute) && (
+              <button
+                type="button"
+                onClick={() => setPriceRange([minPriceAbsolute, maxPriceAbsolute])}
+                className="text-[11px] text-amber-800 hover:text-amber-900 underline cursor-pointer pt-1 block"
+              >
+                Limpiar rango de precio
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ACORDEÓN 3: AROMA */}
+      {aromaList.length > 0 && (
+        <div className="border-b border-stone-200/70 pb-4">
+          <button
+            type="button"
+            onClick={() => toggleSection('aroma')}
+            className="w-full flex items-center justify-between py-1 text-left group cursor-pointer"
+          >
+            <span className="font-serif font-medium text-stone-900 text-sm group-hover:text-brand-brown transition">
+              Aroma
+            </span>
+            <div className="flex items-center gap-2">
+              {selectedAromas.length > 0 && (
+                <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-1.5 py-0.2 rounded-full">
+                  {selectedAromas.length}
+                </span>
+              )}
+              <ChevronDown
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                  openSections.aroma ? 'rotate-180' : ''
+                }`}
+              />
+            </div>
+          </button>
+
+          {openSections.aroma && (
+            <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-stone-200 pt-1">
+              {aromaList.map(({ name, count }) => {
+                const isChecked = selectedAromas.includes(name);
+                return (
+                  <label
+                    key={name}
+                    className="flex items-center justify-between gap-2.5 text-xs text-stone-700 hover:text-stone-950 cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => handleToggleAroma(name)}
+                        className="w-4 h-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500/30 cursor-pointer accent-brand-gold shrink-0"
+                      />
+                      <span className={`truncate ${isChecked ? 'font-semibold text-stone-900' : ''}`}>
+                        {name}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-stone-400 group-hover:text-stone-600 shrink-0">
+                      ({count})
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ACORDEÓN 4: MATERIAL */}
+      {materialList.length > 0 && (
+        <div className="border-b border-stone-200/70 pb-4">
+          <button
+            type="button"
+            onClick={() => toggleSection('material')}
+            className="w-full flex items-center justify-between py-1 text-left group cursor-pointer"
+          >
+            <span className="font-serif font-medium text-stone-900 text-sm group-hover:text-brand-brown transition">
+              Material
+            </span>
+            <div className="flex items-center gap-2">
+              {selectedMaterials.length > 0 && (
+                <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-1.5 py-0.2 rounded-full">
+                  {selectedMaterials.length}
+                </span>
+              )}
+              <ChevronDown
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                  openSections.material ? 'rotate-180' : ''
+                }`}
+              />
+            </div>
+          </button>
+
+          {openSections.material && (
+            <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-stone-200 pt-1">
+              {materialList.map(({ name, count }) => {
+                const isChecked = selectedMaterials.includes(name);
+                return (
+                  <label
+                    key={name}
+                    className="flex items-center justify-between gap-2.5 text-xs text-stone-700 hover:text-stone-950 cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => handleToggleMaterial(name)}
+                        className="w-4 h-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500/30 cursor-pointer accent-brand-gold shrink-0"
+                      />
+                      <span className={`truncate ${isChecked ? 'font-semibold text-stone-900' : ''}`}>
+                        {name}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-stone-400 group-hover:text-stone-600 shrink-0">
+                      ({count})
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ACORDEÓN 5: RELEVANCIA / ORDEN */}
+      <div className="pb-2">
+        <button
+          type="button"
+          onClick={() => toggleSection('orden')}
+          className="w-full flex items-center justify-between py-1 text-left group cursor-pointer"
+        >
+          <span className="font-serif font-medium text-stone-900 text-sm group-hover:text-brand-brown transition">
+            Ordenar Por
+          </span>
+          <div className="flex items-center gap-2">
+            {sortOrder !== 'relevancia' && <span className="w-2 h-2 rounded-full bg-brand-gold" />}
+            <ChevronDown
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                openSections.orden ? 'rotate-180' : ''
+              }`}
+            />
+          </div>
+        </button>
+
+        {openSections.orden && (
+          <div className="mt-3 space-y-2 pt-1">
+            {[
+              { id: 'relevancia', label: 'Relevancia (predeterminado)' },
+              { id: 'precio-asc', label: 'Precio: Menor a Mayor' },
+              { id: 'precio-desc', label: 'Precio: Mayor a Menor' },
+              { id: 'nombre-asc', label: 'Nombre: A - Z' },
+              { id: 'nombre-desc', label: 'Nombre: Z - A' },
+            ].map((opt) => (
+              <label
+                key={opt.id}
+                className="flex items-center gap-2.5 text-xs text-stone-700 hover:text-stone-950 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="sortOrder"
+                  checked={sortOrder === opt.id}
+                  onChange={() => setSortOrder(opt.id as any)}
+                  className="w-4 h-4 text-amber-600 border-stone-300 focus:ring-amber-500/30 accent-brand-gold cursor-pointer"
+                />
+                <span className={sortOrder === opt.id ? 'font-semibold text-stone-900' : ''}>
+                  {opt.label}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-brand-cream">
       <Header />
 
-      {/* Catalog Title Banner */}
-      <section className="bg-[#F0E9DB]/60 py-8 sm:py-12 border-b border-stone-200/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2 sm:space-y-3">
-          <span className="text-xs uppercase tracking-[0.25em] text-brand-gold font-bold">Colección Completa</span>
+      {/* Hero / Banner Superior */}
+      <section className="bg-[#F0E9DB]/60 py-6 sm:py-10 border-b border-stone-200/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold font-sans block">
+            COLECCIÓN BOTÁNICA SANDRA GIL
+          </span>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900">
-            Nuestros Productos Artesanales
+            Catálogo de Productos Artesanales
           </h1>
-          <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-2"></div>
-          <p className="text-stone-500 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
-            Explora nuestra colección exclusiva de velas y jabones artesanales diseñados con insumos 100% naturales en Bogotá.
+          <p className="text-stone-600 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed font-light">
+            Velas vertidas a mano con 100% cera de soya pura y jabones botánicos para rituales de calma y bienestar en tu hogar.
           </p>
         </div>
       </section>
 
-      {/* ── FILTER PANEL ───────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 w-full space-y-4">
-        {/* Type Tabs: Todos los productos, Velas en Envase, Velas Esculpidas, Jabones Artesanales */}
-        <div className="flex flex-wrap items-center justify-center gap-2 border-b border-stone-200 pb-4">
-          {tabs.map((tab) => {
-            const isSelected = selectedType === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => handleTypeChange(tab.id)}
-                className={`px-4 sm:px-5 py-2.5 min-h-[44px] text-xs uppercase tracking-wider font-semibold rounded-full transition-all duration-300 cursor-pointer flex items-center gap-2 ${
-                  isSelected
-                    ? 'bg-brand-brown text-white shadow-md'
-                    : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200/80'
-                }`}
-              >
-                <Tag className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-                <span
-                  className={`text-[11px] px-2 py-0.5 rounded-full font-mono font-medium transition-colors ${
-                    isSelected
-                      ? 'bg-white/20 text-white'
-                      : 'bg-stone-100 text-stone-600'
-                  }`}
-                >
-                  {tab.count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Filters & Sorting Bar */}
-        <div className="bg-white rounded-xl border border-stone-200/60 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 flex-wrap">
-            <div className="flex items-center gap-2 shrink-0">
-              <SlidersHorizontal className="w-4 h-4 text-brand-gold" />
-              <span className="text-xs font-semibold text-stone-700 uppercase tracking-wider">Filtrar por:</span>
-            </div>
-
-            {/* Dropdown for Aroma */}
-            <select
-              value={selectedAroma}
-              onChange={handleAromaChange}
-              className="px-4 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-full text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
-            >
-              <option value="">Todos los aromas</option>
-              {aromas.map((a) => (
-                <option key={a} value={a}>
-                  Aroma: {a}
-                </option>
-              ))}
-            </select>
-
-            {/* Dropdown for Material */}
-            <select
-              value={selectedMaterial}
-              onChange={handleMaterialChange}
-              className="px-4 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-full text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
-            >
-              <option value="">Todos los materiales</option>
-              {materials.map((mat) => (
-                <option key={mat} value={mat}>
-                  Material: {mat}
-                </option>
-              ))}
-            </select>
+      {/* ── CONTENEDOR PRINCIPAL: SIDEBAR + PRODUCTOS ───────────────────── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex-1 w-full">
+        {/* Barra superior de control en Móvil y Contador General */}
+        <div className="flex items-center justify-between pb-5 border-b border-stone-200/60 mb-6 gap-4">
+          <div className="flex items-center gap-3">
+            <span className="text-xs sm:text-sm text-stone-600 font-light">
+              Mostrando <strong className="font-semibold text-stone-900">{filteredAndSortedProducts.length}</strong> de {products.length} piezas
+            </span>
           </div>
 
-          {/* Sorting Dropdown */}
-          <div className="flex items-center gap-2 shrink-0">
-            <ArrowUpDown className="w-4 h-4 text-stone-500 shrink-0" />
-            <select
-              value={sortOrder}
-              onChange={(e) =>
-                setSortOrder(
-                  e.target.value as 'predeterminado' | 'precio-asc' | 'precio-desc'
-                )
-              }
-              className="px-4 py-2.5 text-xs bg-stone-50 border border-stone-300 rounded-full text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition cursor-pointer min-h-[44px]"
-            >
-              <option value="predeterminado">Ordenar por: Relevancia</option>
-              <option value="precio-asc">Precio: Menor a Mayor</option>
-              <option value="precio-desc">Precio: Mayor a Menor</option>
-            </select>
-
-            {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="p-2 text-xs text-red-500 hover:text-red-700 font-medium transition cursor-pointer min-h-[44px] flex items-center justify-center rounded-full hover:bg-red-50"
-                title="Limpiar filtros"
-              >
-                <X className="w-4 h-4" />
-              </button>
+          {/* Botón trigger para Drawer en Móvil (< lg) */}
+          <button
+            type="button"
+            onClick={() => setIsMobileFilterOpen(true)}
+            className="lg:hidden rounded-full bg-stone-900 text-white px-4 py-2 text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-2 hover:bg-stone-800 transition active:scale-95 shadow-sm"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
+            <span>Filtros</span>
+            {activeFiltersCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-amber-400 text-stone-950 text-[10px] font-bold flex items-center justify-center">
+                {activeFiltersCount}
+              </span>
             )}
-          </div>
+          </button>
         </div>
 
-        {/* Results Counter */}
-        <div className="flex justify-end text-xs text-stone-500 font-sans">
-          <span>
-            Mostrando <strong>{filteredAndSortedProducts.length}</strong> {filteredAndSortedProducts.length === 1 ? 'producto' : 'productos'}
-          </span>
+        {/* Layout en 2 Columnas */}
+        <div className="lg:grid lg:grid-cols-4 lg:gap-8 items-start">
+          {/* ── SIDEBAR DESKTOP FIJO (STICKY) ───────────────────────────── */}
+          <aside className="hidden lg:block lg:col-span-1 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-3 bg-white/70 backdrop-blur-xs p-5 rounded-2xl border border-stone-200/70 shadow-2xs [scrollbar-width:thin]">
+            {FilterContent}
+          </aside>
+
+          {/* ── GRILLA PRINCIPAL DE PRODUCTOS ─────────────────────────── */}
+          <main className="lg:col-span-3 space-y-6">
+            {/* Chips de Filtros Activos para remoción rápida */}
+            {activeFiltersCount > 0 && (
+              <div className="flex flex-wrap items-center gap-2 bg-stone-100/70 p-3 rounded-xl border border-stone-200/60">
+                <span className="text-xs text-stone-500 font-medium mr-1">Filtros aplicados:</span>
+
+                {/* Chips de Categoría */}
+                {selectedTypes.map((t) => {
+                  const label = CATEGORY_DEFINITIONS.find((c) => c.id === t)?.label || t;
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => handleToggleType(t)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-300/80 rounded-full text-xs text-stone-800 hover:border-red-300 hover:text-red-700 transition"
+                    >
+                      <span>{label}</span>
+                      <X className="w-3 h-3 text-stone-400 hover:text-red-600" />
+                    </button>
+                  );
+                })}
+
+                {/* Chips de Aroma */}
+                {selectedAromas.map((a) => (
+                  <button
+                    key={a}
+                    onClick={() => handleToggleAroma(a)}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-300/80 rounded-full text-xs text-stone-800 hover:border-red-300 hover:text-red-700 transition"
+                  >
+                    <span>Aroma: {a}</span>
+                    <X className="w-3 h-3 text-stone-400 hover:text-red-600" />
+                  </button>
+                ))}
+
+                {/* Chips de Material */}
+                {selectedMaterials.map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => handleToggleMaterial(m)}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-300/80 rounded-full text-xs text-stone-800 hover:border-red-300 hover:text-red-700 transition"
+                  >
+                    <span>Material: {m}</span>
+                    <X className="w-3 h-3 text-stone-400 hover:text-red-600" />
+                  </button>
+                ))}
+
+                {/* Chip de Rango de Precio */}
+                {(priceRange[0] > minPriceAbsolute || priceRange[1] < maxPriceAbsolute) && (
+                  <button
+                    onClick={() => setPriceRange([minPriceAbsolute, maxPriceAbsolute])}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-300/80 rounded-full text-xs text-stone-800 hover:border-red-300 hover:text-red-700 transition"
+                  >
+                    <span>
+                      ${priceRange[0].toLocaleString('es-CO')} - ${priceRange[1].toLocaleString('es-CO')}
+                    </span>
+                    <X className="w-3 h-3 text-stone-400 hover:text-red-600" />
+                  </button>
+                )}
+
+                {/* Chip de Búsqueda */}
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-300/80 rounded-full text-xs text-stone-800 hover:border-red-300 hover:text-red-700 transition"
+                  >
+                    <span>Búsqueda: &ldquo;{searchQuery}&rdquo;</span>
+                    <X className="w-3 h-3 text-stone-400 hover:text-red-600" />
+                  </button>
+                )}
+
+                {/* Botón Restablecer Todo */}
+                <button
+                  onClick={clearAllFilters}
+                  className="text-xs text-amber-900 hover:text-amber-700 font-semibold underline ml-auto pl-2 transition"
+                >
+                  Limpiar todo
+                </button>
+              </div>
+            )}
+
+            {/* Listado de Productos o Estado Vacío */}
+            {filteredAndSortedProducts.length === 0 ? (
+              <div className="text-center py-16 bg-white rounded-2xl border border-stone-200/70 p-8 shadow-xs">
+                <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 flex items-center justify-center mx-auto mb-4">
+                  <SlidersHorizontal className="w-6 h-6" />
+                </div>
+                <h3 className="text-stone-900 font-serif text-lg sm:text-xl font-medium mb-2">
+                  No encontramos productos con los filtros seleccionados
+                </h3>
+                <p className="text-stone-500 text-xs sm:text-sm max-w-md mx-auto mb-6 font-light">
+                  Prueba ajustando el rango de precio, deseleccionando categorías o restableciendo todos los filtros para explorar la colección completa.
+                </p>
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-amber-100 hover:border-amber-400 hover:shadow-md transition-all active:scale-98 cursor-pointer inline-flex items-center gap-2"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-amber-800" />
+                  <span>Restablecer todos los filtros</span>
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                {filteredAndSortedProducts.map((product, idx) => {
+                  const soap = isSoapProduct(product);
+                  const isLowStock = product.stock > 0 && product.stock <= 10;
+                  const isOutOfStock = product.stock <= 0;
+                  const displayImage =
+                    product.imagenes && product.imagenes.length > 0
+                      ? product.imagenes[0]
+                      : product.url_imagen;
+                  const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20el%20producto:%20${encodeURIComponent(product.nombre)}`;
+
+                  return (
+                    <div
+                      key={product.id}
+                      className="group bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300"
+                      onMouseEnter={() => setHoveredProduct(product.id)}
+                      onMouseLeave={() => setHoveredProduct(null)}
+                    >
+                      <div>
+                        {/* 1. Imagen con relación aspect-[4/5] y badge estratégico */}
+                        <Link
+                          href={`/productos/${product.slug}`}
+                          className="relative aspect-[4/5] block overflow-hidden bg-stone-100"
+                        >
+                          <SkeletonImage
+                            src={displayImage ?? ''}
+                            alt={
+                              soap
+                                ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Bogotá`
+                                : product.tipo === 'VELA_ENVASE'
+                                ? `Vela en envase ${product.nombre} cera de soya Sandra Gil - Bogotá`
+                                : `Vela artesanal ${product.nombre} cera de soya Sandra Gil - Bogotá`
+                            }
+                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            priority={idx < 4}
+                          />
+
+                          {/* Badge de estado / categoría */}
+                          <div className="absolute top-3 left-3 z-10">
+                            {isOutOfStock ? (
+                              <span className="bg-rose-700/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                                Agotado
+                              </span>
+                            ) : isLowStock ? (
+                              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                                Últimas {product.stock}
+                              </span>
+                            ) : product.esBajoPedido ? (
+                              <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                                Bajo Pedido
+                              </span>
+                            ) : (
+                              <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                                {product.tipo === 'VELA_ENVASE'
+                                  ? 'Vela en Envase'
+                                  : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
+                                  ? 'Vela Esculpida'
+                                  : soap
+                                  ? 'Jabón Botánico'
+                                  : 'Vela Artesanal'}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Overlay de hover "Ver Detalles" */}
+                          {hoveredProduct === product.id && (
+                            <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
+                              <span className="bg-white text-stone-900 text-xs font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2">
+                                <Eye className="w-4 h-4 text-stone-700" /> Ver Detalles
+                              </span>
+                            </div>
+                          )}
+                        </Link>
+
+                        {/* 2. Información del producto */}
+                        <div className="p-4 sm:p-5">
+                          <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold font-sans block mb-1">
+                            {product.aroma || (soap ? 'Jabón Botánico' : '100% Cera de Soya')}
+                          </span>
+
+                          <Link href={`/productos/${product.slug}`} className="block group/title">
+                            <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-brown transition duration-200 line-clamp-2 leading-snug">
+                              {product.nombre}
+                            </h3>
+                          </Link>
+
+                          <div className="flex items-center gap-1.5 mt-1.5 text-xs text-stone-500 font-sans">
+                            <span>{product.dimensiones || '220g · 45h de combustión'}</span>
+                            <span>•</span>
+                            <span>{product.material || 'Cera 100% Vegetal'}</span>
+                          </div>
+
+                          <p className="text-xs text-stone-500 mt-2 line-clamp-2 leading-relaxed font-light font-sans">
+                            {product.descripcion
+                              ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+                              : ''}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* 3. Precios y Botones de Compra */}
+                      <div className="p-4 sm:p-5 pt-0 font-sans">
+                        <div className="pt-3 border-t border-stone-100 flex justify-between items-center mb-3">
+                          {product.esBajoPedido ? (
+                            <span className="text-xs font-semibold text-brand-brown uppercase tracking-wider">
+                              Bajo Pedido
+                            </span>
+                          ) : (
+                            <span className="font-serif font-semibold text-brand-brown text-base sm:text-lg">
+                              ${product.precio?.toLocaleString('es-CO')} COP
+                            </span>
+                          )}
+
+                          {!product.esBajoPedido && (
+                            isOutOfStock ? (
+                              <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider">
+                                Agotado
+                              </span>
+                            ) : isLowStock ? (
+                              <span className="text-[10px] text-amber-600 font-medium uppercase tracking-wider">
+                                Últimas {product.stock}
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-stone-600 font-medium uppercase tracking-wider">
+                                En Stock
+                              </span>
+                            )
+                          )}
+                        </div>
+
+                        {product.esBajoPedido ? (
+                          <a
+                            href={waLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2.5 px-3 text-center text-xs uppercase tracking-wider font-medium rounded-full bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs hover:shadow-md cursor-pointer active:scale-98"
+                          >
+                            <MessageCircle className="w-4 h-4 text-amber-700" />
+                            <span>Cotiza por WhatsApp</span>
+                          </a>
+                        ) : (
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleAddToCart(product)}
+                              disabled={isOutOfStock}
+                              className={`py-2.5 min-h-[40px] text-center text-xs uppercase tracking-wider font-semibold rounded-full border border-brand-brown transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
+                                isOutOfStock
+                                  ? 'border-stone-200 text-stone-400 cursor-not-allowed'
+                                  : 'bg-white hover:bg-stone-50 text-brand-brown'
+                              }`}
+                            >
+                              Añadir
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleBuyNow(product)}
+                              disabled={isOutOfStock}
+                              className={`py-2.5 min-h-[40px] text-center text-xs uppercase tracking-wider font-semibold rounded-full text-white transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
+                                isOutOfStock
+                                  ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                                  : 'bg-brand-gold hover:bg-brand-brown'
+                              }`}
+                            >
+                              Comprar
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </main>
         </div>
       </div>
 
-      {/* Product Grid: 4-block standard layout with aspect-[4/5] */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full">
-        {filteredAndSortedProducts.length === 0 ? (
-          <div className="text-center py-16 sm:py-20 bg-white rounded-xl border border-stone-200/60 p-8">
-            <p className="text-stone-500 text-sm font-sans">No se encontraron productos con los criterios seleccionados.</p>
-            <button
-              onClick={clearFilters}
-              className="mt-4 text-brand-gold hover:text-brand-brown text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer min-h-[44px] px-6 py-2.5 border border-brand-gold rounded-full"
-            >
-              Ver todos los productos
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filteredAndSortedProducts.map((product, idx) => {
-              const soap = isSoapProduct(product);
-              const isLowStock = product.stock > 0 && product.stock <= 10;
-              const isOutOfStock = product.stock <= 0;
-              const displayImage = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-              const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20el%20producto:%20${encodeURIComponent(product.nombre)}`;
+      {/* ── 5. DRAWER LATERAL / SLIDE-OVER EN MÓVIL (< lg) ──────────────── */}
+      {isMobileFilterOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex" role="dialog" aria-modal="true">
+          {/* Backdrop con desenfoque suave */}
+          <div
+            className="fixed inset-0 bg-stone-950/60 backdrop-blur-xs transition-opacity duration-300"
+            onClick={() => setIsMobileFilterOpen(false)}
+            aria-hidden="true"
+          />
 
-              return (
-                <div
-                  key={product.id}
-                  className="group bg-white rounded-xl border border-stone-200/60 overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300"
-                  onMouseEnter={() => setHoveredProduct(product.id)}
-                  onMouseLeave={() => setHoveredProduct(null)}
+          {/* Panel Lateral Deslizable */}
+          <div className="relative w-full max-w-xs sm:max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-300">
+            {/* Cabecera del Drawer */}
+            <div className="px-5 py-4 border-b border-stone-200 flex items-center justify-between bg-stone-50/80">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-brand-gold" />
+                <span className="font-serif font-medium text-stone-900 text-base">Filtros</span>
+                {activeFiltersCount > 0 && (
+                  <span className="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {activeFiltersCount}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMobileFilterOpen(false)}
+                className="p-1.5 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-200/60 transition cursor-pointer"
+                aria-label="Cerrar filtros"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Contenido scrolleable con acordeones */}
+            <div className="flex-1 overflow-y-auto p-5 scrollbar-thin">
+              {FilterContent}
+            </div>
+
+            {/* Barra Inferior Fija de Acción */}
+            <div className="p-4 border-t border-stone-200 bg-stone-50 flex items-center gap-3">
+              {activeFiltersCount > 0 && (
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="px-4 py-3 rounded-full border border-stone-300 text-stone-700 text-xs font-semibold uppercase tracking-wider hover:bg-stone-100 transition active:scale-98"
                 >
-                  {/* BLOQUE 1: Imagen aspect-[4/5] y único badge estratégico */}
-                  <Link href={`/productos/${product.slug}`} className="relative aspect-[4/5] block overflow-hidden bg-stone-100">
-                    <SkeletonImage
-                      src={displayImage ?? ''}
-                      alt={
-                        soap
-                          ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá`
-                          : product.tipo === 'VELA_ENVASE'
-                          ? `Vela en envase ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`
-                          : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`
-                      }
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      priority={idx < 4}
-                    />
-
-                    {/* Único badge estratégico */}
-                    <div className="absolute top-3 left-3 z-10">
-                      {isOutOfStock ? (
-                        <span className="bg-rose-700/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
-                          Agotado
-                        </span>
-                      ) : isLowStock ? (
-                        <span className="bg-amber-600/95 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                          Últimas {product.stock}
-                        </span>
-                      ) : product.esBajoPedido ? (
-                        <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                          Bajo Pedido
-                        </span>
-                      ) : (
-                        <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                          {product.tipo === 'VELA_ENVASE'
-                            ? 'Vela en Envase'
-                            : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
-                            ? 'Vela Esculpida'
-                            : soap
-                            ? 'Jabón Botánico'
-                            : 'Vela Artesanal'}
-                        </span>
-                      )}
-                    </div>
-
-                    {hoveredProduct === product.id && (
-                      <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
-                        <span className="bg-white text-stone-900 text-xs font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2">
-                          <Eye className="w-4 h-4 text-stone-700" /> Ver Detalles
-                        </span>
-                      </div>
-                    )}
-                  </Link>
-
-                  {/* BLOQUES 2, 3 Y 4: Información, Descripción y Compra */}
-                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      {/* BLOQUE 2: Categoría / Aroma + Nombre H3 + Medida / Duración */}
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold font-sans block mb-1">
-                        {product.aroma || (soap ? 'Jabón Botánico' : '100% Cera de Soya')}
-                      </span>
-
-                      <Link href={`/productos/${product.slug}`} className="block group/title">
-                        <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-brown transition duration-200 line-clamp-2 leading-snug">
-                          {product.nombre}
-                        </h3>
-                      </Link>
-
-                      <div className="flex items-center gap-1.5 mt-1.5 text-xs text-stone-500 font-sans">
-                        <span>{product.dimensiones || '220g · 45h de combustión'}</span>
-                        <span>•</span>
-                        <span>{product.material || 'Cera 100% Vegetal'}</span>
-                      </div>
-
-                      {/* BLOQUE 3: Descripción corta limitada a 2 líneas */}
-                      <p className="text-xs text-stone-500 mt-2.5 line-clamp-2 leading-relaxed font-light font-sans">
-                        {product.descripcion ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : ''}
-                      </p>
-                    </div>
-
-                    {/* BLOQUE 4: Precio y botones alineados al fondo (mt-auto) */}
-                    <div className="mt-4 sm:mt-5 pt-3.5 sm:pt-4 border-t border-stone-100 font-sans">
-                      <div className="flex justify-between items-center mb-3">
-                        {product.esBajoPedido ? (
-                          <span className="text-xs font-semibold text-brand-brown uppercase tracking-wider">Bajo Pedido</span>
-                        ) : (
-                          <span className="font-serif font-semibold text-brand-brown text-base sm:text-lg">
-                            ${product.precio?.toLocaleString('es-CO')} COP
-                          </span>
-                        )}
-                        {!product.esBajoPedido && (
-                          isOutOfStock ? (
-                            <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider">Agotado</span>
-                          ) : isLowStock ? (
-                            <span className="text-[10px] text-amber-600 font-medium uppercase tracking-wider">Últimas {product.stock}</span>
-                          ) : (
-                            <span className="text-[10px] text-stone-600 font-medium uppercase tracking-wider">En Stock</span>
-                          )
-                        )}
-                      </div>
-
-                      {product.esBajoPedido ? (
-                        <a
-                          href={waLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-medium rounded-full bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-all duration-300 flex items-center justify-center gap-2 active:scale-98 shadow-xs"
-                        >
-                          <MessageCircle className="w-4 h-4 text-amber-700" /> Cotizar por WhatsApp
-                        </a>
-                      ) : (
-                        <div className="grid grid-cols-2 gap-2 mt-2">
-                          <button
-                            onClick={() => handleAddToCart(product)}
-                            disabled={isOutOfStock}
-                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-full border border-brand-brown transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
-                              isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed' : 'bg-white hover:bg-stone-50 text-brand-brown'
-                            }`}
-                          >
-                            Añadir
-                          </button>
-                          <button
-                            onClick={() => handleBuyNow(product)}
-                            disabled={isOutOfStock}
-                            className={`py-3 min-h-[44px] text-center text-xs uppercase tracking-wider font-semibold rounded-full text-white transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
-                              isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed' : 'bg-brand-gold hover:bg-brand-brown'
-                            }`}
-                          >
-                            Comprar
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                  Limpiar
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setIsMobileFilterOpen(false)}
+                className="flex-1 py-3 px-6 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold uppercase tracking-wider transition active:scale-98 text-center shadow-md cursor-pointer"
+              >
+                Ver {filteredAndSortedProducts.length} productos
+              </button>
+            </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
 
       <CartDrawer />
       <Footer />

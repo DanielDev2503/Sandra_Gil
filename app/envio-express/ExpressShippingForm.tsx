@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageCircle, Send, FileText, Receipt, HelpCircle } from 'lucide-react';
+import { MessageCircle, FileText, Receipt, HelpCircle } from 'lucide-react';
 
 const WA_NUMBER = '573175752029';
 
@@ -98,11 +98,11 @@ export default function ExpressShippingForm() {
         href={waUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full min-h-[52px] py-4 px-8 bg-amber-500 hover:bg-amber-400 text-stone-950 text-sm sm:text-base font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-3 active:scale-[0.99] group border border-amber-400/50"
+        className="w-full rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 hover:bg-amber-100 hover:border-amber-400 font-semibold text-xs sm:text-sm tracking-wider uppercase py-4 px-6 flex items-center justify-center gap-2.5 transition-all shadow-sm hover:shadow duration-200 active:scale-98 group cursor-pointer"
       >
-        <MessageCircle className="w-6 h-6 shrink-0 group-hover:scale-110 transition-transform" />
+        <MessageCircle className="w-5 h-5 shrink-0 text-amber-900 group-hover:scale-105 transition-transform" />
         <span>Solicitar Envío Express</span>
-        <Send className="w-4 h-4 shrink-0 opacity-80 group-hover:translate-x-1 transition-transform" />
+
       </a>
     </div>
   );

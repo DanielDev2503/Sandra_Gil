@@ -172,10 +172,10 @@ export default function ExpressShippingPage() {
 
             <Link
               href="/catalogo"
-              className="px-8 py-3.5 min-h-[44px] bg-brand-gold hover:bg-brand-brown text-white text-xs font-bold uppercase tracking-wider rounded-full transition duration-300 inline-flex items-center gap-2 shrink-0 active:scale-98"
+              className="rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 font-medium text-xs sm:text-sm tracking-wider uppercase px-6 sm:px-8 py-3.5 hover:bg-amber-100 hover:border-amber-400 hover:shadow-md transition-all inline-flex items-center justify-center gap-2 shrink-0 active:scale-98 shadow-xs"
             >
               <span>Ver Catálogo</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4 text-amber-950" />
             </Link>
           </div>
         </section>

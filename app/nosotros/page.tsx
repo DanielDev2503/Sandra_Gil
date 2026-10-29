@@ -246,7 +246,7 @@ export default function NosotrosPage() {
                     href="https://wa.me/573175752029?text=Hola%20Sandra,%20estoy%20interesado%20en%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20curso/taller%20did%C3%A1ctico%20de%20velas"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 min-h-[44px] bg-amber-500 hover:bg-amber-400 active:scale-98 text-stone-950 text-xs sm:text-sm uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-lg border border-amber-400/50"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 min-h-[44px] rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 font-medium text-xs sm:text-sm tracking-wider uppercase hover:bg-amber-100 hover:border-amber-400 hover:shadow-md transition-all duration-200 active:scale-98 shadow-sm group"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -254,7 +254,7 @@ export default function NosotrosPage() {
                       height="20"
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      className="w-5 h-5 shrink-0 text-stone-950"
+                      className="w-5 h-5 shrink-0 text-amber-900 group-hover:scale-105 transition-transform"
                     >
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                       <path d="M11.999 2.001C6.476 2.001 2.001 6.476 2.001 12c0 1.763.463 3.414 1.272 4.848L2 22l5.306-1.243A9.954 9.954 0 0 0 12 22c5.523 0 9.999-4.477 9.999-10S17.523 2.001 12 2.001zm0 1.8A8.197 8.197 0 0 1 20.2 12c0 4.52-3.678 8.2-8.2 8.2a8.163 8.163 0 0 1-4.167-1.137l-.299-.181-3.101.727.766-2.999-.197-.31A8.163 8.163 0 0 1 3.8 12C3.8 7.48 7.478 3.8 12 3.8z" />

@@ -11,7 +11,6 @@ import {
   MessageCircle,
   X,
   SlidersHorizontal,
-  ArrowUpDown,
   ChevronDown,
   RotateCcw,
   Search,
@@ -19,6 +18,7 @@ import {
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SkeletonImage from '@/components/SkeletonImage';
+import { AROMAS } from '@/lib/aromas';
 
 const WA_NUMBER = '573175752029';
 
@@ -94,12 +94,250 @@ const CATEGORY_DEFINITIONS = [
   { id: 'JABON', label: 'Jabones Artesanales' },
 ] as const;
 
-export default function CatalogShell({ products }: CatalogShellProps) {
+interface CatalogProductCardProps {
+  product: Product;
+  priority?: boolean;
+}
+
+/**
+ * Tarjeta de producto de altura compacta con selector de aroma inline
+ */
+function CatalogProductCard({ product, priority = false }: CatalogProductCardProps) {
   const { addToCart, clearCart } = useCart();
+  const router = useRouter();
+  const [hovered, setHovered] = useState(false);
+
+  // Inicializar aroma: buscar coincidencia con los 28 aromas oficiales o usar el aroma registrado
+  const initialAroma = useMemo(() => {
+    if (product.aroma) {
+      const trimmed = product.aroma.trim();
+      const match = AROMAS.find((a) => a.toLowerCase() === trimmed.toLowerCase());
+      if (match) return match;
+      return trimmed;
+    }
+    return '';
+  }, [product.aroma]);
+
+  const [selectedAroma, setSelectedAroma] = useState<string>(initialAroma);
+
+  const soap = isSoapProduct(product);
+  const isOutOfStock = product.stock <= 0;
+  const isLowStock = product.stock > 0 && product.stock <= 10;
+  const displayImage =
+    product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
+
+  // Enlace dinámico de WhatsApp para productos bajo pedido con el aroma seleccionado
+  const waAromaSuffix = selectedAroma ? ` con aroma: ${selectedAroma}` : '';
+  const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
+    `Hola Sandra, quisiera cotizar la vela personalizada: ${product.nombre}${waAromaSuffix}`
+  )}`;
+
+  // Añadir al carrito con el aroma seleccionado
+  const handleAddToCart = () => {
+    const effectiveAroma = selectedAroma || AROMAS[0];
+    if (!selectedAroma) {
+      setSelectedAroma(effectiveAroma);
+    }
+    addToCart(
+      {
+        ...product,
+        url_imagen: displayImage,
+        aroma: effectiveAroma,
+      },
+      1,
+      effectiveAroma
+    );
+  };
+
+  // Compra rápida directa
+  const handleBuyNow = () => {
+    clearCart();
+    const effectiveAroma = selectedAroma || AROMAS[0];
+    if (!selectedAroma) {
+      setSelectedAroma(effectiveAroma);
+    }
+    addToCart(
+      {
+        ...product,
+        url_imagen: displayImage,
+        aroma: effectiveAroma,
+      },
+      1,
+      effectiveAroma
+    );
+    router.push('/checkout');
+  };
+
+  return (
+    <div
+      className="group bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div>
+        {/* 1. Imagen con relación aspect-[4/3] (cero deformación) y badge superior */}
+        <Link
+          href={`/productos/${product.slug}`}
+          className="relative aspect-[4/3] w-full block overflow-hidden bg-stone-100 rounded-t-xl"
+        >
+          <SkeletonImage
+            src={displayImage ?? ''}
+            alt={product.nombre}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={priority}
+          />
+
+          {/* Badge de estado / tipo */}
+          <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+            {isOutOfStock ? (
+              <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                Agotado
+              </span>
+            ) : isLowStock ? (
+              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                Últimas {product.stock}
+              </span>
+            ) : product.esBajoPedido ? (
+              <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                Bajo Pedido
+              </span>
+            ) : (
+              <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                {product.tipo === 'VELA_ENVASE'
+                  ? 'Vela en Envase'
+                  : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
+                  ? 'Vela Esculpida'
+                  : soap
+                  ? 'Jabón Botánico'
+                  : 'Vela Artesanal'}
+              </span>
+            )}
+          </div>
+
+          {/* Overlay sutil de hover */}
+          {hovered && (
+            <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
+              <span className="bg-white text-stone-900 text-xs font-semibold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
+                <Eye className="w-3.5 h-3.5 text-stone-700" /> Ver Detalles
+              </span>
+            </div>
+          )}
+        </Link>
+
+        {/* 2. Cuerpo de la tarjeta depurado: Título y Selector de Aroma */}
+        <div className="p-3.5 sm:p-4 pb-2">
+          {/* Título en una línea sin estiramientos */}
+          <Link href={`/productos/${product.slug}`} className="block group/title">
+            <h3 className="font-serif text-sm sm:text-base font-normal text-stone-900 truncate mb-2 group-hover/title:text-brand-brown transition duration-200">
+              {product.nombre}
+            </h3>
+          </Link>
+
+          {/* Selector de Aroma Inline Compacto */}
+          <div className="mb-1">
+            <label htmlFor={`aroma-${product.id}`} className="sr-only">
+              Selecciona Aroma
+            </label>
+            <select
+              id={`aroma-${product.id}`}
+              value={selectedAroma}
+              onChange={(e) => setSelectedAroma(e.target.value)}
+              className="w-full text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1.5 px-3 text-stone-700 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors cursor-pointer truncate"
+            >
+              <option value="" disabled>
+                Selecciona un aroma (28 disponibles)...
+              </option>
+              {initialAroma && !AROMAS.some((a) => a.toLowerCase() === initialAroma.toLowerCase()) && (
+                <option value={initialAroma}>{initialAroma}</option>
+              )}
+              {AROMAS.map((aroma) => (
+                <option key={aroma} value={aroma}>
+                  {aroma.charAt(0).toUpperCase() + aroma.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Fila de Precio y Botones Ovalados */}
+      <div className="p-3.5 sm:p-4 pt-0 font-sans">
+        <div className="pt-2 border-t border-stone-100 flex justify-between items-center mb-2.5">
+          {product.esBajoPedido ? (
+            <span className="text-xs font-semibold text-brand-brown uppercase tracking-wider">
+              Bajo Pedido
+            </span>
+          ) : (
+            <span className="font-serif font-semibold text-brand-brown text-sm sm:text-base">
+              ${product.precio?.toLocaleString('es-CO')} COP
+            </span>
+          )}
+
+          {!product.esBajoPedido && (
+            isOutOfStock ? (
+              <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider">
+                Agotado
+              </span>
+            ) : isLowStock ? (
+              <span className="text-[10px] text-amber-600 font-medium uppercase tracking-wider">
+                Últimas {product.stock}
+              </span>
+            ) : (
+              <span className="text-[10px] text-stone-500 font-medium uppercase tracking-wider">
+                En Stock
+              </span>
+            )
+          )}
+        </div>
+
+        {product.esBajoPedido ? (
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2 px-3 text-center text-xs font-medium rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 hover:bg-amber-100 transition-all duration-200 flex items-center justify-center gap-1.5 shadow-2xs hover:shadow-xs cursor-pointer active:scale-98"
+          >
+            <MessageCircle className="w-4 h-4 text-amber-800 shrink-0" />
+            <span>Cotiza por WhatsApp</span>
+          </a>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={isOutOfStock}
+              className={`py-2 px-3 text-center text-xs font-medium rounded-full border border-stone-300 text-stone-800 hover:bg-stone-100 transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
+                isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+              }`}
+            >
+              Añadir
+            </button>
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              disabled={isOutOfStock}
+              className={`py-2 px-3 text-center text-xs font-medium rounded-full bg-stone-900 text-white hover:bg-stone-800 transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
+                isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+              }`}
+            >
+              Comprar
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function CatalogShell({ products }: CatalogShellProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -386,25 +624,6 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     sortOrder,
   ]);
 
-  // Acciones de compra
-  const handleAddToCart = (product: Product) => {
-    const displayImage =
-      product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-    const defaultAroma =
-      product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
-    addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
-  };
-
-  const handleBuyNow = (product: Product) => {
-    clearCart();
-    const displayImage =
-      product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-    const defaultAroma =
-      product.aroma || (isSoapProduct(product) || product.tipo === 'JABON' ? null : 'Lavanda & Manzanilla');
-    addToCart({ ...product, url_imagen: displayImage, aroma: defaultAroma }, 1, defaultAroma || undefined);
-    router.push('/checkout');
-  };
-
   // ── 4. COMPONENTE DE CONTENIDO DE FILTROS (REUTILIZABLE DESKTOP Y MÓVIL) ──
   const FilterContent = (
     <div className="space-y-6 text-stone-800">
@@ -521,7 +740,6 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
         {openSections.precio && (
           <div className="mt-3 space-y-3 pt-1">
-            {/* Display de valor actual */}
             <div className="flex items-center justify-between text-xs text-stone-600 font-mono">
               <span className="px-2 py-1 bg-stone-100 rounded border border-stone-200">
                 ${priceRange[0].toLocaleString('es-CO')}
@@ -532,7 +750,6 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               </span>
             </div>
 
-            {/* Slider continuo */}
             <input
               type="range"
               min={minPriceAbsolute}
@@ -880,182 +1097,13 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-                {filteredAndSortedProducts.map((product, idx) => {
-                  const soap = isSoapProduct(product);
-                  const isLowStock = product.stock > 0 && product.stock <= 10;
-                  const isOutOfStock = product.stock <= 0;
-                  const displayImage =
-                    product.imagenes && product.imagenes.length > 0
-                      ? product.imagenes[0]
-                      : product.url_imagen;
-                  const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20el%20producto:%20${encodeURIComponent(product.nombre)}`;
-
-                  return (
-                    <div
-                      key={product.id}
-                      className="group bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300"
-                      onMouseEnter={() => setHoveredProduct(product.id)}
-                      onMouseLeave={() => setHoveredProduct(null)}
-                    >
-                      <div>
-                        {/* 1. Imagen con relación aspect-[4/5] y badge estratégico */}
-                        <Link
-                          href={`/productos/${product.slug}`}
-                          className="relative aspect-[4/5] block overflow-hidden bg-stone-100"
-                        >
-                          <SkeletonImage
-                            src={displayImage ?? ''}
-                            alt={
-                              soap
-                                ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Bogotá`
-                                : product.tipo === 'VELA_ENVASE'
-                                ? `Vela en envase ${product.nombre} cera de soya Sandra Gil - Bogotá`
-                                : `Vela artesanal ${product.nombre} cera de soya Sandra Gil - Bogotá`
-                            }
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            priority={idx < 4}
-                          />
-
-                          {/* Badge de estado / categoría */}
-                          <div className="absolute top-3 left-3 z-10">
-                            {isOutOfStock ? (
-                              <span className="bg-rose-700/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
-                                Agotado
-                              </span>
-                            ) : isLowStock ? (
-                              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                                Últimas {product.stock}
-                              </span>
-                            ) : product.esBajoPedido ? (
-                              <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                                Bajo Pedido
-                              </span>
-                            ) : (
-                              <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                                {product.tipo === 'VELA_ENVASE'
-                                  ? 'Vela en Envase'
-                                  : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
-                                  ? 'Vela Esculpida'
-                                  : soap
-                                  ? 'Jabón Botánico'
-                                  : 'Vela Artesanal'}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Overlay de hover "Ver Detalles" */}
-                          {hoveredProduct === product.id && (
-                            <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
-                              <span className="bg-white text-stone-900 text-xs font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2">
-                                <Eye className="w-4 h-4 text-stone-700" /> Ver Detalles
-                              </span>
-                            </div>
-                          )}
-                        </Link>
-
-                        {/* 2. Información del producto */}
-                        <div className="p-4 sm:p-5">
-                          <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold font-sans block mb-1">
-                            {product.aroma || (soap ? 'Jabón Botánico' : '100% Cera de Soya')}
-                          </span>
-
-                          <Link href={`/productos/${product.slug}`} className="block group/title">
-                            <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg group-hover/title:text-brand-brown transition duration-200 line-clamp-2 leading-snug">
-                              {product.nombre}
-                            </h3>
-                          </Link>
-
-                          <div className="flex items-center gap-1.5 mt-1.5 text-xs text-stone-500 font-sans">
-                            <span>{product.dimensiones || '220g · 45h de combustión'}</span>
-                            <span>•</span>
-                            <span>{product.material || 'Cera 100% Vegetal'}</span>
-                          </div>
-
-                          <p className="text-xs text-stone-500 mt-2 line-clamp-2 leading-relaxed font-light font-sans">
-                            {product.descripcion
-                              ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-                              : ''}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* 3. Precios y Botones de Compra */}
-                      <div className="p-4 sm:p-5 pt-0 font-sans">
-                        <div className="pt-3 border-t border-stone-100 flex justify-between items-center mb-3">
-                          {product.esBajoPedido ? (
-                            <span className="text-xs font-semibold text-brand-brown uppercase tracking-wider">
-                              Bajo Pedido
-                            </span>
-                          ) : (
-                            <span className="font-serif font-semibold text-brand-brown text-base sm:text-lg">
-                              ${product.precio?.toLocaleString('es-CO')} COP
-                            </span>
-                          )}
-
-                          {!product.esBajoPedido && (
-                            isOutOfStock ? (
-                              <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider">
-                                Agotado
-                              </span>
-                            ) : isLowStock ? (
-                              <span className="text-[10px] text-amber-600 font-medium uppercase tracking-wider">
-                                Últimas {product.stock}
-                              </span>
-                            ) : (
-                              <span className="text-[10px] text-stone-600 font-medium uppercase tracking-wider">
-                                En Stock
-                              </span>
-                            )
-                          )}
-                        </div>
-
-                        {product.esBajoPedido ? (
-                          <a
-                            href={waLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full py-2.5 px-3 text-center text-xs uppercase tracking-wider font-medium rounded-full bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs hover:shadow-md cursor-pointer active:scale-98"
-                          >
-                            <MessageCircle className="w-4 h-4 text-amber-700" />
-                            <span>Cotiza por WhatsApp</span>
-                          </a>
-                        ) : (
-                          <div className="grid grid-cols-2 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => handleAddToCart(product)}
-                              disabled={isOutOfStock}
-                              className={`py-2.5 min-h-[40px] text-center text-xs uppercase tracking-wider font-semibold rounded-full border border-brand-brown transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
-                                isOutOfStock
-                                  ? 'border-stone-200 text-stone-400 cursor-not-allowed'
-                                  : 'bg-white hover:bg-stone-50 text-brand-brown'
-                              }`}
-                            >
-                              Añadir
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleBuyNow(product)}
-                              disabled={isOutOfStock}
-                              className={`py-2.5 min-h-[40px] text-center text-xs uppercase tracking-wider font-semibold rounded-full text-white transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 ${
-                                isOutOfStock
-                                  ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
-                                  : 'bg-brand-gold hover:bg-brand-brown'
-                              }`}
-                            >
-                              Comprar
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                {filteredAndSortedProducts.map((product, idx) => (
+                  <CatalogProductCard
+                    key={product.id}
+                    product={product}
+                    priority={idx < 4}
+                  />
+                ))}
               </div>
             )}
           </main>

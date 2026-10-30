@@ -402,23 +402,26 @@ export default function ProductDetailShell({
                 </div>
               ) : null}
 
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3">
+              {/* Badge de Material en su propia línea superior */}
+              {!isSoap && product.material && (
+                <div className="mt-3 mb-2">
+                  <span className="inline-block text-[11px] uppercase tracking-wider font-medium text-stone-600 bg-stone-100/80 border border-stone-200/60 rounded-full px-3 py-0.5">
+                    {product.material}
+                  </span>
+                </div>
+              )}
+
+              {/* Fila del Precio aislada con jerarquía visual dominante */}
+              <div className="mb-3">
                 {isBajoPedido ? (
-                  <div className="inline-flex items-center gap-2 bg-amber-50/80 border border-amber-300/80 px-3.5 py-1.5 rounded-full">
+                  <div className="inline-flex items-center gap-2 bg-amber-50/80 border border-amber-300/80 px-4 py-2 rounded-full">
                     <MessageCircle className="w-4 h-4 text-amber-700 shrink-0" />
                     <span className="text-xs sm:text-sm font-semibold text-amber-900 font-sans">Elaboración Bajo Pedido</span>
                   </div>
                 ) : (
-                  <p className="text-xl sm:text-2xl font-serif font-semibold text-brand-brown transition-all duration-300">
+                  <p className="text-3xl sm:text-4xl font-serif font-light text-stone-900 tracking-tight transition-all duration-300">
                     ${activePrice?.toLocaleString('es-CO')} COP
                   </p>
-                )}
-
-                {/* Show material badge if present AND not a soap */}
-                {!isSoap && product.material && (
-                  <div className="bg-brand-brown/80 text-[#FAF8F5] px-3 py-0.5 rounded-full text-[9px] uppercase tracking-widest font-sans">
-                    {product.material}
-                  </div>
                 )}
               </div>
 
@@ -455,83 +458,65 @@ export default function ProductDetailShell({
                   <span>Selecciona tu Variación:</span>
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {/* Base product option */}
+                <div className="flex flex-wrap gap-3 my-3">
+                  {/* Opción Base */}
                   <button
                     type="button"
                     onClick={() => setSelectedVariation(null)}
-                    className={`
-                      inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-medium
-                      border transition-all duration-250 cursor-pointer min-h-[46px] text-left
-                      hover:scale-[1.01] active:scale-[0.98]
-                      ${!selectedVariation
-                        ? 'border-[#B88A32] text-[#B88A32] bg-[#FAF8F5] shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
-                        : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
-                      }
-                    `}
-                    aria-pressed={!selectedVariation}
-                    aria-label={`Seleccionar variación ${product.nombre}`}
+                    aria-label={`Seleccionar variación: Edición Base (${product.nombre})`}
+                    title={`Edición Base (${product.nombre})`}
+                    className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 group focus:outline-none cursor-pointer ${
+                      !selectedVariation
+                        ? 'border-stone-900 ring-2 ring-stone-900/20 shadow-md scale-105'
+                        : 'border-stone-200/90 hover:border-amber-400 hover:scale-[1.02] opacity-80 hover:opacity-100'
+                    }`}
                   >
-                    {/* Product thumbnail */}
-                    <span className="relative w-8 h-8 rounded-lg overflow-hidden border border-amber-900/10 shrink-0">
-                      <SkeletonImage
-                        src={product.imagenes?.[0] || product.url_imagen}
-                        alt={isSoap ? `Jabón artesanal ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
-                        className="object-cover"
-                        sizes="32px"
-                      />
-                    </span>
-                    {!selectedVariation && <Check className="w-3.5 h-3.5 shrink-0 text-[#B88A32]" />}
-                    <span className="flex-1 font-medium leading-tight">Edición Base ({product.nombre})</span>
-                    {product.precio !== null && (
-                      <span className="text-[10px] opacity-75 font-semibold shrink-0">${product.precio.toLocaleString('es-CO')}</span>
+                    <img
+                      src={product.imagenes?.[0] || product.url_imagen || '/logo-sandra.png'}
+                      alt={`Edición Base ${product.nombre}`}
+                      className="w-full h-full object-cover"
+                    />
+                    {!selectedVariation && (
+                      <div className="absolute inset-0 bg-stone-950/10 pointer-events-none" />
                     )}
                   </button>
 
-                  {variaciones.map((v) => {
-                    const isActive = selectedVariation?.id === v.id;
-                    const displayPrice = v.precio ?? product.precio;
+                  {variaciones.map((variant) => {
+                    const isSelected = selectedVariation?.id === variant.id;
                     return (
                       <button
-                        key={v.id}
+                        key={variant.id}
                         type="button"
-                        onClick={() => setSelectedVariation(v)}
-                        className={`
-                          inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-medium
-                          border transition-all duration-250 cursor-pointer min-h-[46px] text-left
-                          hover:scale-[1.01] active:scale-[0.98]
-                          ${isActive
-                            ? 'border-[#B88A32] text-[#B88A32] bg-amber-50 shadow-sm font-semibold ring-1 ring-[#B88A32]/30'
-                            : 'border-stone-200 text-stone-600 bg-white hover:border-[#B88A32]/50 hover:text-[#B88A32] hover:bg-amber-50/40'
-                          }
-                        `}
-                        aria-pressed={isActive}
-                        aria-label={`Seleccionar variación ${v.nombre}`}
+                        onClick={() => setSelectedVariation(variant)}
+                        aria-label={`Seleccionar variación: ${variant.nombre}`}
+                        title={variant.nombre}
+                        className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 group focus:outline-none cursor-pointer ${
+                          isSelected
+                            ? 'border-stone-900 ring-2 ring-stone-900/20 shadow-md scale-105'
+                            : 'border-stone-200/90 hover:border-amber-400 hover:scale-[1.02] opacity-80 hover:opacity-100'
+                        }`}
                       >
-                        {/* Variation thumbnail */}
-                        <span className="relative w-8 h-8 rounded-lg overflow-hidden border border-stone-200/60 shrink-0">
-                          <SkeletonImage
-                            src={v.imagen}
-                            alt={isSoap ? `Variación ${v.nombre} de jabón ${product.nombre} Sandra Gil - Taller Bogotá` : `Variación ${v.nombre} de vela artesanal ${product.nombre} en cera de soya Sandra Gil - Taller Bogotá`}
-                            className="object-cover"
-                            sizes="32px"
-                          />
-                        </span>
-                        {isActive && <Check className="w-3.5 h-3.5 shrink-0 text-[#B88A32]" />}
-                        <span className="flex-1 font-medium leading-tight">{v.nombre}</span>
-                        {displayPrice !== null && (
-                          <span className="text-[10px] opacity-75 font-semibold shrink-0">${displayPrice.toLocaleString('es-CO')}</span>
+                        <img
+                          src={variant.imagen}
+                          alt={variant.nombre}
+                          className="w-full h-full object-cover"
+                        />
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-stone-950/10 pointer-events-none" />
                         )}
                       </button>
                     );
                   })}
                 </div>
 
-                {selectedVariation && (
-                  <p className="text-[10px] text-stone-400 font-sans leading-relaxed pt-0.5">
-                    ✓ Variación seleccionada: <span className="text-[#B88A32] font-semibold">{selectedVariation.nombre}</span>
-                  </p>
-                )}
+                {/* Preservar la confirmación textual inferior */}
+                <p className="text-xs text-stone-600 mt-2 flex items-center gap-1.5 font-light">
+                  <span className="text-amber-600 font-medium">✓</span>
+                  <span>Variación seleccionada:</span>
+                  <strong className="font-medium text-stone-900">
+                    {selectedVariation ? selectedVariation.nombre : `Edición Base (${product.nombre})`}
+                  </strong>
+                </p>
               </div>
             )}
 

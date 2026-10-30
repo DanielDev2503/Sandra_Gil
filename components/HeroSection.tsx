@@ -7,6 +7,10 @@ import { motion } from 'motion/react';
 import { Sparkles, Leaf, Flame, ShieldCheck, ArrowRight } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 import SkeletonImage from './SkeletonImage';
+import { BANNERS_DATA, type BannerSlide } from './HeroBannerCarousel';
+
+export { BANNERS_DATA, BANNERS_DATA as HERO_SLIDES, type BannerSlide };
+export { default as HeroBannerCarousel } from './HeroBannerCarousel';
 
 interface Product {
   id: string;

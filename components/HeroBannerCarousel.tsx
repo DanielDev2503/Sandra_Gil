@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
 
@@ -11,8 +12,8 @@ export interface BannerSlide {
   subtitulo: string;
   ctaText: string;
   enlace: string;
-  desktopSrc: string; // ej: '/banners/desktop/banner-todos-los-prods.webp'
-  mobileSrc: string;  // ej: '/banners/mobile/banner-todos-los-prods.webp'
+  desktopSrc: string; // ej: '/banners/desktop/banner con todos los prods.png'
+  mobileSrc: string;  // ej: '/banners/mobile/banner con todos los prods.png'
   alt: string;
 }
 
@@ -24,8 +25,8 @@ export const BANNERS_DATA: BannerSlide[] = [
     subtitulo: 'Aromaterapia pura vertida a mano en Bogotá',
     ctaText: 'Explorar Catálogo',
     enlace: '/catalogo',
-    desktopSrc: '/banners/desktop/banner-todos-los-prods.webp',
-    mobileSrc: '/banners/mobile/banner-todos-los-prods.webp',
+    desktopSrc: '/banners/desktop/banner con todos los prods.png',
+    mobileSrc: '/banners/mobile/banner con todos los prods.png',
     alt: 'Colección completa de velas artesanales y botánicas Sandra Gil Bogotá',
   },
   {
@@ -35,8 +36,8 @@ export const BANNERS_DATA: BannerSlide[] = [
     subtitulo: 'Diseños de molde decorativos para elevar tus espacios',
     ctaText: 'Ver detalles',
     enlace: '/catalogo?tipo=VELA_ESCULPIDA',
-    desktopSrc: '/banners/desktop/banner-velas-esculpidas.webp',
-    mobileSrc: '/banners/mobile/banner-velas-esculpidas.webp',
+    desktopSrc: '/banners/desktop/banner velas esculpidas.png',
+    mobileSrc: '/banners/mobile/banner velas esculpidas.png',
     alt: 'Velas artesanales esculpidas de cera de soya Sandra Gil Bogotá',
   },
   {
@@ -46,8 +47,8 @@ export const BANNERS_DATA: BannerSlide[] = [
     subtitulo: 'Contenedores reutilizables con aromas envolventes',
     ctaText: 'Ver detalles',
     enlace: '/catalogo?tipo=VELA_ENVASE',
-    desktopSrc: '/banners/desktop/banner-velas-envase.webp',
-    mobileSrc: '/banners/mobile/banner-velas-envase.webp',
+    desktopSrc: '/banners/desktop/banner velas envase.jpg',
+    mobileSrc: '/banners/mobile/banner velas envase.jpg',
     alt: 'Velas aromáticas en envase artesanal de cera de soya',
   },
   {
@@ -57,8 +58,8 @@ export const BANNERS_DATA: BannerSlide[] = [
     subtitulo: 'Cuidado botánico natural para tu piel',
     ctaText: 'Ver detalles',
     enlace: '/catalogo?tipo=JABON',
-    desktopSrc: '/banners/desktop/banner-jabones-artesanales.webp',
-    mobileSrc: '/banners/mobile/banner-jabones-artesanales.webp',
+    desktopSrc: '/banners/desktop/banner jabones artesalanes.png',
+    mobileSrc: '/banners/mobile/banner jabones artesalanes.png',
     alt: 'Jabones artesanales naturales Sandra Gil Bogotá',
   },
   {
@@ -68,8 +69,8 @@ export const BANNERS_DATA: BannerSlide[] = [
     subtitulo: 'Detalles exclusivos para eventos y ocasiones especiales',
     ctaText: 'Cotizar Personalizadas',
     enlace: '/personalizadas',
-    desktopSrc: '/banners/desktop/banner-velas-bajo-pedido.webp',
-    mobileSrc: '/banners/mobile/banner-velas-bajo-pedido.webp',
+    desktopSrc: '/banners/desktop/banner velas bajo pedido.png',
+    mobileSrc: '/banners/mobile/banner velas bajo pedido.png',
     alt: 'Velas personalizadas bajo pedido para eventos especiales en Bogotá',
   },
 ];
@@ -77,11 +78,10 @@ export const BANNERS_DATA: BannerSlide[] = [
 const AUTOPLAY_DURATION = 5500; // 5.5s por slide
 
 /**
- * Subcomponente de imagen responsiva con Art Direction nativa:
- * En pantallas >= 768px (Desktop/Tablet) consume la versión panorámica (1920x650).
- * En pantallas < 768px (Mobile) consume la versión cuadrada (800x800).
- * Utiliza el estándar W3C <picture> con <source media="..."> para que el navegador
- * descargue únicamente la versión adecuada según el viewport, protegiendo Core Web Vitals (LCP y datos móviles).
+ * Subcomponente de imagen responsiva con Art Direction nativa de Next.js:
+ * En pantallas >= 768px (Desktop/Tablet) consume la versión panorámica (1920x500).
+ * En pantallas < 768px (Mobile) consume la versión móvil (800x600).
+ * Utiliza next/image con fill, priority en el primer slide y background cálido de respaldo.
  */
 function ResponsiveBannerImage({
   slide,
@@ -90,29 +90,35 @@ function ResponsiveBannerImage({
   slide: BannerSlide;
   isFirst: boolean;
 }) {
+  const encodedDesktop = encodeURI(slide.desktopSrc);
+  const encodedMobile = encodeURI(slide.mobileSrc);
+
   return (
-    <picture className="block relative w-full h-full">
-      {/* Desktop: Pantallas medianas y grandes (>= 768px) -> 1920x650 */}
-      <source media="(min-width: 768px)" srcSet={slide.desktopSrc} />
-      {/* Mobile: Pantallas pequeñas (< 768px) -> 800x800 cuadrado */}
-      <source media="(max-width: 767px)" srcSet={slide.mobileSrc} />
-      <img
-        src={slide.desktopSrc}
-        alt={slide.alt}
-        loading={isFirst ? 'eager' : 'lazy'}
-        fetchPriority={isFirst ? 'high' : 'auto'}
-        decoding="async"
-        className="w-full h-full object-cover object-center transition-transform duration-1000 ease-out group-hover/slide:scale-[1.02]"
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-          inset: 0,
-          objectFit: 'cover',
-          objectPosition: 'center',
-        }}
-      />
-    </picture>
+    <div className="relative w-full h-full overflow-hidden bg-[#FAF8F5] bg-stone-100">
+      {/* Mobile view (< 768px): Formato móvil calibrado */}
+      <div className="relative w-full h-full md:hidden">
+        <Image
+          src={encodedMobile}
+          alt={slide.alt}
+          fill
+          priority={isFirst}
+          sizes="(max-width: 767px) 100vw, 800px"
+          className="object-cover object-center w-full h-full transition-transform duration-1000 ease-out group-hover/slide:scale-[1.02]"
+        />
+      </div>
+
+      {/* Desktop view (>= 768px): Formato panorámico */}
+      <div className="relative w-full h-full hidden md:block">
+        <Image
+          src={encodedDesktop}
+          alt={slide.alt}
+          fill
+          priority={isFirst}
+          sizes="(min-width: 768px) 100vw, 1920px"
+          className="object-cover object-center w-full h-full transition-transform duration-1000 ease-out group-hover/slide:scale-[1.02]"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -215,7 +221,7 @@ export default function HeroBannerCarousel() {
           - Desktop (>= 768px): mayor altura vertical (md:h-[480px] lg:h-[560px] xl:h-[620px] 2xl:h-[650px]) para lucir panorámico sin verse aplastado.
       */}
       <div
-        className="relative w-full aspect-square md:aspect-auto max-h-[520px] md:max-h-none md:h-[480px] lg:h-[560px] xl:h-[620px] 2xl:h-[650px] overflow-hidden select-none"
+        className="relative w-full aspect-square md:aspect-auto max-h-[520px] md:max-h-none md:h-[480px] lg:h-[560px] xl:h-[620px] 2xl:h-[650px] overflow-hidden select-none bg-[#FAF8F5] bg-stone-100"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -237,14 +243,14 @@ export default function HeroBannerCarousel() {
                 aria-roledescription="slide"
                 aria-label={`Slide ${index + 1} de ${totalSlides}: ${slide.titulo}`}
                 aria-hidden={!isActive}
-                className="relative h-full w-full shrink-0 group/slide"
+                className="relative h-full w-full shrink-0 group/slide bg-[#FAF8F5] bg-stone-100"
               >
                 <Link
                   href={slide.enlace}
                   tabIndex={isActive ? 0 : -1}
-                  className="block relative w-full h-full cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+                  className="block relative w-full h-full cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
                 >
-                  {/* Art Direction responsiva: Mobile 800x800 vs Desktop 1920x650 */}
+                  {/* Art Direction responsiva: Mobile 800x600 vs Desktop 1920x500 */}
                   <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
 
                   {/* Sutil viñeta degradada inferior para legibilidad editorial */}

@@ -104,9 +104,6 @@ export default function AromaDropdownSelector({
                 : `Selecciona el Aroma de tu Vela (${aromas.length} disponibles):`}
             </span>
           </span>
-          <span className="text-[11px] font-normal text-stone-400 normal-case hidden sm:inline">
-            Menú desplegable
-          </span>
         </label>
 
         {/* Dropdown Trigger Button */}
@@ -268,8 +265,6 @@ export default function AromaDropdownSelector({
             </div>
           )}
         </div>
-
-
       </div>
     </div>
   );

@@ -7,10 +7,19 @@ import { motion } from 'motion/react';
 import { Sparkles, Leaf, Flame, ShieldCheck, ArrowRight } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 import SkeletonImage from './SkeletonImage';
-import { BANNERS_DATA, type BannerSlide } from './HeroBannerCarousel';
+import HeroBannerCarousel, {
+  BANNERS_DATA,
+  ResponsiveBannerImage,
+  type BannerSlide,
+} from './HeroBannerCarousel';
 
-export { BANNERS_DATA, BANNERS_DATA as HERO_SLIDES, type BannerSlide };
-export { default as HeroBannerCarousel } from './HeroBannerCarousel';
+export {
+  BANNERS_DATA,
+  BANNERS_DATA as HERO_SLIDES,
+  ResponsiveBannerImage,
+  HeroBannerCarousel,
+  type BannerSlide,
+};
 
 interface Product {
   id: string;
@@ -30,7 +39,7 @@ interface Product {
 }
 
 interface HeroSectionProps {
-  heroProduct: Product | null;
+  heroProduct?: Product | null;
 }
 
 const WA_NUMBER = '573175752029';
@@ -42,7 +51,7 @@ const ARTISAN_PILLARS = [
   { icon: ShieldCheck, title: 'Hecho a Mano', subtitle: 'Vertido en Bogotá' },
 ];
 
-export default function HeroSection({ heroProduct }: HeroSectionProps) {
+export default function HeroSection({ heroProduct = null }: HeroSectionProps) {
   const heroImage =
     heroProduct?.imagenes && heroProduct.imagenes.length > 0
       ? heroProduct.imagenes[0]

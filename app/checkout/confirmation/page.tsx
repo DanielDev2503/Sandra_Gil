@@ -249,7 +249,7 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-3.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-center font-semibold text-xs uppercase tracking-widest rounded-full shadow-md transition-all duration-300 flex items-center justify-center gap-2 border border-amber-400/50"
+              className="flex-1 py-3.5 bg-[#B8862D] hover:bg-[#A37424] text-white text-center font-semibold text-xs uppercase tracking-widest rounded-full shadow-md transition-all duration-300 flex items-center justify-center gap-2"
             >
               <MessageSquare className="w-4 h-4" /> Soporte por WhatsApp
             </a>

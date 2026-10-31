@@ -190,31 +190,31 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
           />
 
           {/* Badge de estado / tipo */}
-          <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+          <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 pointer-events-none">
             {isOutOfStock ? (
-              <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
+              <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs">
                 Agotado
               </span>
             ) : isLowStock ? (
-              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
+              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1 sm:gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                 Últimas {product.stock}
               </span>
             ) : product.esBajoPedido ? (
-              <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+              <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-brand-gold shrink-0" />
                 Bajo Pedido
               </span>
             ) : (
-              <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+              <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+                <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-brand-gold shrink-0" />
                 {product.tipo === 'VELA_ENVASE'
                   ? 'Vela en Envase'
                   : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
-                  ? 'Vela Esculpida'
-                  : soap
-                  ? 'Jabón Botánico'
-                  : 'Vela Artesanal'}
+                    ? 'Vela Esculpida'
+                    : soap
+                      ? 'Jabón Botánico'
+                      : 'Vela Artesanal'}
               </span>
             )}
           </div>
@@ -230,10 +230,10 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
         </Link>
 
         {/* 2. Cuerpo de la tarjeta depurado: Título y Selector de Aroma */}
-        <div className="p-3.5 sm:p-4 pb-2">
+        <div className="p-2 sm:p-3.5 pb-1 sm:pb-2">
           {/* Título en una línea sin estiramientos */}
           <Link href={`/productos/${product.slug}`} className="block group/title">
-            <h3 className="font-serif text-sm sm:text-base font-normal text-stone-900 truncate mb-2 group-hover/title:text-brand-brown transition duration-200">
+            <h3 className="font-serif text-xs sm:text-sm font-normal text-stone-900 line-clamp-1 sm:line-clamp-2 mb-1 sm:mb-2 group-hover/title:text-brand-brown transition duration-200">
               {product.nombre}
             </h3>
           </Link>
@@ -247,10 +247,10 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
               id={`aroma-${product.id}`}
               value={selectedAroma}
               onChange={(e) => setSelectedAroma(e.target.value)}
-              className="w-full text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1.5 px-3 text-stone-700 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors cursor-pointer truncate"
+              className="w-full text-[10px] sm:text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1 px-2 sm:py-1.5 sm:px-3 text-stone-700 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors cursor-pointer truncate"
             >
               <option value="" disabled>
-                Selecciona un aroma (28 disponibles)...
+                Aroma (28 disp.)...
               </option>
               {initialAroma && !AROMAS.some((a) => a.toLowerCase() === initialAroma.toLowerCase()) && (
                 <option value={initialAroma}>{initialAroma}</option>
@@ -266,30 +266,30 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
       </div>
 
       {/* 3. Fila de Precio y Botones Ovalados */}
-      <div className="p-3.5 sm:p-4 pt-0 font-sans">
-        <div className="pt-2 border-t border-stone-100 flex justify-between items-center mb-2.5">
+      <div className="p-2 sm:p-3.5 pt-0 font-sans">
+        <div className="pt-1.5 sm:pt-2 border-t border-stone-100 flex justify-between items-center mb-1.5 sm:mb-2.5">
           {product.esBajoPedido ? (
-            <span className="text-xs font-semibold text-brand-brown uppercase tracking-wider">
+            <span className="text-[10px] sm:text-xs font-semibold text-brand-brown uppercase tracking-wider">
               Bajo Pedido
             </span>
           ) : (
-            <span className="font-serif font-semibold text-brand-brown text-sm sm:text-base">
+            <span className="font-serif font-semibold text-brand-brown text-xs sm:text-sm">
               ${product.precio?.toLocaleString('es-CO')} COP
             </span>
           )}
 
           {!product.esBajoPedido && (
             isOutOfStock ? (
-              <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider">
+              <span className="text-[9px] sm:text-[10px] text-red-500 font-bold uppercase tracking-wider">
                 Agotado
               </span>
             ) : isLowStock ? (
-              <span className="text-[10px] text-amber-600 font-medium uppercase tracking-wider">
+              <span className="text-[9px] sm:text-[10px] text-amber-600 font-medium uppercase tracking-wider">
                 Últimas {product.stock}
               </span>
             ) : (
-              <span className="text-[10px] text-stone-500 font-medium uppercase tracking-wider">
-                En Stock
+              <span className="text-[9px] sm:text-[10px] text-stone-500 font-medium uppercase tracking-wider">
+                Stock
               </span>
             )
           )}
@@ -300,18 +300,18 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-2 px-3 text-center text-xs font-medium rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 hover:bg-amber-100 transition-all duration-200 flex items-center justify-center gap-1.5 shadow-2xs hover:shadow-xs cursor-pointer active:scale-98"
+            className="w-full py-1.5 px-3 text-center text-[10px] sm:text-xs font-semibold rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 hover:bg-amber-100 transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs hover:shadow-xs cursor-pointer active:scale-98"
           >
-            <MessageCircle className="w-4 h-4 text-amber-800 shrink-0" />
-            <span>Cotiza por WhatsApp</span>
+            <MessageCircle className="w-3.5 h-3.5 text-amber-800 shrink-0" />
+            <span className="truncate">Cotiza por WhatsApp</span>
           </a>
         ) : (
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
             <button
               type="button"
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`py-2 px-3 text-center text-xs font-medium rounded-full border border-stone-300 text-stone-800 hover:bg-stone-100 transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
+              className={`rounded-full py-1.5 px-3.5 font-semibold text-[10px] sm:text-xs tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-2xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
                 isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
               }`}
             >
@@ -321,7 +321,7 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
               type="button"
               onClick={handleBuyNow}
               disabled={isOutOfStock}
-              className={`py-2 px-3 text-center text-xs font-medium rounded-full bg-stone-900 text-white hover:bg-stone-800 transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
+              className={`rounded-full py-1.5 px-3.5 font-semibold text-[10px] sm:text-xs tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
                 isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
               }`}
             >
@@ -678,9 +678,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               <span className="w-2 h-2 rounded-full bg-brand-gold" />
             )}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                openSections.categoria ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.categoria ? 'rotate-180' : ''
+                }`}
             />
           </div>
         </button>
@@ -731,9 +730,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               <span className="w-2 h-2 rounded-full bg-brand-gold" />
             )}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                openSections.precio ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.precio ? 'rotate-180' : ''
+                }`}
             />
           </div>
         </button>
@@ -797,9 +795,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </span>
               )}
               <ChevronDown
-                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                  openSections.aroma ? 'rotate-180' : ''
-                }`}
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.aroma ? 'rotate-180' : ''
+                  }`}
               />
             </div>
           </button>
@@ -853,9 +850,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </span>
               )}
               <ChevronDown
-                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                  openSections.material ? 'rotate-180' : ''
-                }`}
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.material ? 'rotate-180' : ''
+                  }`}
               />
             </div>
           </button>
@@ -904,9 +900,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           <div className="flex items-center gap-2">
             {sortOrder !== 'relevancia' && <span className="w-2 h-2 rounded-full bg-brand-gold" />}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                openSections.orden ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.orden ? 'rotate-180' : ''
+                }`}
             />
           </div>
         </button>
@@ -1096,7 +1091,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-3">
                 {filteredAndSortedProducts.map((product, idx) => (
                   <CatalogProductCard
                     key={product.id}

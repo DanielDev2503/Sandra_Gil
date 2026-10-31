@@ -15,6 +15,11 @@ export interface BannerSlide {
   desktopSrc: string; // ej: '/banners/desktop/banner con todos los prods.png'
   mobileSrc: string;  // ej: '/banners/mobile/banner con todos los prods.png'
   alt: string;
+  // Compatibilidad con props alternativas
+  imageDesktop?: string;
+  imageMobile?: string;
+  image?: string;
+  title?: string;
 }
 
 export const BANNERS_DATA: BannerSlide[] = [
@@ -79,43 +84,48 @@ const AUTOPLAY_DURATION = 5500; // 5.5s por slide
 
 /**
  * Subcomponente de imagen responsiva con Art Direction nativa de Next.js:
- * En pantallas >= 768px (Desktop/Tablet) consume la versión panorámica (1920x500).
- * En pantallas < 768px (Mobile) consume la versión móvil (800x600).
- * Utiliza next/image con fill, priority en el primer slide y background cálido de respaldo.
+ * En pantallas >= sm (Tablet y Desktop) consume la versión panorámica (1920x500).
+ * En pantallas < sm (Mobile) consume la versión móvil (800x600, proporción 16:9 recortada al foco inferior).
+ * Calibración de object-position:
+ * - Mobile: object-[center_80%] para anclar el tercio inferior (mesa y piezas) y descartar pared/techo.
+ * - Desktop: object-center para un encuadre panorámico balanceado.
  */
-function ResponsiveBannerImage({
+export function ResponsiveBannerImage({
   slide,
-  isFirst,
+  isFirst = false,
 }: {
   slide: BannerSlide;
-  isFirst: boolean;
+  isFirst?: boolean;
 }) {
-  const encodedDesktop = encodeURI(slide.desktopSrc);
-  const encodedMobile = encodeURI(slide.mobileSrc);
+  const desktopSource = slide.desktopSrc || slide.imageDesktop || slide.image || '';
+  const mobileSource = slide.mobileSrc || slide.imageMobile || slide.image || desktopSource;
+  const encodedDesktop = encodeURI(desktopSource);
+  const encodedMobile = encodeURI(mobileSource);
+  const altText = slide.alt || slide.title || slide.titulo;
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#FAF8F5] bg-stone-100">
-      {/* Mobile view (< 768px): Formato móvil calibrado */}
-      <div className="relative w-full h-full md:hidden">
+      {/* Imagen para Celular (< sm): enfoque inferior al 80% para priorizar productos y mesa */}
+      <div className="block sm:hidden absolute inset-0">
         <Image
           src={encodedMobile}
-          alt={slide.alt}
+          alt={altText}
           fill
           priority={isFirst}
-          sizes="(max-width: 767px) 100vw, 800px"
-          className="object-cover object-center w-full h-full transition-transform duration-1000 ease-out group-hover/slide:scale-[1.02]"
+          sizes="100vw"
+          className="object-cover object-[center_80%] w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
         />
       </div>
 
-      {/* Desktop view (>= 768px): Formato panorámico */}
-      <div className="relative w-full h-full hidden md:block">
+      {/* Imagen para Tablet y PC (sm:): 1920x500 panorámica con enfoque centrado */}
+      <div className="hidden sm:block absolute inset-0">
         <Image
           src={encodedDesktop}
-          alt={slide.alt}
+          alt={altText}
           fill
           priority={isFirst}
-          sizes="(min-width: 768px) 100vw, 1920px"
-          className="object-cover object-center w-full h-full transition-transform duration-1000 ease-out group-hover/slide:scale-[1.02]"
+          sizes="100vw"
+          className="object-cover object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
         />
       </div>
     </div>
@@ -216,12 +226,13 @@ export default function HeroBannerCarousel() {
         Sandra Gil | Velas Decorativas y Aromáticas de Cera de Soya en Bogotá - Catálogo y Colecciones
       </h1>
 
-      {/* Contenedor responsivo calibrado:
-          - Mobile (< 768px): aspect-square max-h-[520px] (1:1 nativo para banner 800x800 sin recortes).
-          - Desktop (>= 768px): mayor altura vertical (md:h-[480px] lg:h-[560px] xl:h-[620px] 2xl:h-[650px]) para lucir panorámico sin verse aplastado.
+      {/* Contenedor responsivo con relación de aspecto fluida anti-CLS:
+          - Mobile (< sm): aspect-[16/9] (altura contenida de ~215px a 225px).
+          - Tablet (sm:): sm:aspect-[16/6] (proporción intermedia balanceada).
+          - Desktop (lg:): lg:aspect-[1920/500] (proporción panorámica nativa 1920x500).
       */}
       <div
-        className="relative w-full aspect-square md:aspect-auto max-h-[520px] md:max-h-none md:h-[480px] lg:h-[560px] xl:h-[620px] 2xl:h-[650px] overflow-hidden select-none bg-[#FAF8F5] bg-stone-100"
+        className="relative w-full aspect-[16/9] sm:aspect-[16/6] lg:aspect-[1920/500] overflow-hidden select-none bg-[#FAF8F5] bg-stone-100"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -250,43 +261,39 @@ export default function HeroBannerCarousel() {
                   tabIndex={isActive ? 0 : -1}
                   className="block relative w-full h-full cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
                 >
-                  {/* Art Direction responsiva: Mobile 800x600 vs Desktop 1920x500 */}
+                  {/* Art Direction responsiva: Mobile 800x600 (object-[center_80%]) vs Desktop 1920x500 */}
                   <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
 
-                  {/* Sutil viñeta degradada inferior para legibilidad editorial */}
+                  {/* Degradado suave de fondo en la base del slide para contraste sin tapar la foto */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-t from-stone-950/45 via-stone-950/10 to-transparent pointer-events-none"
+                    className="absolute inset-x-0 bottom-0 h-16 sm:h-28 bg-gradient-to-t from-black/35 via-black/10 to-transparent pointer-events-none"
                   />
 
-                  {/* Tarjeta editorial flotante con llamada a la acción (CTA) */}
-                  <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-8 z-20 max-w-[82%] sm:max-w-md">
-                    <div className="bg-white/92 hover:bg-white backdrop-blur-md px-3 py-2 sm:px-5 sm:py-3.5 rounded-xl sm:rounded-2xl border border-stone-200/80 shadow-lg shadow-stone-900/10 transition-all duration-300 group-hover/slide:shadow-xl group-hover/slide:border-brand-gold/40">
-                      <div className="flex items-center justify-between gap-2.5 sm:gap-4">
-                        <div className="min-w-0 flex-1">
-                          <div className="hidden xs:flex items-center gap-1.5 mb-0.5">
-                            <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                            <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold">
-                              Sandra Gil Bogotá
-                            </span>
-                          </div>
-                          <h2 className="text-xs sm:text-base font-serif font-medium text-stone-900 tracking-tight leading-tight truncate">
-                            {slide.titulo}
-                          </h2>
-                          {slide.subtitulo && (
-                            <p className="hidden sm:block text-[11px] sm:text-xs text-stone-600 font-light truncate mt-0.5">
-                              {slide.subtitulo}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Botón CTA con micro-interacción */}
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-brown hover:bg-stone-900 text-[#FAF8F5] text-[11px] sm:text-xs uppercase tracking-wider font-semibold rounded-full shadow-xs shrink-0 transition-all duration-200 group-hover/slide:bg-stone-900 group-hover/slide:translate-x-0.5">
-                          <span>{slide.ctaText}</span>
-                          <ArrowRight className="w-3.5 h-3.5 text-brand-gold transition-transform duration-200 group-hover/slide:translate-x-0.5" />
+                  {/* Pastilla editorial flotante compacta con llamada a la acción (CTA) */}
+                  <div className="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 z-20 flex items-center gap-1.5 sm:gap-3 bg-white/95 backdrop-blur-md py-1 px-2.5 sm:py-2 sm:px-4 rounded-full shadow-md border border-stone-200/60 max-w-[calc(100%-80px)] group-hover/slide:shadow-xl transition-all duration-300">
+                    <div className="min-w-0 flex-1">
+                      <div className="hidden sm:flex items-center gap-1.5 mb-0.5">
+                        <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
+                        <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold">
+                          Sandra Gil Bogotá
                         </span>
                       </div>
+                      <h2 className="text-[10px] sm:text-xs font-serif text-stone-800 truncate leading-tight">
+                        {slide.titulo}
+                      </h2>
+                      {slide.subtitulo && (
+                        <p className="hidden sm:block text-[11px] text-stone-600 font-light truncate mt-0.5">
+                          {slide.subtitulo}
+                        </p>
+                      )}
                     </div>
+
+                    {/* Botón CTA píldora compacto */}
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-4 sm:py-1.5 bg-stone-900 hover:bg-stone-800 text-white text-[9px] sm:text-xs font-semibold uppercase tracking-wider rounded-full shadow-xs shrink-0 transition-all duration-200 group-hover/slide:translate-x-0.5">
+                      <span>{slide.ctaText}</span>
+                      <ArrowRight className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-brand-gold transition-transform duration-200 group-hover/slide:translate-x-0.5" />
+                    </span>
                   </div>
                 </Link>
               </div>
@@ -299,9 +306,9 @@ export default function HeroBannerCarousel() {
           type="button"
           onClick={prevSlide}
           aria-label="Ver banner anterior"
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
         >
-          <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 text-stone-700" />
+          <ChevronLeft className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-stone-700" />
         </button>
 
         {/* Botón Flecha Derecha (Siguiente) */}
@@ -309,16 +316,16 @@ export default function HeroBannerCarousel() {
           type="button"
           onClick={nextSlide}
           aria-label="Ver siguiente banner"
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
         >
-          <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 text-stone-700" />
+          <ChevronRight className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-stone-700" />
         </button>
 
         {/* Indicadores de Slide estilo cápsula editorial (Paginación) */}
         <div
           role="tablist"
           aria-label="Control de diapositivas"
-          className="absolute bottom-3 sm:bottom-4 right-3 sm:right-8 z-30 flex items-center gap-1.5 sm:gap-2 bg-stone-950/50 backdrop-blur-md px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full border border-white/20 shadow-md"
+          className="absolute bottom-2 right-2 sm:bottom-6 sm:right-6 z-20 flex items-center gap-1 sm:gap-2 bg-stone-950/45 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20 shadow-md"
         >
           {BANNERS_DATA.map((slide, idx) => {
             const isCurrent = idx === currentIndex;
@@ -330,10 +337,11 @@ export default function HeroBannerCarousel() {
                 aria-selected={isCurrent}
                 aria-label={`Ir al slide ${idx + 1}: ${slide.titulo}`}
                 onClick={() => goToSlide(idx)}
-                className={`transition-all duration-300 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold ${isCurrent
-                    ? 'w-5 sm:w-7 h-1.5 sm:h-2 bg-brand-gold shadow-xs'
+                className={`transition-all duration-300 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold ${
+                  isCurrent
+                    ? 'w-3.5 sm:w-6 h-1.5 sm:h-2 bg-brand-gold shadow-xs'
                     : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/60 hover:bg-white'
-                  }`}
+                }`}
               />
             );
           })}

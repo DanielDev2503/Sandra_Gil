@@ -381,37 +381,40 @@ export default function ProductDetailShell({
           {/* Product Info */}
           <div className="lg:col-span-6 space-y-5 sm:space-y-6">
             <div>
-              <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans">
+              {/* 1. TÍTULO DEL PRODUCTO */}
+              <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans block mb-1">
                 {isSoap ? 'Cosmética Artesanal Natural' : isBajoPedido ? 'Vela Personalizada · Bajo Pedido' : 'Colección Artesanal Exclusiva'}
               </span>
-              <h1 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1">{product.nombre}</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif text-stone-900 tracking-tight mb-1">
+                {product.nombre}
+              </h1>
 
-              {/* Active variation subtitle indicator */}
+              {/* 2. PRESENTACIÓN / SUBTÍTULO (si aplica) */}
               {selectedVariation ? (
-                <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-[#FAF8F5] border border-[#B88A32]/40 rounded-lg shadow-2xs">
+                <div className="inline-flex items-center gap-2 mt-1 mb-2 px-3 py-1 bg-[#FAF8F5] border border-[#B88A32]/40 rounded-lg shadow-2xs">
                   <Sparkles className="w-3.5 h-3.5 text-[#B88A32] shrink-0" />
                   <span className="text-xs sm:text-sm font-medium text-stone-800 font-sans">
                     Variación escogida: <strong className="text-[#B88A32] font-semibold">{selectedVariation.nombre}</strong>
                   </span>
                 </div>
               ) : hasVariaciones ? (
-                <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 bg-stone-50 border border-stone-200/80 rounded-lg">
-                  <span className="text-xs text-stone-500 font-sans">
+                <div className="inline-flex items-center gap-2 mt-1 mb-2 px-3 py-1 bg-stone-50 border border-stone-200/80 rounded-lg">
+                  <span className="text-xs text-stone-500 font-light font-sans">
                     Presentación: <strong className="text-stone-700 font-medium">Edición Principal / Base</strong>
                   </span>
                 </div>
               ) : null}
 
-              {/* Badge de Material en su propia línea superior */}
+              {/* 3. BADGE DE MATERIAL */}
               {!isSoap && product.material && (
-                <div className="mt-3 mb-2">
-                  <span className="inline-block text-[11px] uppercase tracking-wider font-medium text-stone-600 bg-stone-100/80 border border-stone-200/60 rounded-full px-3 py-0.5">
+                <div className="mb-2">
+                  <span className="inline-block text-[10px] sm:text-xs uppercase tracking-wider font-medium text-stone-600 bg-stone-100/90 border border-stone-200/60 rounded-full px-3 py-0.5">
                     {product.material}
                   </span>
                 </div>
               )}
 
-              {/* Fila del Precio aislada con jerarquía visual dominante */}
+              {/* 4. PRECIO (Destacado en su propia línea) */}
               <div className="mb-3">
                 {isBajoPedido ? (
                   <div className="inline-flex items-center gap-2 bg-amber-50/80 border border-amber-300/80 px-4 py-2 rounded-full">
@@ -419,15 +422,15 @@ export default function ProductDetailShell({
                     <span className="text-xs sm:text-sm font-semibold text-amber-900 font-sans">Elaboración Bajo Pedido</span>
                   </div>
                 ) : (
-                  <p className="text-3xl sm:text-4xl font-serif font-light text-stone-900 tracking-tight transition-all duration-300">
+                  <span className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900 tracking-tight transition-all duration-300">
                     ${activePrice?.toLocaleString('es-CO')} COP
-                  </p>
+                  </span>
                 )}
               </div>
 
               {/* Average rating inline */}
               {resenas.length > 0 && (
-                <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-2 mb-3">
                   <StarRatingDisplay rating={avgRating} size="sm" />
                   <span className="text-xs text-stone-500 font-sans">
                     {avgRating.toFixed(1)} / 5.0 · {resenas.length} opinión{resenas.length !== 1 ? 'es' : ''}
@@ -436,23 +439,98 @@ export default function ProductDetailShell({
               )}
             </div>
 
+            {/* 5. DESCRIPCIÓN DEL PRODUCTO */}
             <div 
-              className="text-stone-700 text-base md:text-[17px] leading-relaxed font-sans font-light space-y-4 [&>p]:leading-relaxed [&>p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:my-2.5 [&_li]:text-stone-700 [&>small]:text-xs [&>small]:text-stone-500 [&>small]:block [&>small]:mt-4 [&_small]:text-xs [&_small]:text-stone-500 [&_small]:block [&_small]:mt-4 [&_small]:pt-2.5 [&_small]:border-t [&_small]:border-stone-200"
+              className="text-sm sm:text-base text-stone-600 leading-relaxed font-light mb-5 space-y-4 [&>p]:leading-relaxed [&>p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:my-2.5 [&_li]:text-stone-600 [&>small]:text-xs [&>small]:text-stone-500 [&>small]:block [&>small]:mt-4 [&_small]:text-xs [&_small]:text-stone-500 [&_small]:block [&_small]:mt-4 [&_small]:pt-2.5 [&_small]:border-t [&_small]:border-stone-200"
               dangerouslySetInnerHTML={{ __html: product.descripcion }}
             />
 
-            {/* ── AROMA SELECTOR (Active for both VELAS and JABONES) ── */}
-            <AromaDropdownSelector
-              aromas={aromasList}
-              selectedAroma={selectedAroma}
-              onSelectAroma={setSelectedAroma}
-              productName={product.nombre}
-              isJabon={isJabon}
-            />
+            {/* 6. BOTONES DE ACCIÓN (Comprar / Añadir / WhatsApp) */}
+            <div className="space-y-3 mb-6 p-4 rounded-2xl bg-stone-50/70 border border-stone-200/60 font-sans">
+              {/* Selector de cantidad y stock */}
+              {!isBajoPedido && (
+                <div className="flex items-center justify-between">
+                  <span className="text-xs uppercase tracking-wider text-stone-500 font-medium">Cantidad</span>
+                  <div className="flex items-center gap-2">
+                    <div className="inline-flex items-center rounded-full border border-stone-300 bg-white px-2 py-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        disabled={isOutOfStock}
+                        className="p-1 min-w-[28px] text-stone-600 hover:text-stone-900 disabled:opacity-40 cursor-pointer"
+                        aria-label="Disminuir cantidad"
+                      >
+                        -
+                      </button>
+                      <span className="px-3 text-xs font-medium text-stone-800">{quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((q) => q + 1)}
+                        disabled={isOutOfStock}
+                        className="p-1 min-w-[28px] text-stone-600 hover:text-stone-900 disabled:opacity-40 cursor-pointer"
+                        aria-label="Aumentar cantidad"
+                      >
+                        +
+                      </button>
+                    </div>
+                    {isOutOfStock ? (
+                      <span className="text-[10px] text-rose-700 bg-rose-100/70 rounded-full px-2 py-0.5 font-medium">Agotado</span>
+                    ) : isLowStock ? (
+                      <span className="text-[10px] text-amber-700 bg-amber-100/60 rounded-full px-2 py-0.5 font-medium animate-pulse">Últimas {product.stock}</span>
+                    ) : (
+                      <span className="text-[10px] text-emerald-700 bg-emerald-100/60 rounded-full px-2 py-0.5 font-medium">En Stock</span>
+                    )}
+                  </div>
+                </div>
+              )}
 
-            {/* ── VARIATION SELECTOR ── */}
+              {/* Botones principales */}
+              {isBajoPedido ? (
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full rounded-full py-3.5 px-6 font-semibold text-xs sm:text-sm tracking-wider uppercase bg-amber-50/90 border border-amber-300/80 text-amber-950 hover:bg-amber-100 transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-98"
+                >
+                  <MessageCircle className="w-4 h-4 text-amber-800 shrink-0" />
+                  <span>Cotiza por WhatsApp</span>
+                </a>
+              ) : (
+                <div className="grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleBuyNow}
+                    disabled={isOutOfStock}
+                    className="w-full rounded-full py-3.5 px-6 font-semibold text-xs sm:text-sm tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center cursor-pointer active:scale-98 disabled:bg-stone-300 disabled:text-stone-500 disabled:cursor-not-allowed"
+                  >
+                    Comprar Ahora
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    disabled={isOutOfStock}
+                    className="w-full rounded-full py-3.5 px-6 font-semibold text-xs sm:text-sm tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-sm transition-all duration-200 flex items-center justify-center cursor-pointer active:scale-98 disabled:border-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed"
+                  >
+                    Añadir al Carrito
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* 7. SELECTOR DE AROMA (Active for both VELAS and JABONES) */}
+            <div className="mb-6">
+              <AromaDropdownSelector
+                aromas={aromasList}
+                selectedAroma={selectedAroma}
+                onSelectAroma={setSelectedAroma}
+                productName={product.nombre}
+                isJabon={isJabon}
+              />
+            </div>
+
+            {/* 8. SELECTOR DE VARIACIÓN (Miniaturas visuales) */}
             {hasVariaciones && !isBajoPedido && (
-              <div className="bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-3 shadow-xs font-sans">
+              <div className="mb-6 bg-white rounded-xl border border-stone-200/80 p-4 sm:p-5 space-y-3 shadow-xs font-sans">
                 <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-brand-gold shrink-0" />
                   <span>Selecciona tu Variación:</span>
@@ -520,9 +598,8 @@ export default function ProductDetailShell({
               </div>
             )}
 
-
-            {/* ── INDEPENDENT DIMENSIONS CARD ── */}
-            <div className="bg-white p-4 rounded-xl border border-stone-200/80 shadow-xs font-sans">
+            {/* 9. TARJETA DE DIMENSIONES + NOTA ACLARATORIA */}
+            <div className="mb-6 bg-white p-4 rounded-xl border border-stone-200/80 shadow-xs font-sans">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded-lg bg-amber-50 text-brand-gold shrink-0">
                   <Ruler className="w-5 h-5" />
@@ -537,101 +614,13 @@ export default function ProductDetailShell({
                 </div>
               </div>
               <p className="text-xs text-stone-500/90 font-light mt-2 italic">
-                * Nota: Las dimensiones reales del producto corresponden a las especificadas en esta tarjeta técnica. Por favor, no tome como referencia visual las proporciones de las imágenes ilustrativas.
+                * Nota: Las dimensiones reales corresponden a las especificadas en esta tarjeta técnica. Por favor, no tome como referencia visual las proporciones de las imágenes ilustrativas.
               </p>
             </div>
 
-            {/* Actions */}
-            <div className="space-y-4 pt-4 border-t border-stone-200">
-              {isBajoPedido ? (
-                /* WhatsApp CTA for bajo pedido */
-                <div className="space-y-3 font-sans">
-                  <p className="text-xs text-stone-500 leading-relaxed">
-                    Este producto es elaborado especialmente bajo pedido. Escríbenos por WhatsApp para conocer precios, tiempos de producción y opciones de personalización.
-                  </p>
-                  <a
-                    href={waLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3.5 min-h-[44px] bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 text-xs sm:text-sm uppercase tracking-widest font-bold transition-all duration-300 shadow-sm text-center flex items-center justify-center gap-2 rounded-full cursor-pointer active:scale-98"
-                  >
-                    <MessageCircle className="w-5 h-5 shrink-0 text-amber-700" />
-                    Cotizar por WhatsApp
-                  </a>
-                </div>
-              ) : (
-                /* Normal purchase flow */
-                <>
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs uppercase font-semibold text-stone-600 font-sans">Cantidad:</span>
-                    <div className="flex items-center border border-stone-300 rounded-full bg-white font-sans min-h-[44px] px-1">
-                      <button
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        disabled={isOutOfStock}
-                        className="px-3.5 py-2 min-h-[44px] min-w-[44px] text-stone-500 hover:text-stone-900 transition disabled:opacity-50 flex items-center justify-center cursor-pointer"
-                      >
-                        -
-                      </button>
-                      <span className="px-4 text-sm font-semibold text-stone-800">{quantity}</span>
-                      <button
-                        onClick={() => setQuantity((q) => q + 1)}
-                        disabled={isOutOfStock}
-                        className="px-3.5 py-2 min-h-[44px] min-w-[44px] text-stone-500 hover:text-stone-900 transition disabled:opacity-50 flex items-center justify-center cursor-pointer"
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    {isOutOfStock ? (
-                      <span className="text-xs text-red-500 font-bold uppercase tracking-wider font-sans">Agotado</span>
-                    ) : isLowStock ? (
-                      <span className="text-xs text-amber-600 font-medium uppercase tracking-wider font-sans animate-pulse">Últimas {product.stock} unidades</span>
-                    ) : (
-                      <span className="text-xs text-stone-600 font-medium uppercase tracking-wider font-sans">Disponible</span>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-sans w-full">
-                    <button
-                      onClick={handleBuyNow}
-                      disabled={isOutOfStock}
-                      className="w-full py-3.5 min-h-[44px] bg-brand-gold hover:bg-brand-brown text-white text-xs uppercase tracking-widest font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:bg-stone-300 disabled:cursor-not-allowed"
-                    >
-                      Comprar Ahora
-                    </button>
-                    <button
-                      onClick={handleAddToCart}
-                      disabled={isOutOfStock}
-                      className="w-full py-3.5 min-h-[44px] bg-white hover:bg-stone-50 border border-brand-brown text-brand-brown text-xs uppercase tracking-widest font-semibold rounded-full transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-98 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed"
-                    >
-                      Añadir al Carrito
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Trust badges */}
-            <div className="space-y-3 pt-4 border-t border-stone-200 font-sans text-xs">
-              <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
-                <CreditCard className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
-                <div>
-                  <p className="font-semibold text-stone-800">Transacción 100% Segura</p>
-                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Procesado por Wompi (Bancolombia). Aceptamos Nequi, PSE y Tarjetas de Crédito.</p>
-                </div>
-              </div>
-              <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
-                <Truck className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
-                <div>
-                  <p className="font-semibold text-stone-800">Envíos Seguros con Servientrega</p>
-                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Despachos locales y nacionales con empaque reforzado contra impactos.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Accordion: Consejos de Cuidado & Seguridad (Solo para Velas) */}
+            {/* 10. CONSEJOS DE CUIDADO & SEGURIDAD (Solo Velas) */}
             {!isJabon && (
-              <div className="border border-stone-200 rounded-sm overflow-hidden bg-white font-sans text-sm">
+              <div className="mb-6 border border-stone-200 rounded-sm overflow-hidden bg-white font-sans text-sm">
                 <div>
                   <button
                     type="button"
@@ -661,6 +650,24 @@ export default function ProductDetailShell({
                 </div>
               </div>
             )}
+
+            {/* Trust badges */}
+            <div className="space-y-3 pt-4 border-t border-stone-200 font-sans text-xs">
+              <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
+                <CreditCard className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-stone-800">Transacción 100% Segura</p>
+                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Procesado por Wompi (Bancolombia). Aceptamos Nequi, PSE y Tarjetas de Crédito.</p>
+                </div>
+              </div>
+              <div className="bg-white p-3.5 rounded-sm border border-stone-200/50 flex gap-3 items-start">
+                <Truck className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-stone-800">Envíos Seguros con Servientrega</p>
+                  <p className="text-[10px] text-stone-500 leading-relaxed mt-0.5">Despachos locales y nacionales con empaque reforzado contra impactos.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

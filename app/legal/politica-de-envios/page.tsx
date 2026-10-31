@@ -122,7 +122,7 @@ export default function PoliticaDeEnviosPage() {
           <div className="pt-2">
             <Link
               href="/envio-express"
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-xs uppercase tracking-wider rounded-full transition shadow-xs"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#B8862D] hover:bg-[#A37424] text-white font-bold text-xs uppercase tracking-wider rounded-full transition shadow-xs"
             >
               <span>Solicitar Envío Express en Bogotá</span>
               <ChevronRight className="w-4 h-4" />

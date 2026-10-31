@@ -529,9 +529,9 @@ export default function Header() {
                 href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20tus%20velas`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3.5 min-h-[44px] bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md active:scale-98 border border-amber-400/50"
+                className="flex items-center justify-center gap-2 w-full py-3.5 min-h-[44px] bg-[#B8862D] hover:bg-[#A37424] text-white text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md active:scale-98"
               >
-                <MessageCircle className="w-4 h-4 text-stone-950" />
+                <MessageCircle className="w-4 h-4 text-white" />
                 Asesoría por WhatsApp
               </a>
             </div>

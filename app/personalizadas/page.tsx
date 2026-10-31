@@ -109,9 +109,9 @@ export default async function PersonalizadasPage() {
                 href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20una%20vela%20personalizada`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-98 border border-amber-400/50"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 min-h-[44px] bg-[#B8862D] hover:bg-[#A37424] text-white text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-98"
               >
-                <MessageCircle className="w-4 h-4 shrink-0 text-stone-950" />
+                <MessageCircle className="w-4 h-4 shrink-0 text-white" />
                 Cotizar por WhatsApp
               </a>
             </div>

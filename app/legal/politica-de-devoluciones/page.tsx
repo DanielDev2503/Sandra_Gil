@@ -357,7 +357,7 @@ export default function PoliticaDevolucionesPage() {
             href={WA_DEVOLUCION_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-semibold text-xs sm:text-sm uppercase tracking-wider rounded-full transition shadow-md border border-amber-400/50"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#B8862D] hover:bg-[#A37424] text-white font-semibold text-xs sm:text-sm uppercase tracking-wider rounded-full transition shadow-md"
           >
             <span>Iniciar Solicitud por WhatsApp</span>
             <ExternalLink className="w-4 h-4" />

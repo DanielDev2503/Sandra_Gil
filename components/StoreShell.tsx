@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, Star, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Star, MessageCircle } from 'lucide-react';
 import Header from './Header';
 import HeroBannerCarousel from './HeroBannerCarousel';
 import HomeTypeCarousels, { GroupedProducts } from './HomeTypeCarousels';
@@ -47,7 +47,7 @@ export default function StoreShell({
         <HomeTypeCarousels groupedProducts={groupedProducts} />
 
         {/* 4. SECCIÓN DE ALTO TICKET: "Velas Personalizadas y Eventos" */}
-        <section className="bg-[#2C2A29] text-[#FAF8F5] py-16 sm:py-24 relative overflow-hidden border-b border-stone-800">
+        <section className="bg-[#2C2A29] text-[#FAF8F5] py-8 sm:py-12 relative overflow-hidden border-b border-stone-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 
@@ -68,25 +68,7 @@ export default function StoreShell({
                   Creamos piezas artesanales únicas para celebraciones inolvidables en Bogotá y la Sabana. Diseñamos etiquetas personalizadas con nombres y fechas, selección de flores artesanales temáticas, aromas insignia y empaques artesanales listos para regalar.
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-left font-sans">
-                  <div className="bg-stone-800/60 p-3.5 rounded-lg border border-stone-700">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 mb-1" />
-                    <p className="text-xs font-semibold text-white">Etiquetas a Medida</p>
-                    <p className="text-[10px] text-stone-400 mt-0.5">Diseño gráfico con tus nombres, fecha o logo</p>
-                  </div>
-                  <div className="bg-stone-800/60 p-3.5 rounded-lg border border-stone-700">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 mb-1" />
-                    <p className="text-xs font-semibold text-white">Flores Temáticas</p>
-                    <p className="text-[10px] text-stone-400 mt-0.5">Hortensias, lavanda o rosas preservadas</p>
-                  </div>
-                  <div className="bg-stone-800/60 p-3.5 rounded-lg border border-stone-700">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 mb-1" />
-                    <p className="text-xs font-semibold text-white">Precios por Volumen</p>
-                    <p className="text-[10px] text-stone-400 mt-0.5">Desde 12 unidades con tarifa preferencial</p>
-                  </div>
-                </div>
-
-                <div className="pt-4 flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
+                <div className="pt-2 flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
                   <Link
                     href="/personalizadas"
                     className="px-8 py-4 bg-brand-gold hover:bg-amber-500 text-stone-900 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md text-center flex items-center justify-center gap-2"
@@ -140,9 +122,9 @@ export default function StoreShell({
         <SensoryWorkshopSection />
 
         {/* 6. SECCIÓN DE PRUEBA SOCIAL: "Testimonios y Reseñas de Clientes en Bogotá" */}
-        <section className="bg-white py-16 sm:py-24 border-b border-brand-gold/15">
+        <section className="bg-white py-8 sm:py-12 border-b border-brand-gold/15">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 rounded-full border border-amber-200/80 mb-3 text-amber-800">
                 <div className="flex text-amber-400">
                   {'★★★★★'}

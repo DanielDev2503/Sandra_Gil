@@ -8,7 +8,6 @@ import { useCart } from '@/context/CartContext';
 import {
   Sparkles,
   Eye,
-  MessageCircle,
   X,
   SlidersHorizontal,
   ChevronDown,
@@ -19,8 +18,6 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SkeletonImage from '@/components/SkeletonImage';
 import { AROMAS } from '@/lib/aromas';
-
-const WA_NUMBER = '573175752029';
 
 export type TipoProducto = 'VELA' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON';
 
@@ -50,6 +47,28 @@ interface CatalogShellProps {
  */
 export const normalize = (str?: string | null): string =>
   str ? str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() : '';
+
+/**
+ * Slugs conocidos de velas bajo pedido que deben excluirse absolutamente del catálogo general
+ */
+const BAJO_PEDIDO_SLUGS = [
+  'bicicleta-vintage',
+  'bouquet-botanico-esculpido',
+  'cofre-botanico-esculpido',
+  'leon-esculpido-melao',
+];
+
+/**
+ * Determina si un producto es exclusivamente bajo pedido
+ */
+export const isBajoPedido = (product: {
+  esBajoPedido?: boolean | null;
+  slug?: string | null;
+}): boolean => {
+  if (product.esBajoPedido) return true;
+  if (!product.slug) return false;
+  return BAJO_PEDIDO_SLUGS.includes(product.slug.toLowerCase().trim());
+};
 
 /**
  * Determina si un producto es un jabón artesanal.
@@ -88,6 +107,9 @@ export function isCandleProduct(product: {
   return !isSoapProduct(product);
 }
 
+/**
+ * Definiciones oficiales de categorías en el catálogo (Venta Directa)
+ */
 const CATEGORY_DEFINITIONS = [
   { id: 'VELA_ENVASE', label: 'Velas en Envase' },
   { id: 'VELA_ESCULPIDA', label: 'Velas Esculpidas' },
@@ -100,9 +122,9 @@ interface CatalogProductCardProps {
 }
 
 /**
- * Tarjeta de producto de altura compacta con selector de aroma inline
+ * Tarjeta de producto compacta adaptada a cuadrícula de 4 columnas en desktop y 2 columnas en mobile.
  */
-function CatalogProductCard({ product, priority = false }: CatalogProductCardProps) {
+export function CatalogProductCard({ product, priority = false }: CatalogProductCardProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
   const [hovered, setHovered] = useState(false);
@@ -125,12 +147,6 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
   const isLowStock = product.stock > 0 && product.stock <= 10;
   const displayImage =
     product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
-
-  // Enlace dinámico de WhatsApp para productos bajo pedido con el aroma seleccionado
-  const waAromaSuffix = selectedAroma ? ` con aroma: ${selectedAroma}` : '';
-  const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
-    `Hola Sandra, quisiera cotizar la vela personalizada: ${product.nombre}${waAromaSuffix}`
-  )}`;
 
   // Añadir al carrito con el aroma seleccionado
   const handleAddToCart = () => {
@@ -175,7 +191,7 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
       onMouseLeave={() => setHovered(false)}
     >
       <div>
-        {/* 1. Imagen con relación aspect-[4/3] (cero deformación) y badge superior */}
+        {/* 1. Imagen con relación aspect-[4/3] y badge de tipo/stock */}
         <Link
           href={`/productos/${product.slug}`}
           className="relative aspect-[4/3] w-full block overflow-hidden bg-stone-100 rounded-t-xl"
@@ -185,29 +201,24 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
             alt={product.nombre}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             priority={priority}
           />
 
           {/* Badge de estado / tipo */}
-          <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 pointer-events-none">
+          <div className="absolute top-2 left-2 z-10 pointer-events-none">
             {isOutOfStock ? (
               <span className="bg-rose-700/90 backdrop-blur-xs text-white px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs">
                 Agotado
               </span>
             ) : isLowStock ? (
-              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1 sm:gap-1.5">
+              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                 Últimas {product.stock}
               </span>
-            ) : product.esBajoPedido ? (
-              <span className="bg-stone-900/85 backdrop-blur-xs text-[#FAF8F5] px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-brand-gold shrink-0" />
-                Bajo Pedido
-              </span>
             ) : (
               <span className="bg-white/95 backdrop-blur-xs text-brand-brown border border-brand-gold/30 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
-                <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-brand-gold shrink-0" />
+                <Sparkles className="w-2.5 h-2.5 text-brand-gold shrink-0" />
                 {product.tipo === 'VELA_ENVASE'
                   ? 'Vela en Envase'
                   : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
@@ -229,11 +240,10 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
           )}
         </Link>
 
-        {/* 2. Cuerpo de la tarjeta depurado: Título y Selector de Aroma */}
-        <div className="p-2 sm:p-3.5 pb-1 sm:pb-2">
-          {/* Título en una línea sin estiramientos */}
+        {/* 2. Cuerpo: Título y Selector de Aroma Inline */}
+        <div className="p-2 sm:p-2.5 pb-1">
           <Link href={`/productos/${product.slug}`} className="block group/title">
-            <h3 className="font-serif text-xs sm:text-sm font-normal text-stone-900 line-clamp-1 sm:line-clamp-2 mb-1 sm:mb-2 group-hover/title:text-brand-brown transition duration-200">
+            <h3 className="font-serif text-xs sm:text-sm font-normal text-stone-900 truncate mb-1 sm:mb-1.5 group-hover/title:text-brand-brown transition duration-200">
               {product.nombre}
             </h3>
           </Link>
@@ -247,7 +257,7 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
               id={`aroma-${product.id}`}
               value={selectedAroma}
               onChange={(e) => setSelectedAroma(e.target.value)}
-              className="w-full text-[10px] sm:text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1 px-2 sm:py-1.5 sm:px-3 text-stone-700 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors cursor-pointer truncate"
+              className="w-full text-[10px] sm:text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1 px-2 text-stone-700 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors cursor-pointer truncate"
             >
               <option value="" disabled>
                 Aroma (28 disp.)...
@@ -265,74 +275,56 @@ function CatalogProductCard({ product, priority = false }: CatalogProductCardPro
         </div>
       </div>
 
-      {/* 3. Fila de Precio y Botones Ovalados */}
-      <div className="p-2 sm:p-3.5 pt-0 font-sans">
-        <div className="pt-1.5 sm:pt-2 border-t border-stone-100 flex justify-between items-center mb-1.5 sm:mb-2.5">
-          {product.esBajoPedido ? (
-            <span className="text-[10px] sm:text-xs font-semibold text-brand-brown uppercase tracking-wider">
-              Bajo Pedido
+      {/* 3. Fila de Precio y Botones de Compra */}
+      <div className="p-2 sm:p-2.5 pt-0 font-sans">
+        <div className="pt-1.5 border-t border-stone-100 flex justify-between items-center mb-1.5">
+          <span className="font-serif text-sm sm:text-base font-semibold tracking-tight text-[#B8862D]">
+            ${product.precio?.toLocaleString('es-CO')} COP
+          </span>
+
+          {isOutOfStock ? (
+            <span className="text-[9px] text-red-500 font-bold uppercase tracking-wider">
+              Agotado
+            </span>
+          ) : isLowStock ? (
+            <span className="text-[9px] text-amber-600 font-medium uppercase tracking-wider">
+              Últimas {product.stock}
             </span>
           ) : (
-            <span className="font-serif font-semibold text-brand-brown text-xs sm:text-sm">
-              ${product.precio?.toLocaleString('es-CO')} COP
+            <span className="text-[9px] text-stone-500 font-medium uppercase tracking-wider">
+              Stock
             </span>
-          )}
-
-          {!product.esBajoPedido && (
-            isOutOfStock ? (
-              <span className="text-[9px] sm:text-[10px] text-red-500 font-bold uppercase tracking-wider">
-                Agotado
-              </span>
-            ) : isLowStock ? (
-              <span className="text-[9px] sm:text-[10px] text-amber-600 font-medium uppercase tracking-wider">
-                Últimas {product.stock}
-              </span>
-            ) : (
-              <span className="text-[9px] sm:text-[10px] text-stone-500 font-medium uppercase tracking-wider">
-                Stock
-              </span>
-            )
           )}
         </div>
 
-        {product.esBajoPedido ? (
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-1.5 px-3 text-center text-[10px] sm:text-xs font-semibold rounded-full bg-amber-50/90 border border-amber-300/80 text-amber-950 hover:bg-amber-100 transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs hover:shadow-xs cursor-pointer active:scale-98"
+        <div className="grid grid-cols-2 gap-1.5">
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-2xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
+              isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+            }`}
           >
-            <MessageCircle className="w-3.5 h-3.5 text-amber-800 shrink-0" />
-            <span className="truncate">Cotiza por WhatsApp</span>
-          </a>
-        ) : (
-          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className={`rounded-full py-1.5 px-3.5 font-semibold text-[10px] sm:text-xs tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-2xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
-                isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
-              }`}
-            >
-              Añadir
-            </button>
-            <button
-              type="button"
-              onClick={handleBuyNow}
-              disabled={isOutOfStock}
-              className={`rounded-full py-1.5 px-3.5 font-semibold text-[10px] sm:text-xs tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
-                isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
-              }`}
-            >
-              Comprar
-            </button>
-          </div>
-        )}
+            Añadir
+          </button>
+          <button
+            type="button"
+            onClick={handleBuyNow}
+            disabled={isOutOfStock}
+            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
+              isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+            }`}
+          >
+            Comprar
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
+export { CatalogProductCard as ProductCard };
 
 export default function CatalogShell({ products }: CatalogShellProps) {
   const router = useRouter();
@@ -341,9 +333,15 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // ── 1. RANGOS ABSOLUTOS Y METADATOS EXTRAÍDOS ────────────────────────
+  // ── 1. FILTRADO ESTRICTO EN EL SHELL: EXCLUSIÓN DE BAJO PEDIDO ───────
+  const directProducts = useMemo(
+    () => products.filter((p) => !isBajoPedido(p)),
+    [products]
+  );
+
+  // ── 2. RANGOS ABSOLUTOS Y METADATOS EXTRAÍDOS ────────────────────────
   const { minPriceAbsolute, maxPriceAbsolute } = useMemo(() => {
-    const validPrices = products
+    const validPrices = directProducts
       .map((p) => p.precio)
       .filter((pr): pr is number => typeof pr === 'number' && pr > 0);
     if (validPrices.length === 0) return { minPriceAbsolute: 0, maxPriceAbsolute: 120000 };
@@ -351,15 +349,15 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       minPriceAbsolute: Math.floor(Math.min(...validPrices)),
       maxPriceAbsolute: Math.ceil(Math.max(...validPrices)),
     };
-  }, [products]);
+  }, [directProducts]);
 
-  // Contadores dinámicos por Categoría / Tipo
+  // Contadores dinámicos por Categoría / Tipo (Excluyendo bajo pedido)
   const categoryCounts = useMemo(() => {
     let envase = 0;
     let esculpida = 0;
     let jabon = 0;
 
-    for (const p of products) {
+    for (const p of directProducts) {
       if (p.tipo === 'VELA_ENVASE') {
         envase++;
       } else if (p.tipo === 'JABON' || isSoapProduct(p)) {
@@ -374,12 +372,12 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       VELA_ESCULPIDA: esculpida,
       JABON: jabon,
     };
-  }, [products]);
+  }, [directProducts]);
 
   // Lista dinámica de aromas únicos con conteo
   const aromaList = useMemo(() => {
     const map = new Map<string, number>();
-    for (const p of products) {
+    for (const p of directProducts) {
       const raw = p.aroma?.trim();
       if (raw) {
         map.set(raw, (map.get(raw) || 0) + 1);
@@ -388,12 +386,12 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     return Array.from(map.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-  }, [products]);
+  }, [directProducts]);
 
   // Lista dinámica de materiales únicos con conteo
   const materialList = useMemo(() => {
     const map = new Map<string, number>();
-    for (const p of products) {
+    for (const p of directProducts) {
       const raw = p.material?.trim();
       if (raw) {
         map.set(raw, (map.get(raw) || 0) + 1);
@@ -402,9 +400,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     return Array.from(map.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-  }, [products]);
+  }, [directProducts]);
 
-  // ── 2. ESTADO DE FILTROS SINCRONIZADO CON URL ───────────────────────
+  // ── 3. ESTADO DE FILTROS SINCRONIZADO CON URL ───────────────────────
   const rawUrlTipo = searchParams.get('tipo') || '';
   const initialTypes = useMemo(() => {
     if (!rawUrlTipo) return [];
@@ -541,9 +539,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     searchQuery,
   ]);
 
-  // ── 3. FILTRADO Y ORDENAMIENTO EN TIEMPO REAL ───────────────────────
+  // ── 4. FILTRADO Y ORDENAMIENTO EN TIEMPO REAL ───────────────────────
   const filteredAndSortedProducts = useMemo(() => {
-    let result = products.filter((p) => {
+    let result = directProducts.filter((p) => {
       // Búsqueda por texto (nombre, aroma, material)
       if (searchQuery.trim()) {
         const queryNorm = normalize(searchQuery);
@@ -615,7 +613,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
     return result;
   }, [
-    products,
+    directProducts,
     searchQuery,
     selectedTypes,
     selectedAromas,
@@ -624,7 +622,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     sortOrder,
   ]);
 
-  // ── 4. COMPONENTE DE CONTENIDO DE FILTROS (REUTILIZABLE DESKTOP Y MÓVIL) ──
+  // ── 5. COMPONENTE DE CONTENIDO DE FILTROS (REUTILIZABLE DESKTOP Y MÓVIL) ──
   const FilterContent = (
     <div className="space-y-6 text-stone-800">
       {/* Cabecera del Panel */}
@@ -678,8 +676,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               <span className="w-2 h-2 rounded-full bg-brand-gold" />
             )}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.categoria ? 'rotate-180' : ''
-                }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                openSections.categoria ? 'rotate-180' : ''
+              }`}
             />
           </div>
         </button>
@@ -730,8 +729,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               <span className="w-2 h-2 rounded-full bg-brand-gold" />
             )}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.precio ? 'rotate-180' : ''
-                }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                openSections.precio ? 'rotate-180' : ''
+              }`}
             />
           </div>
         </button>
@@ -795,8 +795,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </span>
               )}
               <ChevronDown
-                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.aroma ? 'rotate-180' : ''
-                  }`}
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                  openSections.aroma ? 'rotate-180' : ''
+                }`}
               />
             </div>
           </button>
@@ -850,8 +851,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </span>
               )}
               <ChevronDown
-                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.material ? 'rotate-180' : ''
-                  }`}
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                  openSections.material ? 'rotate-180' : ''
+                }`}
               />
             </div>
           </button>
@@ -900,8 +902,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           <div className="flex items-center gap-2">
             {sortOrder !== 'relevancia' && <span className="w-2 h-2 rounded-full bg-brand-gold" />}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.orden ? 'rotate-180' : ''
-                }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
+                openSections.orden ? 'rotate-180' : ''
+              }`}
             />
           </div>
         </button>
@@ -941,28 +944,16 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     <div className="flex-1 flex flex-col min-h-screen bg-brand-cream">
       <Header />
 
-      {/* Hero / Banner Superior */}
-      <section className="bg-[#F0E9DB]/60 py-6 sm:py-10 border-b border-stone-200/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
-          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold font-sans block">
-            COLECCIÓN BOTÁNICA SANDRA GIL
-          </span>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-stone-900">
-            Catálogo de Productos Artesanales
-          </h1>
-          <p className="text-stone-600 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed font-light">
-            Velas vertidas a mano con 100% cera de soya pura y jabones botánicos para rituales de calma y bienestar en tu hogar.
-          </p>
-        </div>
-      </section>
+      {/* ── CONTENEDOR PRINCIPAL: TOOLBAR + SIDEBAR + PRODUCTOS ─────────── */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 flex-1 w-full">
+        {/* Encabezado H1 accesible para blindar SEO local sin saturar la UI */}
+        <h1 className="sr-only">Catálogo de Productos Artesanales Sandra Gil Bogotá</h1>
 
-      {/* ── CONTENEDOR PRINCIPAL: SIDEBAR + PRODUCTOS ───────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex-1 w-full">
-        {/* Barra superior de control en Móvil y Contador General */}
-        <div className="flex items-center justify-between pb-5 border-b border-stone-200/60 mb-6 gap-4">
+        {/* Barra superior limpia: Contador General y Botón de Filtros Móvil */}
+        <div className="flex items-center justify-between pb-3.5 border-b border-stone-200/60 mb-5 gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-xs sm:text-sm text-stone-600 font-light">
-              Mostrando <strong className="font-semibold text-stone-900">{filteredAndSortedProducts.length}</strong> de {products.length} piezas
+            <span className="text-xs sm:text-sm text-stone-500 font-light">
+              Mostrando <strong className="font-semibold text-stone-900">{filteredAndSortedProducts.length}</strong> de {directProducts.length} piezas
             </span>
           </div>
 
@@ -970,7 +961,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           <button
             type="button"
             onClick={() => setIsMobileFilterOpen(true)}
-            className="lg:hidden rounded-full bg-stone-900 text-white px-4 py-2 text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-2 hover:bg-stone-800 transition active:scale-95 shadow-sm"
+            className="lg:hidden rounded-full bg-stone-900 text-white px-4 py-2 text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-2 hover:bg-stone-800 transition active:scale-95 shadow-sm cursor-pointer"
           >
             <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
             <span>Filtros</span>
@@ -982,14 +973,14 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           </button>
         </div>
 
-        {/* Layout en 2 Columnas */}
-        <div className="lg:grid lg:grid-cols-4 lg:gap-8 items-start">
+        {/* Layout en 2 Columnas (Sidebar + Grilla) */}
+        <div className="lg:grid lg:grid-cols-4 lg:gap-7 xl:gap-8 items-start">
           {/* ── SIDEBAR DESKTOP FIJO (STICKY) ───────────────────────────── */}
           <aside className="hidden lg:block lg:col-span-1 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-3 bg-white/70 backdrop-blur-xs p-5 rounded-2xl border border-stone-200/70 shadow-2xs [scrollbar-width:thin]">
             {FilterContent}
           </aside>
 
-          {/* ── GRILLA PRINCIPAL DE PRODUCTOS ─────────────────────────── */}
+          {/* ── GRILLA PRINCIPAL DE PRODUCTOS A 4 COLUMNAS EN DESKTOP ───── */}
           <main className="lg:col-span-3 space-y-6">
             {/* Chips de Filtros Activos para remoción rápida */}
             {activeFiltersCount > 0 && (
@@ -1091,7 +1082,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-3">
+              /* Cuadrícula de 4 Columnas en Desktop (`lg:grid-cols-4` o `lg:grid-cols-3 xl:grid-cols-4`) y 2 en Móvil (`grid-cols-2`) */
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-3.5 xl:gap-4">
                 {filteredAndSortedProducts.map((product, idx) => (
                   <CatalogProductCard
                     key={product.id}
@@ -1105,7 +1097,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
         </div>
       </div>
 
-      {/* ── 5. DRAWER LATERAL / SLIDE-OVER EN MÓVIL (< lg) ──────────────── */}
+      {/* ── 6. DRAWER LATERAL / SLIDE-OVER EN MÓVIL (< lg) ──────────────── */}
       {isMobileFilterOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex" role="dialog" aria-modal="true">
           {/* Backdrop con desenfoque suave */}

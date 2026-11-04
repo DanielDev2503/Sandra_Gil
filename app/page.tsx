@@ -42,6 +42,8 @@ export default async function Home() {
         url_imagen: true,
         tipo: true,
         esBajoPedido: true,
+        aroma: true,
+        stock: true,
       },
       orderBy: { nombre: 'asc' },
     }),

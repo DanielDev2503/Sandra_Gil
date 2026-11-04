@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { MessageCircle, Sparkles, Clock, Palette } from 'lucide-react';
-import SkeletonImage from '@/components/SkeletonImage';
+import PersonalizadasProductCard from '@/components/PersonalizadasProductCard';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -60,7 +60,9 @@ export default async function PersonalizadasPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4 sm:space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/80 border border-brand-gold/30 rounded-full shadow-xs">
               <Sparkles className="w-4 h-4 text-brand-gold shrink-0" />
-              <span className="text-[10px] sm:text-xs font-bold text-brand-brown uppercase tracking-widest">Elaboración Artesanal Exclusiva</span>
+              <span className="text-[10px] sm:text-xs font-bold text-brand-brown uppercase tracking-widest">
+                Elaboración Artesanal Exclusiva
+              </span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 leading-tight">
@@ -94,8 +96,8 @@ export default async function PersonalizadasPage() {
           </div>
         </section>
 
-        {/* Products grid */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        {/* Products grid con 6 columnas en desktop */}
+        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 overflow-x-hidden">
           {products.length === 0 ? (
             <div className="text-center py-16 sm:py-24 space-y-5 sm:space-y-6">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto">
@@ -117,79 +119,32 @@ export default async function PersonalizadasPage() {
             </div>
           ) : (
             <>
-              <div className="text-center mb-8 sm:mb-12">
-                <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">Catálogo Personalizado</span>
-                <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">Diseños Disponibles</h2>
-                <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4"></div>
-                <p className="text-stone-500 text-xs sm:text-sm max-w-lg mx-auto mt-3 sm:mt-4">
+              <div className="text-center mb-6 sm:mb-10">
+                <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
+                  Catálogo Personalizado
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">
+                  Diseños Disponibles
+                </h2>
+                <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4" />
+                <p className="text-stone-500 text-xs sm:text-sm max-w-lg mx-auto mt-3 sm:mt-4 font-light">
                   Cada diseño puede adaptarse a tus preferencias. Escríbenos para cotizar y personalizar.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {products.map((product) => {
-                  const displayImage =
-                    product.imagenes && product.imagenes.length > 0
-                      ? product.imagenes[0]
-                      : product.url_imagen;
-                  const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20la%20vela%20personalizada:%20${encodeURIComponent(product.nombre)}`;
-
-                  return (
-                    <div key={product.id} className="bg-white rounded-lg border border-brand-gold/20 overflow-hidden flex flex-col shadow-xs hover:shadow-md transition-all duration-300">
-                      <Link href={`/productos/${product.slug}`} className="relative aspect-square block overflow-hidden bg-stone-100">
-                        <SkeletonImage
-                          src={displayImage ?? ''}
-                          alt={`Vela artesanal personalizada ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
-                          className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full shadow-xs border border-brand-gold/20 flex items-center gap-1 z-10">
-                          <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                          <span className="text-[10px] font-bold text-brand-brown uppercase tracking-wider">Bajo Pedido</span>
-                        </div>
-                        <div className="absolute bottom-3 left-3 bg-brand-brown/80 text-[#FAF8F5] px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-widest z-10">
-                          {product.aroma}
-                        </div>
-                      </Link>
-
-                      <div className="p-5 sm:p-6 flex flex-col flex-1">
-                        <Link href={`/productos/${product.slug}`}>
-                          <h3 className="font-serif font-medium text-stone-900 text-base sm:text-lg hover:text-brand-gold transition line-clamp-2 min-h-[2.8rem] leading-snug">
-                            {product.nombre}
-                          </h3>
-                        </Link>
-                        <p className="text-xs text-stone-500 mt-2 leading-relaxed flex-1 line-clamp-3">
-                          {product.descripcion ? product.descripcion.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : ''}
-                        </p>
-
-                        <div className="mt-4 pt-4 border-t border-stone-100 space-y-3">
-                          <div className="flex items-center gap-2">
-                            <MessageCircle className="w-4 h-4 text-amber-700 shrink-0" />
-                            <span className="text-xs font-semibold text-stone-700">Elaboración Bajo Pedido</span>
-                          </div>
-                          <a
-                            href={waLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full py-3.5 min-h-[44px] bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 text-xs uppercase tracking-wider font-bold rounded-full transition-all duration-300 shadow-sm flex items-center justify-center gap-2 active:scale-98"
-                          >
-                            <MessageCircle className="w-4 h-4 shrink-0 text-amber-700" />
-                            Cotizar por WhatsApp
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+              {/* Móvil: 2 cols | Tablet: 3-4 cols | Desktop: 6 cols */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5 lg:gap-4">
+                {products.map((product) => (
+                  <PersonalizadasProductCard key={product.id} product={product} />
+                ))}
               </div>
             </>
           )}
 
           {/* General WhatsApp CTA */}
-          <div className="mt-12 sm:mt-16 bg-gradient-to-r from-brand-brown to-brand-gold rounded-lg p-6 sm:p-8 text-center text-white space-y-4 shadow-lg">
+          <div className="mt-12 sm:mt-16 bg-gradient-to-r from-brand-brown to-brand-gold rounded-2xl p-6 sm:p-8 text-center text-white space-y-4 shadow-lg">
             <h3 className="text-xl sm:text-2xl font-serif">¿Tienes una idea especial?</h3>
-            <p className="text-xs sm:text-sm text-white/90 max-w-lg mx-auto">
+            <p className="text-xs sm:text-sm text-white/90 max-w-lg mx-auto font-light">
               Podemos crear la vela de tus sueños: cumpleaños, bodas, recuerdos corporativos, o simplemente para ti. Sin límites en creatividad.
             </p>
             <a

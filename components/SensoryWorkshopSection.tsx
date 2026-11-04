@@ -39,7 +39,7 @@ const EXPERIENCES = [
 
 export default function SensoryWorkshopSection() {
   return (
-    <section className="bg-[#FAF8F5] py-16 sm:py-24 border-b border-brand-gold/15 relative overflow-hidden">
+    <section className="bg-[#FAF8F5] py-8 sm:py-12 border-b border-brand-gold/15 relative overflow-hidden">
       {/* Decorative ambient elements */}
       <div
         aria-hidden="true"
@@ -49,7 +49,7 @@ export default function SensoryWorkshopSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white rounded-full border border-brand-gold/30 shadow-xs mb-3">
             <CandleGlowPulse size="sm">
               <Sparkles className="w-3 h-3 text-brand-gold" />

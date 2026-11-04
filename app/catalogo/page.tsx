@@ -30,11 +30,25 @@ export const metadata: Metadata = {
   },
 };
 
+const BAJO_PEDIDO_SLUGS = [
+  'bicicleta-vintage',
+  'bouquet-botanico-esculpido',
+  'cofre-botanico-esculpido',
+  'leon-esculpido-melao',
+];
+
+const isBajoPedidoItem = (p: { esBajoPedido?: boolean | null; slug?: string | null }): boolean => {
+  if (p.esBajoPedido) return true;
+  if (!p.slug) return false;
+  return BAJO_PEDIDO_SLUGS.includes(p.slug.toLowerCase().trim());
+};
+
 export default async function CatalogPage() {
-  // Fetch active products from database with explicit select
-  const products = await prisma.producto.findMany({
+  // Consulta a base de datos excluyendo piezas bajo pedido directamente desde Prisma
+  const rawProducts = await prisma.producto.findMany({
     where: {
       activo: true,
+      esBajoPedido: false,
     },
     select: {
       id: true,
@@ -56,6 +70,9 @@ export default async function CatalogPage() {
       nombre: 'asc',
     },
   });
+
+  // Doble filtro consistente de seguridad por slug para blindar que ninguna pieza bajo pedido entre al catálogo
+  const products = rawProducts.filter((p) => !isBajoPedidoItem(p));
 
   return (
     <Suspense>

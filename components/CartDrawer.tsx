@@ -50,12 +50,13 @@ export default function CartDrawer() {
                     Explora nuestro catálogo artesanal y llena tu hogar de aromas y luz natural.
                   </p>
                 </div>
-                <button
-                  onClick={closeCart}
-                  className="px-6 py-3 bg-brand-brown hover:bg-brand-gold text-white text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer font-sans rounded-full"
+                <Link
+                  href="/catalogo"
+                  onClick={() => closeCart()}
+                  className="rounded-full bg-stone-900 text-white px-6 py-2.5 text-xs sm:text-sm font-semibold uppercase tracking-wider hover:bg-stone-800 transition-all inline-flex items-center justify-center gap-2 shadow-sm"
                 >
-                  Explorar Catálogo
-                </button>
+                  Explorar Catálogo &rarr;
+                </Link>
               </div>
             ) : (
               cart.map((item, idx) => (

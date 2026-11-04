@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface BannerSlide {
   id: string;
@@ -15,11 +15,14 @@ export interface BannerSlide {
   desktopSrc: string; // ej: '/banners/desktop/banner con todos los prods.png'
   mobileSrc: string;  // ej: '/banners/mobile/banner con todos los prods.png'
   alt: string;
-  // Compatibilidad con props alternativas
+  // Compatibilidad y campos editoriales
+  kicker?: string;
+  description?: string;
+  link?: string;
+  title?: string;
   imageDesktop?: string;
   imageMobile?: string;
   image?: string;
-  title?: string;
 }
 
 export const BANNERS_DATA: BannerSlide[] = [
@@ -27,9 +30,13 @@ export const BANNERS_DATA: BannerSlide[] = [
     id: 'todos-los-prods',
     slug: 'banner-todos-los-prods',
     titulo: 'Colección Botánica & Cera de Soya',
+    title: 'Colección Botánica & Cera de Soya',
     subtitulo: 'Aromaterapia pura vertida a mano en Bogotá',
+    description: 'Aromaterapia pura vertida a mano en Bogotá con 100% cera de soya natural y flores botánicas.',
     ctaText: 'Explorar Catálogo',
     enlace: '/catalogo',
+    link: '/catalogo',
+    kicker: 'Colección Signature',
     desktopSrc: '/banners/desktop/banner con todos los prods.png',
     mobileSrc: '/banners/mobile/banner con todos los prods.png',
     alt: 'Colección completa de velas artesanales y botánicas Sandra Gil Bogotá',
@@ -38,9 +45,13 @@ export const BANNERS_DATA: BannerSlide[] = [
     id: 'velas-esculpidas',
     slug: 'banner-velas-esculpidas',
     titulo: 'Velas Esculpidas',
+    title: 'Velas Esculpidas',
     subtitulo: 'Diseños de molde decorativos para elevar tus espacios',
-    ctaText: 'Ver detalles',
+    description: 'Diseños de molde decorativos para elevar tus espacios con luz suave y texturas artesanales.',
+    ctaText: 'Ver Colección',
     enlace: '/catalogo?tipo=VELA_ESCULPIDA',
+    link: '/catalogo?tipo=VELA_ESCULPIDA',
+    kicker: 'Arte & Moldes Botánicos',
     desktopSrc: '/banners/desktop/banner velas esculpidas.png',
     mobileSrc: '/banners/mobile/banner velas esculpidas.png',
     alt: 'Velas artesanales esculpidas de cera de soya Sandra Gil Bogotá',
@@ -49,9 +60,13 @@ export const BANNERS_DATA: BannerSlide[] = [
     id: 'velas-envase',
     slug: 'banner-velas-envase',
     titulo: 'Velas en Envase',
+    title: 'Velas en Envase',
     subtitulo: 'Contenedores reutilizables con aromas envolventes',
-    ctaText: 'Ver detalles',
+    description: 'Contenedores reutilizables con aromas envolventes y combustión limpia de larga duración.',
+    ctaText: 'Ver Velas en Envase',
     enlace: '/catalogo?tipo=VELA_ENVASE',
+    link: '/catalogo?tipo=VELA_ENVASE',
+    kicker: 'Aromaterapia Pura',
     desktopSrc: '/banners/desktop/banner velas envase.jpg',
     mobileSrc: '/banners/mobile/banner velas envase.jpg',
     alt: 'Velas aromáticas en envase artesanal de cera de soya',
@@ -60,9 +75,13 @@ export const BANNERS_DATA: BannerSlide[] = [
     id: 'jabones-artesanales',
     slug: 'banner-jabones-artesanales',
     titulo: 'Jabones Artesanales',
+    title: 'Jabones Artesanales',
     subtitulo: 'Cuidado botánico natural para tu piel',
-    ctaText: 'Ver detalles',
+    description: 'Cuidado botánico natural para tu piel con aceites esenciales nutritivos y extractos florales.',
+    ctaText: 'Ver Jabones',
     enlace: '/catalogo?tipo=JABON',
+    link: '/catalogo?tipo=JABON',
+    kicker: 'Cosmética Natural',
     desktopSrc: '/banners/desktop/banner jabones artesalanes.png',
     mobileSrc: '/banners/mobile/banner jabones artesalanes.png',
     alt: 'Jabones artesanales naturales Sandra Gil Bogotá',
@@ -71,9 +90,13 @@ export const BANNERS_DATA: BannerSlide[] = [
     id: 'velas-bajo-pedido',
     slug: 'banner-velas-bajo-pedido',
     titulo: 'Velas Personalizadas & Bajo Pedido',
+    title: 'Velas Bajo Pedido',
     subtitulo: 'Detalles exclusivos para eventos y ocasiones especiales',
-    ctaText: 'Cotizar Personalizadas',
+    description: 'Detalles exclusivos para bodas, recordatorios, eventos corporativos y celebraciones especiales.',
+    ctaText: 'Cotizar Bajo Pedido',
     enlace: '/personalizadas',
+    link: '/personalizadas',
+    kicker: 'Eventos & Recordatorios',
     desktopSrc: '/banners/desktop/banner velas bajo pedido.png',
     mobileSrc: '/banners/mobile/banner velas bajo pedido.png',
     alt: 'Velas personalizadas bajo pedido para eventos especiales en Bogotá',
@@ -84,10 +107,10 @@ const AUTOPLAY_DURATION = 5500; // 5.5s por slide
 
 /**
  * Subcomponente de imagen responsiva con Art Direction nativa de Next.js:
- * En pantallas >= sm (Tablet y Desktop) consume la versión panorámica (1920x500).
- * En pantallas < sm (Mobile) consume la versión móvil (800x600, proporción 16:9 recortada al foco inferior).
+ * En pantallas >= sm (Tablet y Desktop) consume la versión panorámica (1920x620).
+ * En pantallas < sm (Mobile) consume la versión móvil con calibración object-[center_60%].
  * Calibración de object-position:
- * - Mobile: object-[center_80%] para anclar el tercio inferior (mesa y piezas) y descartar pared/techo.
+ * - Mobile: object-[center_60%] para conservar tanto la base de los productos como la parte superior.
  * - Desktop: object-center para un encuadre panorámico balanceado.
  */
 export function ResponsiveBannerImage({
@@ -105,7 +128,7 @@ export function ResponsiveBannerImage({
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#FAF8F5] bg-stone-100">
-      {/* Imagen para Celular (< sm): enfoque inferior al 80% para priorizar productos y mesa */}
+      {/* Imagen para Celular (< sm): calibración object-[center_60%] */}
       <div className="block sm:hidden absolute inset-0">
         <Image
           src={encodedMobile}
@@ -113,11 +136,11 @@ export function ResponsiveBannerImage({
           fill
           priority={isFirst}
           sizes="100vw"
-          className="object-cover object-[center_80%] w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+          className="object-cover object-[center_60%] w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
         />
       </div>
 
-      {/* Imagen para Tablet y PC (sm:): 1920x500 panorámica con enfoque centrado */}
+      {/* Imagen para Tablet y PC (sm:): 1920x620 panorámica con enfoque centrado */}
       <div className="hidden sm:block absolute inset-0">
         <Image
           src={encodedDesktop}
@@ -227,12 +250,12 @@ export default function HeroBannerCarousel() {
       </h1>
 
       {/* Contenedor responsivo con relación de aspecto fluida anti-CLS:
-          - Mobile (< sm): aspect-[16/9] (altura contenida de ~215px a 225px).
+          - Mobile (< sm): aspect-[16/8] (altura compacta y panorámica, evita cortes en móvil).
           - Tablet (sm:): sm:aspect-[16/6] (proporción intermedia balanceada).
-          - Desktop (lg:): lg:aspect-[1920/500] (proporción panorámica nativa 1920x500).
+          - Desktop (lg:): lg:aspect-[1920/620] (composición amplia y vertical para respirar).
       */}
       <div
-        className="relative w-full aspect-[16/9] sm:aspect-[16/6] lg:aspect-[1920/500] overflow-hidden select-none bg-[#FAF8F5] bg-stone-100"
+        className="relative w-full aspect-[16/8] sm:aspect-[16/6] lg:aspect-[1920/620] overflow-hidden select-none bg-[#FAF8F5] bg-stone-100"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -246,56 +269,91 @@ export default function HeroBannerCarousel() {
           {BANNERS_DATA.map((slide, index) => {
             const isActive = index === currentIndex;
             const isFirst = index === 0;
+            const title = slide.title || slide.titulo;
+            const description = slide.description || slide.subtitulo;
+            const link = slide.link || slide.enlace;
+            const kicker = slide.kicker || 'Colección Artesanal';
+            const ctaText = slide.ctaText || 'Explorar Colección';
+
+            const mobileButtonText =
+              title === 'Velas Bajo Pedido' || title === 'Velas Personalizadas & Bajo Pedido'
+                ? 'Cotizar Bajo Pedido'
+                : title === 'Colección Botánica & Cera de Soya'
+                ? 'Ver Catálogo Completo'
+                : title.startsWith('Ver ')
+                ? title
+                : `Ver ${title}`;
 
             return (
               <div
                 key={slide.id}
                 role="group"
                 aria-roledescription="slide"
-                aria-label={`Slide ${index + 1} de ${totalSlides}: ${slide.titulo}`}
+                aria-label={`Slide ${index + 1} de ${totalSlides}: ${title}`}
                 aria-hidden={!isActive}
                 className="relative h-full w-full shrink-0 group/slide bg-[#FAF8F5] bg-stone-100"
               >
+                {/* Enlace de fondo para la imagen (accesible y clickable en toda la composición) */}
                 <Link
-                  href={slide.enlace}
+                  href={link}
                   tabIndex={isActive ? 0 : -1}
                   className="block relative w-full h-full cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
                 >
-                  {/* Art Direction responsiva: Mobile 800x600 (object-[center_80%]) vs Desktop 1920x500 */}
+                  {/* Art Direction responsiva: Mobile 800x600 (object-[center_60%]) vs Desktop 1920x620 */}
                   <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
 
-                  {/* Degradado suave de fondo en la base del slide para contraste sin tapar la foto */}
+                  {/* Sutil viñeta degradada para legibilidad */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-x-0 bottom-0 h-16 sm:h-28 bg-gradient-to-t from-black/35 via-black/10 to-transparent pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-t from-stone-950/30 via-transparent to-transparent pointer-events-none"
                   />
-
-                  {/* Pastilla editorial flotante compacta con llamada a la acción (CTA) */}
-                  <div className="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 z-20 flex items-center gap-1.5 sm:gap-3 bg-white/95 backdrop-blur-md py-1 px-2.5 sm:py-2 sm:px-4 rounded-full shadow-md border border-stone-200/60 max-w-[calc(100%-80px)] group-hover/slide:shadow-xl transition-all duration-300">
-                    <div className="min-w-0 flex-1">
-                      <div className="hidden sm:flex items-center gap-1.5 mb-0.5">
-                        <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                        <span className="text-[10px] uppercase font-bold tracking-widest text-brand-gold">
-                          Sandra Gil Bogotá
-                        </span>
-                      </div>
-                      <h2 className="text-[10px] sm:text-xs font-serif text-stone-800 truncate leading-tight">
-                        {slide.titulo}
-                      </h2>
-                      {slide.subtitulo && (
-                        <p className="hidden sm:block text-[11px] text-stone-600 font-light truncate mt-0.5">
-                          {slide.subtitulo}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Botón CTA píldora compacto */}
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-4 sm:py-1.5 bg-stone-900 hover:bg-stone-800 text-white text-[9px] sm:text-xs font-semibold uppercase tracking-wider rounded-full shadow-xs shrink-0 transition-all duration-200 group-hover/slide:translate-x-0.5">
-                      <span>{slide.ctaText}</span>
-                      <ArrowRight className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-brand-gold transition-transform duration-200 group-hover/slide:translate-x-0.5" />
-                    </span>
-                  </div>
                 </Link>
+
+                {/* Contenido Editorial Izquierdo para Desktop (>= sm) */}
+                <div className="hidden sm:flex absolute inset-y-0 left-0 items-center z-20 pl-8 sm:pl-12 lg:pl-16 max-w-md lg:max-w-xl pointer-events-none">
+                  <div className="pointer-events-auto space-y-3 lg:space-y-4 bg-white/40 lg:bg-transparent backdrop-blur-xs lg:backdrop-blur-none p-6 lg:p-0 rounded-3xl">
+                    {/* Kicker superior */}
+                    <span className="inline-block text-[11px] lg:text-xs font-semibold uppercase tracking-[0.25em] text-amber-700 bg-amber-50/80 border border-amber-200/60 rounded-full px-3.5 py-1">
+                      {kicker}
+                    </span>
+
+                    {/* Título de la categoría */}
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-stone-900 leading-[1.1] tracking-tight drop-shadow-xs">
+                      {title}
+                    </h2>
+
+                    {/* Subtítulo / Descripción */}
+                    {description && (
+                      <p className="text-xs sm:text-sm lg:text-base text-stone-700 font-light leading-relaxed max-w-sm lg:max-w-md line-clamp-2 lg:line-clamp-3">
+                        {description}
+                      </p>
+                    )}
+
+                    {/* Botón de Acción Principal (Pill) */}
+                    <div className="pt-2">
+                      <Link
+                        href={link}
+                        tabIndex={isActive ? 0 : -1}
+                        className="inline-flex items-center gap-2.5 rounded-full px-6 lg:px-8 py-3 lg:py-3.5 text-xs lg:text-sm font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                      >
+                        <span>{ctaText}</span>
+                        <span aria-hidden="true">&rarr;</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Botón Compacto Exclusivo para Móvil (< sm) */}
+                <div className="sm:hidden absolute bottom-3 left-3 z-20 max-w-[calc(100%-80px)]">
+                  <Link
+                    href={link}
+                    tabIndex={isActive ? 0 : -1}
+                    className="inline-flex items-center gap-2 rounded-full py-2 px-4 bg-stone-900/90 backdrop-blur-md text-white text-xs font-semibold shadow-lg border border-white/20 active:scale-95 transition-all truncate"
+                  >
+                    <span className="truncate">{mobileButtonText}</span>
+                    <span aria-hidden="true" className="text-amber-400 font-bold">&rarr;</span>
+                  </Link>
+                </div>
               </div>
             );
           })}
@@ -325,7 +383,7 @@ export default function HeroBannerCarousel() {
         <div
           role="tablist"
           aria-label="Control de diapositivas"
-          className="absolute bottom-2 right-2 sm:bottom-6 sm:right-6 z-20 flex items-center gap-1 sm:gap-2 bg-stone-950/45 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20 shadow-md"
+          className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-1 sm:gap-2 bg-stone-950/45 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20 shadow-md"
         >
           {BANNERS_DATA.map((slide, idx) => {
             const isCurrent = idx === currentIndex;
@@ -335,7 +393,7 @@ export default function HeroBannerCarousel() {
                 type="button"
                 role="tab"
                 aria-selected={isCurrent}
-                aria-label={`Ir al slide ${idx + 1}: ${slide.titulo}`}
+                aria-label={`Ir al slide ${idx + 1}: ${slide.titulo || slide.title}`}
                 onClick={() => goToSlide(idx)}
                 className={`transition-all duration-300 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold ${
                   isCurrent

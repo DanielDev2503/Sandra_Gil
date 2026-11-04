@@ -3,7 +3,10 @@
 import React, { useRef, useState, useEffect, useMemo, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { AROMAS } from '@/lib/aromas';
 
 const WA_NUMBER = '573175752029';
 
@@ -15,6 +18,8 @@ export interface CarouselProduct {
   url_imagen: string | null;
   tipo?: string | null;
   esBajoPedido?: boolean | null;
+  aroma?: string | null;
+  stock?: number | null;
 }
 
 export interface GroupedProducts {
@@ -69,7 +74,182 @@ function fisherYatesShuffle<T>(array: T[]): T[] {
   return result;
 }
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
+
+interface CarouselProductCardProps {
+  product: CarouselProduct;
+  isBajoPedidoCategory: boolean;
+}
+
+/**
+ * Tarjeta de producto de altura compacta con selector de aroma inline
+ * idéntica en diseño y experiencia a la del catálogo.
+ */
+function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductCardProps) {
+  const { addToCart, clearCart } = useCart();
+  const router = useRouter();
+
+  const initialAroma = useMemo(() => {
+    if (product.aroma) {
+      const trimmed = product.aroma.trim();
+      const match = AROMAS.find((a) => a.toLowerCase() === trimmed.toLowerCase());
+      if (match) return match;
+      return trimmed;
+    }
+    return '';
+  }, [product.aroma]);
+
+  const [selectedAroma, setSelectedAroma] = useState<string>(initialAroma);
+
+  const imageUrl = product.url_imagen || '/logo-sandra.png';
+  const effectiveIsBajoPedido = isBajoPedidoCategory || Boolean(product.esBajoPedido);
+
+  // Enlace dinámico de WhatsApp para productos bajo pedido con el aroma seleccionado
+  const waAromaSuffix = selectedAroma ? ` con aroma: ${selectedAroma}` : '';
+  const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
+    `Hola Sandra, quisiera cotizar la vela personalizada: ${product.nombre}${waAromaSuffix}`
+  )}`;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const effectiveAroma = selectedAroma || AROMAS[0];
+    if (!selectedAroma) {
+      setSelectedAroma(effectiveAroma);
+    }
+    addToCart(
+      {
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        url_imagen: imageUrl,
+        aroma: effectiveAroma,
+      },
+      1,
+      effectiveAroma
+    );
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    clearCart();
+    const effectiveAroma = selectedAroma || AROMAS[0];
+    if (!selectedAroma) {
+      setSelectedAroma(effectiveAroma);
+    }
+    addToCart(
+      {
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        url_imagen: imageUrl,
+        aroma: effectiveAroma,
+      },
+      1,
+      effectiveAroma
+    );
+    router.push('/checkout');
+  };
+
+  return (
+    <div className="group/card bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300 w-[210px] sm:w-[240px] min-w-[210px] sm:min-w-[240px] shrink-0 flex-shrink-0 snap-start">
+      <div>
+        {/* 1. Imagen aspect-[4/3] con esquinas redondeadas superiores */}
+        <Link
+          href={`/productos/${product.slug}`}
+          className="relative aspect-[4/3] w-full block overflow-hidden bg-stone-100 rounded-t-xl group/img"
+          aria-label={`Ver detalles de ${product.nombre}`}
+        >
+          <Image
+            src={imageUrl}
+            alt={`Vela artesanal ${product.nombre} Sandra Gil`}
+            fill
+            sizes="(max-width: 640px) 210px, 240px"
+            className="object-cover object-center transition-transform duration-500 ease-out group-hover/img:scale-105"
+          />
+          <div className="absolute inset-0 bg-stone-950/10 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        </Link>
+
+        {/* 2. Cuerpo: Título y Selector de Aroma */}
+        <div className="p-2.5 sm:p-3 pb-1">
+          <Link href={`/productos/${product.slug}`} className="block group/title">
+            <h3 className="font-serif text-xs sm:text-sm font-medium text-stone-900 truncate my-1.5 group-hover/title:text-brand-brown transition-colors">
+              {product.nombre}
+            </h3>
+          </Link>
+
+          {/* Selector de aroma inline compacto */}
+          <label htmlFor={`carousel-aroma-${product.id}`} className="sr-only">
+            Seleccionar Aroma
+          </label>
+          <select
+            id={`carousel-aroma-${product.id}`}
+            value={selectedAroma}
+            onChange={(e) => setSelectedAroma(e.target.value)}
+            className="w-full text-[10px] sm:text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1 px-2.5 text-stone-700 focus:outline-none focus:border-amber-400 mb-2 truncate cursor-pointer"
+          >
+            <option value="" disabled>Aroma (28 disponibles)...</option>
+            {initialAroma && !AROMAS.some((a) => a.toLowerCase() === initialAroma.toLowerCase()) && (
+              <option value={initialAroma}>{initialAroma}</option>
+            )}
+            {AROMAS.map((a) => (
+              <option key={a} value={a}>
+                {a.charAt(0).toUpperCase() + a.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* 3. Precios y Botones */}
+      <div className="p-2.5 sm:p-3 pt-0 font-sans">
+        {effectiveIsBajoPedido ? (
+          <div>
+            <div className="pt-1.5 border-t border-stone-100 flex justify-between items-center mb-1.5">
+              <span className="text-[10px] sm:text-xs font-semibold text-brand-brown uppercase tracking-wider">
+                Bajo Pedido
+              </span>
+            </div>
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-amber-50/90 border border-amber-300 text-amber-950 hover:bg-amber-100 rounded-full py-1.5 px-3 text-[10px] sm:text-xs font-medium w-full flex items-center justify-center gap-1 transition-all duration-200 cursor-pointer active:scale-98 shadow-2xs"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-amber-800 shrink-0" />
+              <span className="truncate">Cotiza por WhatsApp</span>
+            </a>
+          </div>
+        ) : (
+          <div>
+            <div className="pt-1.5 border-t border-stone-100 flex justify-between items-center mb-1.5">
+              <span className="font-serif text-sm sm:text-base font-semibold tracking-tight text-[#B8862D]">
+                ${product.precio ? product.precio.toLocaleString('es-CO') : '0'} COP
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs"
+              >
+                Añadir
+              </button>
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs"
+              >
+                Comprar
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 interface CategoryCarouselProps {
   category: CategoryMeta;
@@ -132,7 +312,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
     if (container.scrollLeft <= 10) {
       container.scrollLeft += halfWidth;
     }
-    container.scrollBy({ left: -320, behavior: 'smooth' });
+    container.scrollBy({ left: -260, behavior: 'smooth' });
   };
 
   const scrollRight = () => {
@@ -142,7 +322,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
     if (container.scrollLeft >= halfWidth) {
       container.scrollLeft = 0;
     }
-    container.scrollBy({ left: 320, behavior: 'smooth' });
+    container.scrollBy({ left: 260, behavior: 'smooth' });
   };
 
   if (products.length === 0) return null;
@@ -153,7 +333,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
     >
       {/* Cabecera de Sección con enlace para explorar toda la categoría */}
-      <div className="flex items-end justify-between mb-6 sm:mb-8 pb-3 border-b border-brand-gold/15">
+      <div className="flex items-end justify-between mb-4 sm:mb-6 pb-2.5 border-b border-brand-gold/15">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold font-sans block mb-1">
             COLECCIÓN ARTESANAL
@@ -209,98 +389,15 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
           className="flex gap-4 overflow-x-auto scrollbar-none py-2 px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden will-change-[scroll-position]"
         >
           {displayProducts.map((product, index) => {
-            const imageUrl = product.url_imagen || '/logo-sandra.png';
             const isBajoPedido = category.key === 'BAJO_PEDIDO';
-            const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra%2C%20quisiera%20cotizar%20la%20vela%20personalizada%3A%20${encodeURIComponent(product.nombre)}`;
             const loopKey = `${product.id}-loop-${index}`;
 
-            if (isBajoPedido) {
-              return (
-                <div
-                  key={loopKey}
-                  className="group/card bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300 min-w-[220px] sm:min-w-[260px] w-[220px] sm:w-[260px] shrink-0 flex-shrink-0"
-                >
-                  <div>
-                    {/* 1. Imagen del Producto con enlace al detalle */}
-                    <Link
-                      href={`/productos/${product.slug}`}
-                      className="relative aspect-[4/5] w-full overflow-hidden bg-stone-100 block"
-                      aria-label={`Ver detalles de ${product.nombre}`}
-                    >
-                      <Image
-                        src={imageUrl}
-                        alt={`Vela artesanal ${product.nombre} Sandra Gil`}
-                        fill
-                        sizes="(max-width: 640px) 220px, 260px"
-                        className="object-cover object-center transition-transform duration-700 ease-out group-hover/card:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-stone-950/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    </Link>
-
-                    {/* 2. Título */}
-                    <div className="p-4 sm:p-5">
-                      <Link href={`/productos/${product.slug}`} className="block">
-                        <h3 className="font-serif font-medium text-stone-800 text-sm sm:text-base group-hover/card:text-brand-brown transition-colors duration-200 line-clamp-2 leading-snug">
-                          {product.nombre}
-                        </h3>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* 3. Botón Cotiza por WhatsApp */}
-                  <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0">
-                    <div className="pt-2.5 border-t border-brand-gold/15">
-                      <a
-                        href={waLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-2.5 px-3 text-center text-xs sm:text-sm font-medium rounded-full bg-amber-50/80 border border-amber-300/80 text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs hover:shadow-md cursor-pointer active:scale-98"
-                      >
-                        <MessageCircle className="w-4 h-4 shrink-0 text-amber-700" />
-                        <span>Cotiza por WhatsApp</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
             return (
-              <Link
+              <CarouselProductCard
                 key={loopKey}
-                href={`/productos/${product.slug}`}
-                className="group/card bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300 min-w-[220px] sm:min-w-[260px] w-[220px] sm:w-[260px] shrink-0 flex-shrink-0"
-              >
-                <div>
-                  {/* 1. Imagen del Producto con relación aspect-[4/5] */}
-                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-stone-100">
-                    <Image
-                      src={imageUrl}
-                      alt={`Vela artesanal ${product.nombre} Sandra Gil`}
-                      fill
-                      sizes="(max-width: 640px) 220px, 260px"
-                      className="object-cover object-center transition-transform duration-700 ease-out group-hover/card:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-stone-950/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                  </div>
-
-                  {/* 2. Título */}
-                  <div className="p-4 sm:p-5">
-                    <h3 className="font-serif font-medium text-stone-800 text-sm sm:text-base group-hover/card:text-brand-brown transition-colors duration-200 line-clamp-2 leading-snug">
-                      {product.nombre}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* 3. Precio */}
-                <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0">
-                  <div className="pt-2.5 border-t border-brand-gold/15 flex items-center min-h-[38px]">
-                    <span className="font-serif font-semibold text-brand-brown text-sm sm:text-base">
-                      ${product.precio ? product.precio.toLocaleString('es-CO') : '0'} COP
-                    </span>
-                  </div>
-                </div>
-              </Link>
+                product={product}
+                isBajoPedidoCategory={isBajoPedido}
+              />
             );
           })}
         </div>
@@ -348,7 +445,7 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
   }, [isMounted, groupedProducts]);
 
   return (
-    <div className="w-full bg-[#FAF8F5] py-10 sm:py-16 space-y-12 sm:space-y-16">
+    <div className="w-full bg-[#FAF8F5] py-6 sm:py-10 space-y-8 sm:space-y-10">
       {categories.map((category) => {
         const products = shuffledMap[category.key] || [];
         return (

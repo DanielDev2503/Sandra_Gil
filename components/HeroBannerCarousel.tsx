@@ -37,7 +37,7 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo',
     link: '/catalogo',
     kicker: 'Colección Signature',
-    desktopSrc: '/banners/desktop/banner con todos los prods.png',
+    desktopSrc: '/banners/desktop/banner con todos los prods.jpg',
     mobileSrc: '/banners/mobile/banner con todos los prods.png',
     alt: 'Colección completa de velas artesanales y botánicas Sandra Gil Bogotá',
   },
@@ -52,7 +52,7 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo?tipo=VELA_ESCULPIDA',
     link: '/catalogo?tipo=VELA_ESCULPIDA',
     kicker: 'Arte & Moldes Botánicos',
-    desktopSrc: '/banners/desktop/banner velas esculpidas.png',
+    desktopSrc: '/banners/desktop/banner velas esculpidas.jpg',
     mobileSrc: '/banners/mobile/banner velas esculpidas.png',
     alt: 'Velas artesanales esculpidas de cera de soya Sandra Gil Bogotá',
   },
@@ -82,7 +82,7 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo?tipo=JABON',
     link: '/catalogo?tipo=JABON',
     kicker: 'Cosmética Natural',
-    desktopSrc: '/banners/desktop/banner jabones artesalanes.png',
+    desktopSrc: '/banners/desktop/banner jabones artesalanes.jpg',
     mobileSrc: '/banners/mobile/banner jabones artesalanes.png',
     alt: 'Jabones artesanales naturales Sandra Gil Bogotá',
   },
@@ -97,7 +97,7 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/personalizadas',
     link: '/personalizadas',
     kicker: 'Eventos & Recordatorios',
-    desktopSrc: '/banners/desktop/banner velas bajo pedido.png',
+    desktopSrc: '/banners/desktop/banner velas bajo pedido.jpg',
     mobileSrc: '/banners/mobile/banner velas bajo pedido.png',
     alt: 'Velas personalizadas bajo pedido para eventos especiales en Bogotá',
   },
@@ -122,8 +122,15 @@ export function ResponsiveBannerImage({
 }) {
   const desktopSource = slide.desktopSrc || slide.imageDesktop || slide.image || '';
   const mobileSource = slide.mobileSrc || slide.imageMobile || slide.image || desktopSource;
-  const encodedDesktop = encodeURI(desktopSource);
-  const encodedMobile = encodeURI(mobileSource);
+
+  const [desktopSrc, setDesktopSrc] = useState(desktopSource);
+  const [mobileSrc, setMobileSrc] = useState(mobileSource);
+
+  useEffect(() => {
+    setDesktopSrc(desktopSource);
+    setMobileSrc(mobileSource);
+  }, [desktopSource, mobileSource]);
+
   const altText = slide.alt || slide.title || slide.titulo;
 
   return (
@@ -131,24 +138,42 @@ export function ResponsiveBannerImage({
       {/* Imagen para Celular (< sm): calibración object-[center_60%] */}
       <div className="block sm:hidden absolute inset-0">
         <Image
-          src={encodedMobile}
+          src={encodeURI(mobileSrc)}
           alt={altText}
           fill
           priority={isFirst}
+          unoptimized
           sizes="100vw"
           className="object-cover object-[center_60%] w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+          onError={() => {
+            if (mobileSrc.endsWith('.png')) {
+              setMobileSrc(mobileSrc.replace(/\.png$/, '.jpg'));
+            } else if (mobileSrc.endsWith('.jpg')) {
+              setMobileSrc(mobileSrc.replace(/\.jpg$/, '.png'));
+            } else if (mobileSrc !== desktopSource) {
+              setMobileSrc(desktopSource);
+            }
+          }}
         />
       </div>
 
       {/* Imagen para Tablet y PC (sm:): 1920x620 panorámica con enfoque centrado */}
       <div className="hidden sm:block absolute inset-0">
         <Image
-          src={encodedDesktop}
+          src={encodeURI(desktopSrc)}
           alt={altText}
           fill
           priority={isFirst}
+          unoptimized
           sizes="100vw"
           className="object-cover object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+          onError={() => {
+            if (desktopSrc.endsWith('.png')) {
+              setDesktopSrc(desktopSrc.replace(/\.png$/, '.jpg'));
+            } else if (desktopSrc.endsWith('.jpg')) {
+              setDesktopSrc(desktopSrc.replace(/\.jpg$/, '.png'));
+            }
+          }}
         />
       </div>
     </div>

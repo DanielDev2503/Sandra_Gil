@@ -181,7 +181,23 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
           
           {/* Left: Interactive Media Gallery */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="relative aspect-square bg-[#FAF8F5] rounded-2xl overflow-hidden border border-brand-gold/20 shadow-xl group">
+            <div className="relative aspect-square bg-gradient-to-b from-[#FAF8F5] via-[#F5EFEB] to-[#EAE3DA] rounded-2xl overflow-hidden border border-brand-gold/25 shadow-xl group">
+              {/* Ambient candle background glow */}
+              {currentDisplayImage && (
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 filter blur-3xl scale-125"
+                >
+                  <SkeletonImage
+                    src={currentDisplayImage}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="200px"
+                  />
+                </div>
+              )}
+
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentDisplayImage}
@@ -189,12 +205,12 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.35, ease: 'easeInOut' }}
-                  className="relative w-full h-full"
+                  className="relative w-full h-full flex items-center justify-center p-4 sm:p-6"
                 >
                   <SkeletonImage
                     src={currentDisplayImage}
                     alt={product.tipo === 'JABON' ? `Jabón artesanal botánico ${product.nombre} Sandra Gil - Taller Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural Sandra Gil - Taller Bogotá`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-102"
                     fill
                     sizes="(max-width: 1024px) 100vw, (max-width: 1200px) 50vw, 600px"
                   />
@@ -221,7 +237,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${
+                    className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 shrink-0 transition-all cursor-pointer bg-white ${
                       activeImageIndex === idx
                         ? 'border-brand-gold ring-2 ring-brand-gold/30 scale-105'
                         : 'border-stone-200 opacity-70 hover:opacity-100'
@@ -231,7 +247,7 @@ export default function InteractiveProductShowcase({ product, availableAromas = 
                       src={img}
                       alt={product.tipo === 'JABON' ? `Jabón artesanal botánico ${product.nombre} – miniatura ${idx + 1} Sandra Gil Bogotá` : `Vela artesanal ${product.nombre} en cera de soya natural – miniatura ${idx + 1} Sandra Gil Bogotá`}
                       fill
-                      className="object-cover"
+                      className="object-contain p-1"
                       sizes="80px"
                     />
                   </button>

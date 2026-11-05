@@ -40,9 +40,9 @@ export const INITIAL_FAQS: FAQItem[] = [
   },
   {
     id: 'faq-envios-3',
-    pregunta: '¿Cómo protegen las velas y flores botánicas durante el transporte?',
+    pregunta: '¿Cómo protegen las velas y flores artesanales durante el transporte?',
     respuesta:
-      'Utilizamos un sistema de embalaje multicapa eco-amigable con papel kraft corrugado, burbuja amortiguadora y cajas rígidas reforzadas. Nuestras flores botánicas naturales van selladas e inmovilizadas para evitar desprendimientos por movimiento, con garantía total de reposición en caso de avería.',
+      'Utilizamos un sistema de embalaje multicapa eco-amigable con papel kraft corrugado, burbuja amortiguadora y cajas rígidas reforzadas. Nuestras flores artesanales van selladas e inmovilizadas para evitar desprendimientos por movimiento, con garantía total de reposición en caso de avería.',
     categoria: 'Envíos y Entregas',
     orden: 3,
     activo: true,
@@ -78,9 +78,9 @@ export const INITIAL_FAQS: FAQItem[] = [
   },
   {
     id: 'faq-cuidados-3',
-    pregunta: '¿Qué precauciones debo tener con las flores botánicas naturales e incrustaciones?',
+    pregunta: '¿Qué precauciones debo tener con las flores artesanales e incrustaciones?',
     respuesta:
-      'Nuestras flores botánicas naturales y cristales están dispuestos artesanalmente en la superficie. A medida que la cera se consume, si algún elemento botánico se acerca a la llama, te sugerimos retirarlo suavemente con unas pinzas o empujarlo hacia el borde del envase para mantener una llama pura e impecable.',
+      'Nuestras flores artesanales y cristales están dispuestos artesanalmente en la superficie. A medida que la cera se consume, si algún elemento botánico se acerca a la llama, te sugerimos retirarlo suavemente con unas pinzas o empujarlo hacia el borde del envase para mantener una llama pura e impecable.',
     categoria: 'Cuidados de la Vela',
     orden: 7,
     activo: true,
@@ -167,7 +167,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-personalizadas-1',
     pregunta: '¿Elaboran recordatorios y detalles para bodas, bautizos y eventos corporativos?',
     respuesta:
-      'Sí, diseñamos recuerdos personalizados para todo tipo de celebraciones y regalos corporativos: personalización de etiquetas con tu nombre o logo, selección de flores botánicas naturales temáticas, aromas a elección y empaques de lujo con precios especiales por volumen.',
+      'Sí, diseñamos recuerdos personalizados para todo tipo de celebraciones y regalos corporativos: personalización de etiquetas con tu nombre o logo, selección de flores artesanales temáticas, aromas a elección y empaques de lujo con precios especiales por volumen.',
     categoria: 'Personalizadas y Eventos',
     orden: 16,
     activo: true,

@@ -21,7 +21,7 @@ export default function CartDrawer() {
 
       <div className="absolute inset-y-0 right-0 flex max-w-full pl-6 sm:pl-10">
         {/* Panel */}
-        <div className="w-screen max-w-md transform bg-[#FAF8F5] shadow-2xl transition-all duration-300 ease-in-out flex flex-col h-full border-l border-stone-200">
+        <div className="w-full max-w-md transform bg-[#FAF8F5] shadow-2xl transition-all duration-300 ease-in-out flex flex-col h-full border-l border-stone-200">
           {/* Header */}
           <div className="px-6 py-5 border-b border-stone-200/80 bg-white flex items-center justify-between">
             <h2 className="text-xl font-serif font-medium text-stone-900 flex items-center gap-2">

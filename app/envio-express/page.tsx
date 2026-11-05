@@ -71,9 +71,9 @@ export default function ExpressShippingPage() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-[#F5EDD8] via-[#FAF6ED] to-brand-cream py-10 sm:py-16 border-b border-brand-gold/20">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-4">
+        {/* Header / Hero Section (Sin párrafo redundante) */}
+        <section className="bg-gradient-to-b from-[#F5EDD8] via-[#FAF6ED] to-brand-cream py-8 sm:py-12 border-b border-brand-gold/20">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-100/90 border border-amber-300/70 rounded-full shadow-xs">
               <Zap className="w-4 h-4 text-amber-600 fill-amber-500 shrink-0" />
               <span className="text-[10px] sm:text-xs font-bold text-amber-900 uppercase tracking-widest">
@@ -87,76 +87,73 @@ export default function ExpressShippingPage() {
                 (Mismo Día / Entrega Rápida)
               </span>
             </h1>
-
-            <p className="text-stone-600 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-light">
-              ¿Necesitas tus velas decorativas o aromáticas con urgencia en Bogotá? Te ofrecemos atención prioritaria y envío por mensajería directa para que disfrutes de la luz de Sandra Gil el mismo día.
-            </p>
           </div>
         </section>
 
-        {/* Informational Cards Section */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-brand-gold">
-              Condiciones del Servicio
-            </span>
-            <h2 className="text-xl sm:text-3xl font-serif text-stone-900">
-              Puntos Clave que Debes Tener en Cuenta
-            </h2>
-            <div className="w-12 h-[2px] bg-brand-gold mx-auto mt-2"></div>
-          </div>
-
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
-            {KEY_POINTS.map((point, index) => {
-              const Icon = point.icon;
-              const gridSpanClass =
-                index === 3
-                  ? 'md:col-span-1 lg:col-span-2 lg:col-start-2'
-                  : index === 4
-                  ? 'md:col-span-2 lg:col-span-2 border-amber-300/80 bg-amber-50/20'
-                  : 'md:col-span-1 lg:col-span-2';
-              return (
-                <div
-                  key={index}
-                  className={`bg-white rounded-xl border border-stone-200/80 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between ${
-                    gridSpanClass
-                  }`}
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-lg bg-amber-100/80 text-amber-800 flex items-center justify-center shrink-0">
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 bg-stone-100 text-stone-600 rounded-md">
-                        {point.badge}
-                      </span>
-                    </div>
-
-                    <h3 className="font-serif text-base sm:text-lg font-semibold text-stone-900">
-                      {point.title}
-                    </h3>
-
-                    <div className="inline-block px-2 py-0.5 bg-amber-100/60 rounded text-xs font-semibold text-amber-900 border border-amber-200/60">
-                      {point.highlight}
-                    </div>
-
-                    <p className="text-xs text-stone-600 leading-relaxed pt-1">
-                      {point.desc}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Interactive Form Component */}
-          <div className="pt-6">
+        {/* Contenido Principal Reordenado para Máxima Conversión */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+          {/* 1. FORMULARIO: SOLICITUD DIRECTA POR WHATSAPP (Subido al inicio como foco principal) */}
+          <section className="mb-10 sm:mb-14 max-w-4xl mx-auto">
             <ExpressShippingForm />
-          </div>
+          </section>
 
-          {/* Extra Guarantee / Navigation Banner */}
-          <div className="bg-stone-900 text-stone-100 rounded-xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
+          {/* 2. CONDICIONES DEL SERVICIO / PUNTOS CLAVE (Ubicado después del formulario) */}
+          <section className="mb-10 sm:mb-14 space-y-6 sm:space-y-8">
+            <div className="text-center space-y-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-brand-gold">
+                Condiciones del Servicio
+              </span>
+              <h2 className="text-xl sm:text-3xl font-serif text-stone-900">
+                Puntos Clave que Debes Tener en Cuenta
+              </h2>
+              <div className="w-12 h-[2px] bg-brand-gold mx-auto mt-2" />
+            </div>
+
+            {/* Rejilla de 5 tarjetas (manteniendo la alineación centrada de las tarjetas 4 y 5) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
+              {KEY_POINTS.map((point, index) => {
+                const Icon = point.icon;
+                const gridSpanClass =
+                  index === 3
+                    ? 'md:col-span-1 lg:col-span-2 lg:col-start-2'
+                    : index === 4
+                    ? 'md:col-span-2 lg:col-span-2 border-amber-300/80 bg-amber-50/20'
+                    : 'md:col-span-1 lg:col-span-2';
+                return (
+                  <div
+                    key={index}
+                    className={`bg-white rounded-xl border border-stone-200/80 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between ${gridSpanClass}`}
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="w-10 h-10 rounded-lg bg-amber-100/80 text-amber-800 flex items-center justify-center shrink-0">
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 bg-stone-100 text-stone-600 rounded-md">
+                          {point.badge}
+                        </span>
+                      </div>
+
+                      <h3 className="font-serif text-base sm:text-lg font-semibold text-stone-900">
+                        {point.title}
+                      </h3>
+
+                      <div className="inline-block px-2 py-0.5 bg-amber-100/60 rounded text-xs font-semibold text-amber-900 border border-amber-200/60">
+                        {point.highlight}
+                      </div>
+
+                      <p className="text-xs text-stone-600 leading-relaxed pt-1">
+                        {point.desc}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* 3. BANNER DE GARANTÍA / CATÁLOGO (Al final) */}
+          <section className="bg-stone-900 text-stone-100 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
             <div className="space-y-1.5 text-center sm:text-left">
               <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-semibold uppercase tracking-wider">
                 <ShieldCheck className="w-4 h-4" />
@@ -177,8 +174,8 @@ export default function ExpressShippingPage() {
               <span>Ver Catálogo</span>
               <ChevronRight className="w-4 h-4 text-amber-950" />
             </Link>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
 
       <Footer />

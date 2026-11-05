@@ -32,7 +32,7 @@ export const BANNERS_DATA: BannerSlide[] = [
     titulo: 'Colección Botánica & Cera de Soya',
     title: 'Colección Botánica & Cera de Soya',
     subtitulo: 'Aromaterapia pura vertida a mano en Bogotá',
-    description: 'Aromaterapia pura vertida a mano en Bogotá con 100% cera de soya natural y flores botánicas.',
+    description: 'Aromaterapia pura vertida a mano en Bogotá con 100% cera de soya natural y esencias selectas.',
     ctaText: 'Explorar Catálogo',
     enlace: '/catalogo',
     link: '/catalogo',

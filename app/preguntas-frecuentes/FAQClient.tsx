@@ -7,9 +7,6 @@ import {
   X,
   ChevronDown,
   Sparkles,
-  Truck,
-  Flame,
-  Gift,
   MessageCircle,
   HelpCircle,
   Clock,
@@ -104,413 +101,393 @@ export default function FAQClient({ initialFaqs }: FAQClientProps) {
   };
 
   return (
-    <div className="w-full">
-      {/* ── HERO BANNER & SEARCH ────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#F7F3EC] via-[#FAF8F5] to-[#FAF8F5] pt-12 pb-16 sm:pt-16 sm:pb-20 border-b border-stone-200/40">
-        {/* Glow ambient background effects */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 left-10 w-80 h-80 bg-amber-200/15 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/90 backdrop-blur-xs rounded-full border border-brand-gold/30 shadow-xs mb-4 sm:mb-6">
-            <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
-            <span className="text-[10px] sm:text-xs font-bold text-brand-brown uppercase tracking-widest font-sans">
-              Centro de Ayuda & Guía Artesanal
+    <div className="w-full bg-[#FAF8F5]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        {/* Mobile Header (< lg) */}
+        <div className="lg:hidden mb-4">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-full border border-brand-gold/30 shadow-xs mb-2">
+            <Sparkles className="w-3 h-3 text-brand-gold" />
+            <span className="text-[10px] font-bold text-brand-brown uppercase tracking-widest font-sans">
+              Centro de Ayuda
             </span>
           </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 tracking-tight">
             Preguntas <span className="italic font-normal text-brand-gold">Frecuentes</span>
           </h1>
-
-          <p className="mt-3 sm:mt-4 text-stone-600 text-xs sm:text-sm md:text-base max-w-xl mx-auto leading-relaxed font-sans font-light">
-            Encuentra respuestas inmediatas sobre nuestras velas de cera de soya, envíos en Bogotá,
-            formas de pago seguras y el cuidado ideal para tu vela.
+          <p className="mt-1 text-stone-600 text-xs font-sans font-light">
+            Respuestas sobre nuestras velas de cera de soya, envíos en Bogotá y pedidos especiales.
           </p>
+        </div>
 
-          {/* Search Box */}
-          <div className="mt-6 sm:mt-8 max-w-2xl mx-auto">
-            <div className="relative flex items-center bg-white rounded-2xl shadow-md sm:shadow-lg border border-brand-gold/25 focus-within:border-brand-gold focus-within:ring-4 focus-within:ring-brand-gold/15 transition-all duration-300">
-              <div className="pl-4 sm:pl-5 text-stone-400">
-                <Search className="w-5 h-5 sm:w-5 sm:h-5 text-brand-gold/80" />
+        {/* Responsive 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-10 items-start">
+          {/* ── LEFT COLUMN: PREGUNTAS (lg:col-span-7 xl:col-span-8 order-2 lg:order-1) ── */}
+          <div className="lg:col-span-7 xl:col-span-8 order-2 lg:order-1">
+            {/* Desktop Header */}
+            <div className="hidden lg:block mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/90 rounded-full border border-brand-gold/30 shadow-xs mb-2.5">
+                <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
+                <span className="text-[10px] sm:text-xs font-bold text-brand-brown uppercase tracking-widest font-sans">
+                  Centro de Ayuda & Guía Artesanal
+                </span>
               </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Busca por 'envíos', 'pabilo', 'cera de soya', 'pagos'..."
-                className="w-full py-3.5 sm:py-4 pl-3 pr-10 sm:pr-12 text-xs sm:text-sm text-stone-800 placeholder-stone-400 bg-transparent focus:outline-none font-sans"
-                aria-label="Buscar en preguntas frecuentes"
-              />
-              {searchQuery && (
+              <h1 className="text-3xl xl:text-4xl font-serif font-light text-stone-900 tracking-tight">
+                Preguntas <span className="italic font-normal text-brand-gold">Frecuentes</span>
+              </h1>
+              <p className="mt-2 text-stone-600 text-xs sm:text-sm max-w-xl font-sans font-light leading-relaxed">
+                Encuentra respuestas inmediatas sobre nuestras velas de cera de soya, envíos en Bogotá,
+                formas de pago seguras y el cuidado ideal para tu vela.
+              </p>
+            </div>
+
+            {/* Results Counter / Filter Status */}
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-stone-200/60 text-xs text-stone-500">
+              <p>
+                Mostrando <span className="font-semibold text-stone-800">{filteredFaqs.length}</span>{' '}
+                {filteredFaqs.length === 1 ? 'pregunta' : 'preguntas'}
+                {selectedCategory !== 'Todas' && (
+                  <span>
+                    {' '}
+                    en <span className="font-semibold text-brand-brown">{selectedCategory}</span>
+                  </span>
+                )}
+                {searchQuery && (
+                  <span>
+                    {' '}
+                    para <span className="font-semibold text-brand-brown">&quot;{searchQuery}&quot;</span>
+                  </span>
+                )}
+              </p>
+              {(searchQuery || selectedCategory !== 'Todas') && (
                 <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 sm:right-4 p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-full transition cursor-pointer"
-                  aria-label="Limpiar búsqueda"
+                  type="button"
+                  onClick={resetFilters}
+                  className="inline-flex items-center gap-1 text-brand-gold hover:text-brand-brown font-medium transition cursor-pointer"
                 >
-                  <X className="w-4 h-4" />
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Restablecer</span>
                 </button>
               )}
             </div>
-            {searchQuery && (
-              <p className="mt-2 text-xs text-stone-500 font-sans text-left pl-2">
-                Mostrando resultados para: <span className="font-semibold text-brand-brown">&quot;{searchQuery}&quot;</span>
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
 
-      {/* ── QUICK TOPIC HIGHLIGHT CARDS ─────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-          {/* Card 1 */}
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedCategory('Envíos y Entregas');
-              setSearchQuery('');
-            }}
-            className={`p-4 sm:p-5 rounded-xl border text-left transition-all duration-200 group bg-white shadow-xs hover:shadow-md cursor-pointer ${
-              selectedCategory === 'Envíos y Entregas'
-                ? 'border-brand-gold ring-2 ring-brand-gold/20 bg-amber-50/20'
-                : 'border-stone-200/80 hover:border-brand-gold/40'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700 group-hover:scale-105 transition shrink-0">
-                <Truck className="w-5 h-5 text-brand-gold" />
-              </div>
-              <div>
-                <h3 className="font-serif text-sm sm:text-base font-medium text-stone-900">
-                  Envíos en Bogotá
-                </h3>
-                <p className="text-[11px] sm:text-xs text-stone-500 font-sans mt-0.5">
-                  1-3 días hábiles & Express
-                </p>
-              </div>
-            </div>
-          </button>
-
-          {/* Card 2 */}
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedCategory('Cuidados de la Vela');
-              setSearchQuery('');
-            }}
-            className={`p-4 sm:p-5 rounded-xl border text-left transition-all duration-200 group bg-white shadow-xs hover:shadow-md cursor-pointer ${
-              selectedCategory === 'Cuidados de la Vela'
-                ? 'border-brand-gold ring-2 ring-brand-gold/20 bg-amber-50/20'
-                : 'border-stone-200/80 hover:border-brand-gold/40'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700 group-hover:scale-105 transition shrink-0">
-                <Flame className="w-5 h-5 text-brand-gold" />
-              </div>
-              <div>
-                <h3 className="font-serif text-sm sm:text-base font-medium text-stone-900">
-                  Cuidado & Encendido
-                </h3>
-                <p className="text-[11px] sm:text-xs text-stone-500 font-sans mt-0.5">
-                  Guía de quemado y pabilo
-                </p>
-              </div>
-            </div>
-          </button>
-
-          {/* Card 3 */}
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedCategory('Personalizadas y Eventos');
-              setSearchQuery('');
-            }}
-            className={`p-4 sm:p-5 rounded-xl border text-left transition-all duration-200 group bg-white shadow-xs hover:shadow-md cursor-pointer ${
-              selectedCategory === 'Personalizadas y Eventos'
-                ? 'border-brand-gold ring-2 ring-brand-gold/20 bg-amber-50/20'
-                : 'border-stone-200/80 hover:border-brand-gold/40'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700 group-hover:scale-105 transition shrink-0">
-                <Gift className="w-5 h-5 text-brand-gold" />
-              </div>
-              <div>
-                <h3 className="font-serif text-sm sm:text-base font-medium text-stone-900">
-                  Eventos y Regalos
-                </h3>
-                <p className="text-[11px] sm:text-xs text-stone-500 font-sans mt-0.5">
-                  Recordatorios bajo pedido
-                </p>
-              </div>
-            </div>
-          </button>
-        </div>
-      </section>
-
-      {/* ── MAIN ACCORDION & CATEGORY TABS SECTION ─────────────────────── */}
-      <section className="py-10 sm:py-16 bg-[#FAF8F5]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Category Tabs / Pills */}
-          <div className="flex items-center justify-between gap-3 mb-6 pb-2 border-b border-stone-200/60">
-            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none py-1 w-full sm:w-auto">
-              {FAQ_CATEGORIES.map((cat) => {
-                const isSelected = selectedCategory === cat;
-                const count = categoryCounts[cat] || 0;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`shrink-0 px-3.5 sm:px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
-                      isSelected
-                        ? 'bg-brand-brown text-white shadow-sm font-semibold'
-                        : 'bg-white text-stone-600 border border-stone-200/80 hover:border-brand-gold/50 hover:bg-stone-50'
-                    }`}
-                  >
-                    <span>{cat}</span>
-                    <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                        isSelected
-                          ? 'bg-brand-gold text-white'
-                          : 'bg-stone-100 text-stone-500'
+            {/* Accordions */}
+            {filteredFaqs.length > 0 ? (
+              <div className="space-y-3">
+                {filteredFaqs.map((faq, index) => {
+                  const isOpen = !!openIds[faq.id];
+                  return (
+                    <motion.div
+                      key={faq.id}
+                      layout
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: index * 0.02 }}
+                      className={`rounded-2xl border transition-all duration-200 bg-white overflow-hidden ${
+                        isOpen
+                          ? 'border-brand-gold/40 shadow-sm ring-1 ring-brand-gold/15'
+                          : 'border-stone-200/80 hover:border-brand-gold/30 shadow-xs'
                       }`}
                     >
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Quick Actions Desktop (Expand/Collapse all) */}
-            <div className="hidden sm:flex items-center gap-2 shrink-0">
-              <button
-                onClick={() => expandAll(filteredFaqs)}
-                className="text-[11px] font-medium text-stone-500 hover:text-brand-brown transition px-2 py-1 hover:bg-stone-100 rounded cursor-pointer"
-              >
-                Expandir todas
-              </button>
-              <span className="text-stone-300">·</span>
-              <button
-                onClick={collapseAll}
-                className="text-[11px] font-medium text-stone-500 hover:text-brand-brown transition px-2 py-1 hover:bg-stone-100 rounded cursor-pointer"
-              >
-                Colapsar todas
-              </button>
-            </div>
-          </div>
-
-          {/* Results Summary Bar */}
-          <div className="flex items-center justify-between mb-4 text-xs text-stone-500">
-            <p>
-              Mostrando <span className="font-semibold text-stone-800">{filteredFaqs.length}</span>{' '}
-              {filteredFaqs.length === 1 ? 'pregunta' : 'preguntas'}
-              {selectedCategory !== 'Todas' && (
-                <span>
-                  {' '}
-                  en <span className="font-semibold text-brand-brown">{selectedCategory}</span>
-                </span>
-              )}
-            </p>
-            {(searchQuery || selectedCategory !== 'Todas') && (
-              <button
-                onClick={resetFilters}
-                className="inline-flex items-center gap-1 text-brand-gold hover:text-brand-brown font-medium transition cursor-pointer"
-              >
-                <RotateCcw className="w-3 h-3" />
-                <span>Restablecer filtros</span>
-              </button>
-            )}
-          </div>
-
-          {/* ── ACCORDION LIST ─────────────────────────────────────────── */}
-          {filteredFaqs.length > 0 ? (
-            <div className="space-y-3 sm:space-y-4">
-              {filteredFaqs.map((faq, index) => {
-                const isOpen = !!openIds[faq.id];
-                return (
-                  <motion.div
-                    key={faq.id}
-                    layout
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25, delay: index * 0.03 }}
-                    className={`rounded-2xl border transition-all duration-300 bg-white overflow-hidden ${
-                      isOpen
-                        ? 'border-brand-gold/40 shadow-md ring-1 ring-brand-gold/15'
-                        : 'border-stone-200/80 hover:border-brand-gold/30 shadow-xs hover:shadow-xs'
-                    }`}
-                  >
-                    {/* Header / Question Button */}
-                    <button
-                      type="button"
-                      onClick={() => toggleAccordion(faq.id)}
-                      aria-expanded={isOpen}
-                      aria-controls={`faq-answer-${faq.id}`}
-                      className="w-full text-left p-4 sm:p-5 flex items-start justify-between gap-4 cursor-pointer select-none group"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200 ${
-                            isOpen
-                              ? 'bg-brand-gold text-white shadow-xs'
-                              : 'bg-stone-100 text-stone-400 group-hover:bg-brand-gold/15 group-hover:text-brand-gold'
-                          }`}
-                        >
-                          <HelpCircle className="w-3.5 h-3.5" />
-                        </div>
-                        <div>
-                          <span className="inline-block text-[10px] uppercase tracking-wider font-semibold text-brand-gold mb-1">
-                            {faq.categoria}
-                          </span>
-                          <h2
-                            className={`font-serif text-sm sm:text-base md:text-lg leading-snug transition-colors duration-200 ${
+                      <button
+                        type="button"
+                        onClick={() => toggleAccordion(faq.id)}
+                        aria-expanded={isOpen}
+                        aria-controls={`faq-answer-${faq.id}`}
+                        className="w-full text-left p-3.5 sm:p-4.5 flex items-start justify-between gap-3 cursor-pointer select-none group"
+                      >
+                        <div className="flex items-start gap-2.5 sm:gap-3">
+                          <div
+                            className={`mt-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200 ${
                               isOpen
-                                ? 'text-brand-brown font-medium'
-                                : 'text-stone-800 group-hover:text-brand-brown'
+                                ? 'bg-brand-gold text-white shadow-xs'
+                                : 'bg-stone-100 text-stone-400 group-hover:bg-brand-gold/15 group-hover:text-brand-gold'
                             }`}
                           >
-                            {faq.pregunta}
-                          </h2>
+                            <HelpCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </div>
+                          <div>
+                            <span className="inline-block text-[10px] uppercase tracking-wider font-semibold text-brand-gold mb-0.5">
+                              {faq.categoria}
+                            </span>
+                            <h2
+                              className={`font-serif text-sm sm:text-base leading-snug transition-colors duration-200 ${
+                                isOpen
+                                  ? 'text-brand-brown font-medium'
+                                  : 'text-stone-800 group-hover:text-brand-brown'
+                              }`}
+                            >
+                              {faq.pregunta}
+                            </h2>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Animated Chevron */}
-                      <div
-                        className={`p-1.5 rounded-full transition-transform duration-300 shrink-0 mt-1 ${
-                          isOpen
-                            ? 'rotate-180 bg-brand-gold/10 text-brand-gold'
-                            : 'text-stone-400 group-hover:text-stone-600 group-hover:bg-stone-100'
+                        <div
+                          className={`p-1 sm:p-1.5 rounded-full transition-transform duration-300 shrink-0 mt-0.5 ${
+                            isOpen
+                              ? 'rotate-180 bg-brand-gold/10 text-brand-gold'
+                              : 'text-stone-400 group-hover:text-stone-600 group-hover:bg-stone-100'
+                          }`}
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </div>
+                      </button>
+
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            id={`faq-answer-${faq.id}`}
+                            key="content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] }}
+                            className="overflow-hidden"
+                          >
+                            <div className="px-3.5 pb-4 sm:px-4.5 sm:pb-5 pt-1 sm:pl-11 border-t border-stone-100">
+                              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans font-light">
+                                {renderFormattedAnswer(faq.respuesta)}
+                              </p>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Empty state */
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-10 px-4 bg-white rounded-2xl border border-stone-200 shadow-xs"
+              >
+                <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3 text-brand-gold border border-brand-gold/20">
+                  <Search className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif text-base sm:text-lg font-medium text-stone-800">
+                  No encontramos preguntas para tu búsqueda
+                </h3>
+                <p className="mt-1 text-xs text-stone-500 max-w-md mx-auto font-sans">
+                  No hay resultados para <span className="font-semibold text-stone-700">&quot;{searchQuery}&quot;</span> en la categoría seleccionada.
+                </p>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={resetFilters}
+                    className="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold rounded-full transition cursor-pointer"
+                  >
+                    Ver todas las preguntas
+                  </button>
+                  <a
+                    href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
+                      `Hola Sandra, estuve buscando sobre "${searchQuery}" en la web y me gustaría hacerte una consulta.`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-[#B8862D] hover:bg-[#A37424] text-white text-xs font-bold rounded-full transition inline-flex items-center gap-1.5 shadow-xs"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 text-white" />
+                    Preguntar por WhatsApp
+                  </a>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Mobile WhatsApp Banner (shown under FAQs on mobile) */}
+            <div className="lg:hidden mt-8">
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#3E2A0F] via-[#5C4018] to-[#2C1C0A] p-4 text-white shadow-md">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold">
+                      Asesoría Directa
+                    </span>
+                    <h4 className="text-sm font-serif font-light text-white mt-0.5">
+                      ¿Dudas o pedidos especiales?
+                    </h4>
+                    <p className="text-[11px] text-stone-300 font-sans mt-0.5">
+                      Escríbenos por WhatsApp y te asesoramos al instante.
+                    </p>
+                  </div>
+                  <a
+                    href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
+                      'Hola Sandra, estuve viendo las preguntas frecuentes y quisiera asesoría personalizada.'
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 px-4 py-2 bg-[#B8862D] hover:bg-[#A37424] text-white text-xs font-bold rounded-full transition inline-flex items-center gap-1.5 shadow-xs"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 text-white" />
+                    WhatsApp
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── RIGHT COLUMN: STICKY SIDEBAR (lg:col-span-5 xl:col-span-4 order-1 lg:order-2 lg:sticky lg:top-24 space-y-4) ── */}
+          <aside className="lg:col-span-5 xl:col-span-4 order-1 lg:order-2 lg:sticky lg:top-24 space-y-4">
+            {/* Search Box */}
+            <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-stone-200/80 shadow-xs">
+              <label htmlFor="faq-search" className="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-2 font-sans">
+                Buscar en preguntas
+              </label>
+              <div className="relative flex items-center bg-stone-50 rounded-xl border border-stone-200 focus-within:border-brand-gold focus-within:ring-2 focus-within:ring-brand-gold/15 focus-within:bg-white transition">
+                <div className="pl-3 text-stone-400">
+                  <Search className="w-4 h-4 text-brand-gold" />
+                </div>
+                <input
+                  id="faq-search"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Buscar por tema, palabra..."
+                  className="w-full py-2.5 pl-2.5 pr-8 text-xs text-stone-800 placeholder-stone-400 bg-transparent focus:outline-none font-sans"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 p-1 text-stone-400 hover:text-stone-700 hover:bg-stone-200/50 rounded-full transition cursor-pointer"
+                    aria-label="Limpiar búsqueda"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Category Filter Pills & Expand/Collapse */}
+            <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-stone-200/80 shadow-xs">
+              <div className="flex items-center justify-between mb-2.5">
+                <h3 className="text-[11px] font-bold uppercase tracking-wider text-stone-700 font-sans">
+                  Categorías
+                </h3>
+                {/* Quick Actions (Expand/Collapse all) */}
+                <div className="flex items-center gap-1.5 text-[10px] text-stone-500 font-sans">
+                  <button
+                    type="button"
+                    onClick={() => expandAll(filteredFaqs)}
+                    className="hover:text-brand-brown hover:underline cursor-pointer"
+                  >
+                    Expandir
+                  </button>
+                  <span className="text-stone-300">·</span>
+                  <button
+                    type="button"
+                    onClick={collapseAll}
+                    className="hover:text-brand-brown hover:underline cursor-pointer"
+                  >
+                    Colapsar
+                  </button>
+                </div>
+              </div>
+
+              {/* Mobile view: horizontal scrolling pills */}
+              <div className="lg:hidden flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
+                {FAQ_CATEGORIES.map((cat) => {
+                  const isSelected = selectedCategory === cat;
+                  const count = categoryCounts[cat] || 0;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium transition flex items-center gap-1.5 cursor-pointer ${
+                        isSelected
+                          ? 'bg-brand-brown text-white shadow-xs font-semibold'
+                          : 'bg-stone-50 text-stone-600 border border-stone-200/70 hover:border-brand-gold/40'
+                      }`}
+                    >
+                      <span>{cat}</span>
+                      <span
+                        className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
+                          isSelected ? 'bg-brand-gold text-white' : 'bg-stone-200 text-stone-600'
                         }`}
                       >
-                        <ChevronDown className="w-4 h-4" />
-                      </div>
+                        {count}
+                      </span>
                     </button>
+                  );
+                })}
+              </div>
 
-                    {/* Animated Content / Answer */}
-                    <AnimatePresence initial={false}>
-                      {isOpen && (
-                        <motion.div
-                          id={`faq-answer-${faq.id}`}
-                          key="content"
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
-                          className="overflow-hidden"
-                        >
-                          <div className="px-4 pb-5 sm:px-5 sm:pb-6 pt-1 sm:pl-13 border-t border-stone-100/80">
-                            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans font-light">
-                              {renderFormattedAnswer(faq.respuesta)}
-                            </p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
+              {/* Desktop view: compact list of category buttons */}
+              <div className="hidden lg:flex lg:flex-col space-y-1">
+                {FAQ_CATEGORIES.map((cat) => {
+                  const isSelected = selectedCategory === cat;
+                  const count = categoryCounts[cat] || 0;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`w-full px-3 py-2 rounded-xl text-xs font-medium transition flex items-center justify-between cursor-pointer text-left ${
+                        isSelected
+                          ? 'bg-brand-brown text-white shadow-xs font-semibold'
+                          : 'text-stone-600 hover:bg-stone-50 hover:text-brand-brown'
+                      }`}
+                    >
+                      <span className="truncate pr-2">{cat}</span>
+                      <span
+                        className={`text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0 ${
+                          isSelected
+                            ? 'bg-brand-gold text-white'
+                            : 'bg-stone-100 text-stone-500'
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          ) : (
-            /* ── EMPTY STATE ─────────────────────────────────────────── */
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-12 px-4 bg-white rounded-2xl border border-stone-200 shadow-xs"
-            >
-              <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4 text-brand-gold border border-brand-gold/20">
-                <Search className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-lg font-medium text-stone-800">
-                No encontramos preguntas para tu búsqueda
-              </h3>
-              <p className="mt-1 text-xs text-stone-500 max-w-md mx-auto font-sans">
-                No hay resultados para <span className="font-semibold text-stone-700">&quot;{searchQuery}&quot;</span> en la categoría seleccionada.
-              </p>
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <button
-                  onClick={resetFilters}
-                  className="px-5 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold rounded-full transition cursor-pointer"
-                >
-                  Ver todas las preguntas
-                </button>
-                <a
-                  href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
-                    `Hola Sandra, estuve buscando sobre "${searchQuery}" en la web y me gustaría hacerte una consulta.`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-5 py-2.5 bg-[#B8862D] hover:bg-[#A37424] text-white text-xs font-bold rounded-full transition inline-flex items-center gap-1.5 shadow-sm"
-                >
-                  <MessageCircle className="w-3.5 h-3.5 text-white" />
-                  Preguntar por WhatsApp
-                </a>
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </section>
 
-      {/* ── LUXURY WHATSAPP SUPPORT CTA CARD ──────────────────────────── */}
-      <section className="py-12 sm:py-16 bg-white border-t border-stone-200/40">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#3E2A0F] via-[#5C4018] to-[#2C1C0A] p-6 sm:p-10 text-white shadow-xl">
-            {/* Background ambient lighting */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-brand-gold/15 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-10 left-10 w-64 h-64 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
-
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
-              <div className="text-center md:text-left space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-xs rounded-full border border-brand-gold/30">
-                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold">
+            {/* WhatsApp Luxury Support Card (Desktop sidebar) */}
+            <div className="hidden lg:block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#3E2A0F] via-[#5C4018] to-[#2C1C0A] p-4 text-white shadow-md">
+              <div className="absolute top-0 right-0 w-36 h-36 bg-brand-gold/15 rounded-full blur-2xl pointer-events-none" />
+              <div className="relative z-10 space-y-2.5">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-white/10 rounded-full border border-brand-gold/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-brand-gold">
                     Asesoría Directa
                   </span>
                 </div>
-
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-light text-[#FAF8F5] leading-snug">
-                  ¿Tienes una duda específica o{' '}
-                  <span className="italic font-normal text-brand-gold">un pedido especial?</span>
-                </h2>
-
-                <p className="text-xs sm:text-sm text-stone-300 max-w-lg leading-relaxed font-sans font-light">
-                  Escríbenos directamente por WhatsApp. Sandra Gil y nuestro equipo de taller te
-                  asesorarán en la elección de aromas, cotizaciones de eventos o detalles de envío.
-                </p>
-
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-1 text-[11px] text-stone-300 font-sans">
+                <div>
+                  <h3 className="font-serif text-base font-light text-[#FAF8F5] leading-snug">
+                    ¿Dudas o pedidos especiales?
+                  </h3>
+                  <p className="mt-1 text-[11px] text-stone-300 font-sans font-light leading-relaxed">
+                    Sandra Gil y nuestro equipo te asesoran al instante por WhatsApp en aromas, cotizaciones o envíos.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 pt-0.5 text-[10px] text-stone-300">
                   <span className="inline-flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />
-                    Atención personalizada
+                    <CheckCircle2 className="w-3 h-3 text-brand-gold" />
+                    Personalizada
                   </span>
                   <span className="inline-flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-brand-gold" />
-                    Respuesta en minutos
+                    <Clock className="w-3 h-3 text-brand-gold" />
+                    Respuesta ágil
                   </span>
                 </div>
-              </div>
-
-              {/* Action Button */}
-              <div className="shrink-0 w-full md:w-auto">
                 <a
                   href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
                     'Hola Sandra, estuve viendo la sección de Preguntas Frecuentes y me gustaría hacerte una consulta directa.'
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#B8862D] hover:bg-[#A37424] active:scale-98 text-white text-xs sm:text-sm uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-lg"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#B8862D] hover:bg-[#A37424] text-white text-[11px] uppercase tracking-wider font-bold rounded-full transition shadow-xs"
                 >
-                  <MessageCircle className="w-5 h-5 shrink-0 text-white" />
+                  <MessageCircle className="w-3.5 h-3.5 text-white" />
                   Chatear por WhatsApp
                 </a>
               </div>
             </div>
-          </div>
+          </aside>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

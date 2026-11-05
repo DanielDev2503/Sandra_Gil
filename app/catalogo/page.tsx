@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Catálogo Completo de Velas Artesanales | Sandra Gil',
     description:
-      'Velas artesanales con esencias exclusivas, flores botánicas naturales y cera de soya 100% natural vertidas a mano en Bogotá.',
+      'Velas artesanales con esencias exclusivas, flores artesanales y cera de soya 100% natural vertidas a mano en Bogotá.',
     url: 'https://sandragilvelas.com/catalogo',
     siteName: 'Sandra Gil Velas Artesanales',
     locale: 'es_CO',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Catálogo de Velas Artesanales | Sandra Gil',
     description:
-      'Velas de cera de soya pura y flores botánicas hechas a mano en Bogotá. Compra online segura con envíos nacionales.',
+      'Velas de cera de soya pura y flores artesanales hechas a mano en Bogotá. Compra online segura con envíos nacionales.',
   },
 };
 

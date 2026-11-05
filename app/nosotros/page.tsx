@@ -63,38 +63,38 @@ export default function NosotrosPage() {
 
       <main className="flex-1">
         {/* ── HERO ────────────────────────────────────────── */}
-        <section className="relative overflow-hidden bg-brand-cream py-12 sm:py-24 border-b border-stone-200/40">
+        <section className="relative overflow-hidden bg-brand-cream py-6 sm:py-10 md:py-12 border-b border-stone-200/40">
           {/* Decorative background circles */}
           <div className="absolute -top-24 -right-24 w-80 h-80 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-gold/5 rounded-full blur-2xl pointer-events-none" />
 
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-xs rounded-full border border-brand-gold/30 shadow-xs mb-4 sm:mb-6">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-xs rounded-full border border-brand-gold/30 shadow-xs mb-2.5 sm:mb-3">
               <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
               <span className="text-[10px] font-bold text-brand-brown uppercase tracking-widest">
                 Nuestra Historia
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
               Del Corazón de Bogotá,{' '}
               <br className="hidden sm:inline" />
               <span className="font-normal italic text-brand-gold">Luz Natural</span> para Tu Hogar
             </h1>
 
-            <p className="mt-4 sm:mt-6 text-stone-600 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-sans font-light">
+            <p className="mt-2.5 sm:mt-3.5 text-stone-600 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-sans font-light">
               Sandra Gil Velas Artesanales nació de la pasión por los aromas, la naturaleza y el
               diseño consciente. Desde nuestro taller en Bogotá, transformamos cera de soya pura en
               piezas decorativas que combinan belleza, bienestar y un compromiso real con el medio
               ambiente.
             </p>
 
-            <div className="mt-6 sm:mt-8 flex justify-center">
+            <div className="mt-4 sm:mt-6 flex justify-center">
               <Image
                 src="/logo-sandra.png"
                 alt="Sandra Gil Velas Artesanales"
-                width={100}
-                height={100}
+                width={85}
+                height={85}
                 unoptimized
                 className="object-contain"
               />
@@ -103,19 +103,19 @@ export default function NosotrosPage() {
         </section>
 
         {/* ── QUIÉNES SOMOS ──────────────────────────────── */}
-        <section className="py-10 sm:py-16 md:py-20 bg-white border-b border-stone-200/30">
+        <section className="py-6 sm:py-8 md:py-10 bg-white border-b border-stone-200/40">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 sm:mb-12">
+            <div className="text-center mb-3 sm:mb-5">
               <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
                 Conócenos
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-light text-stone-900 mt-0.5 sm:mt-1">
                 Quiénes Somos
               </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4" />
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-2 sm:mt-2.5" />
             </div>
 
-            <div className="space-y-4 sm:space-y-6 text-stone-600 text-xs sm:text-sm md:text-base leading-relaxed font-sans font-light max-w-3xl mx-auto">
+            <div className="space-y-3 sm:space-y-4 text-stone-600 text-xs sm:text-sm md:text-base leading-relaxed font-sans font-light max-w-3xl mx-auto">
               <p>
                 Bienvenidos a <strong className="font-normal text-stone-800">SG Candle</strong>,
                 un refugio artesanal donde la magia de la luz, la pureza de la naturaleza y el autocuidado
@@ -137,20 +137,20 @@ export default function NosotrosPage() {
           </div>
         </section>
 
-        {/* ── OUR STORY ──────────────────────────────────── */}
-        <section className="py-10 sm:py-16 md:py-20 bg-white border-b border-stone-200/30">
+        {/* ── NUESTRA ESENCIA ─────────────────────────────── */}
+        <section className="py-6 sm:py-8 md:py-10 bg-white border-b border-stone-200/40">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 sm:mb-12">
+            <div className="text-center mb-3 sm:mb-5">
               <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
                 Nuestra Esencia
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-light text-stone-900 mt-0.5 sm:mt-1">
                 Un Taller con Alma
               </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4" />
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-2 sm:mt-2.5" />
             </div>
 
-            <div className="space-y-4 sm:space-y-6 text-stone-600 text-xs sm:text-sm md:text-base leading-relaxed font-sans font-light max-w-3xl mx-auto">
+            <div className="space-y-3 sm:space-y-4 text-stone-600 text-xs sm:text-sm md:text-base leading-relaxed font-sans font-light max-w-3xl mx-auto">
               <p>
                 Todo comenzó con una búsqueda sencilla: crear atmósferas que invitaran a la calma.
                 Después de experimentar con distintos materiales y técnicas, descubrimos que la cera
@@ -173,31 +173,31 @@ export default function NosotrosPage() {
           </div>
         </section>
 
-        {/* ── PILLARS ────────────────────────────────────── */}
-        <section className="py-10 sm:py-16 md:py-20 bg-brand-cream border-b border-stone-200/30">
+        {/* ── PILARES ────────────────────────────────────── */}
+        <section className="py-6 sm:py-8 md:py-10 bg-brand-cream border-b border-stone-200/40">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 sm:mb-12">
+            <div className="text-center mb-4 sm:mb-6">
               <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
                 Lo que Nos Define
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1 sm:mt-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-light text-stone-900 mt-0.5 sm:mt-1">
                 Nuestros Pilares
               </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-3 sm:mt-4" />
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-2 sm:mt-2.5" />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
               {PILLARS.map((pillar) => {
                 const Icon = pillar.icon;
                 return (
                   <div
                     key={pillar.title}
-                    className="bg-white p-5 sm:p-6 rounded-lg border border-brand-gold/15 shadow-xs hover:shadow-md transition-shadow duration-300 text-center"
+                    className="bg-white p-4 sm:p-5 rounded-lg border border-brand-gold/15 shadow-xs hover:shadow-md transition-shadow duration-300 text-center"
                   >
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <div className="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-2.5 sm:mb-3">
                       <Icon className="w-5 h-5 text-brand-gold" />
                     </div>
-                    <h3 className="font-serif text-base font-medium text-stone-800 mb-1 sm:mb-2">
+                    <h3 className="font-serif text-sm sm:text-base font-medium text-stone-800 mb-1">
                       {pillar.title}
                     </h3>
                     <p className="text-xs text-stone-500 leading-relaxed font-sans">
@@ -211,15 +211,15 @@ export default function NosotrosPage() {
         </section>
 
         {/* ── TALLER DIDÁCTICO — BANNER DESTACADO ────────── */}
-        <section className="py-10 sm:py-16 md:py-20 bg-white">
+        <section className="py-6 sm:py-8 md:py-10 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-brown via-[#6B4D22] to-[#3E2A0F] p-6 sm:p-10 lg:p-12 text-center shadow-xl sm:shadow-2xl">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-brown via-[#6B4D22] to-[#3E2A0F] p-6 sm:p-8 lg:p-10 text-center shadow-xl sm:shadow-2xl">
               {/* Decorative glow */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-brand-gold/20 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 right-0 w-48 h-48 bg-brand-gold/10 rounded-full blur-2xl pointer-events-none" />
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/20 backdrop-blur-xs rounded-full border border-brand-gold/40 mb-4 sm:mb-6">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/20 backdrop-blur-xs rounded-full border border-brand-gold/40 mb-3 sm:mb-4">
                   <GraduationCap className="w-4 h-4 text-brand-gold shrink-0" />
                   <span className="text-[10px] sm:text-[11px] font-bold text-brand-gold uppercase tracking-widest">
                     Experiencia Exclusiva
@@ -233,7 +233,7 @@ export default function NosotrosPage() {
                   </span>
                 </h2>
 
-                <p className="mt-4 sm:mt-6 text-xs sm:text-sm md:text-base text-stone-300 max-w-xl mx-auto leading-relaxed font-sans font-light">
+                <p className="mt-3 sm:mt-4 text-xs sm:text-sm md:text-base text-stone-300 max-w-xl mx-auto leading-relaxed font-sans font-light">
                   Aprende a crear tu propia vela aromática de cera de soya con flores artesanales hechas a mano.
                   Una experiencia sensorial guiada por Sandra Gil donde descubrirás las técnicas
                   artesanales, el arte de la aromaterapia y te llevarás una pieza única hecha por
@@ -241,7 +241,7 @@ export default function NosotrosPage() {
                   creativa con amigas.
                 </p>
 
-                <div className="mt-6 sm:mt-8 w-full flex justify-center">
+                <div className="mt-5 sm:mt-7 w-full flex justify-center">
                   <a
                     href="https://wa.me/573175752029?text=Hola%20Sandra,%20estoy%20interesado%20en%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20curso/taller%20did%C3%A1ctico%20de%20velas"
                     target="_blank"
@@ -263,7 +263,7 @@ export default function NosotrosPage() {
                   </a>
                 </div>
 
-                <p className="mt-4 text-[10px] text-stone-400 tracking-wide font-sans">
+                <p className="mt-3.5 text-[10px] text-stone-400 tracking-wide font-sans">
                   Cupos limitados · Incluye todos los materiales · Bogotá, Colombia
                 </p>
               </div>

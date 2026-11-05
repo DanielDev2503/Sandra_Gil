@@ -98,7 +98,7 @@ async function main() {
       nombre: 'Vela Botánica Lavanda & Manzanilla',
       slug: 'vela-botanica-lavanda-manzanilla',
       descripcion:
-        '<p>Calma profunda, relajación y descanso reparador en tu santuario personal. Elaborada artesanalmente en nuestro taller de Bogotá con cera de soya 100% natural, pabilo trenzado de algodón orgánico sin plomo y flores botánicas preservadas.</p><p><strong>Pirámide Olfativa:</strong><br/>• Salida: Lavanda silvestre de la Provenza y manzanilla dulce.<br/>• Corazón: Hierbas aromáticas y flor de azahar.<br/>• Fondo: Maderas suaves y vainilla sutil.</p><ul><li>100% Cera de Soya Natural Biodegradable</li><li>Combustión limpia sin hollín ni derivados de petróleo</li><li>Tiempo de quemado: 45 horas continuas estimadas</li></ul>',
+        '<p>Calma profunda, relajación y descanso reparador en tu santuario personal. Elaborada artesanalmente en nuestro taller de Bogotá con cera de soya 100% natural, pabilo trenzado de algodón orgánico sin plomo y flores artesanales.</p><p><strong>Pirámide Olfativa:</strong><br/>• Salida: Lavanda silvestre de la Provenza y manzanilla dulce.<br/>• Corazón: Hierbas aromáticas y flor de azahar.<br/>• Fondo: Maderas suaves y vainilla sutil.</p><ul><li>100% Cera de Soya Natural Biodegradable</li><li>Combustión limpia sin hollín ni derivados de petróleo</li><li>Tiempo de quemado: 45 horas continuas estimadas</li></ul>',
       aroma: 'Lavanda & Manzanilla',
       material: '100% Cera de Soya Natural',
       dimensiones: '220g · 45 horas de combustión',
@@ -290,7 +290,7 @@ async function main() {
         autor: 'Valentina Gómez · Bogotá (Rosales)',
         calificacion: 5,
         comentario:
-          'Mandé a hacer 30 recordatorios personalizados para el bautizo de mi hija y todas las invitadas quedaron enamoradas. El detalle de las flores botánicas preservadas es único.',
+          'Mandé a hacer 30 recordatorios personalizados para el bautizo de mi hija y todas las invitadas quedaron enamoradas. El detalle de las flores artesanales es único.',
       },
       {
         producto_id: rosas?.id,

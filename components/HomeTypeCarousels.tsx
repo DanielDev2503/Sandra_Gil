@@ -330,7 +330,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   return (
     <section
       aria-labelledby={`heading-${category.key}`}
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       {/* Cabecera de Sección con enlace para explorar toda la categoría */}
       <div className="flex items-end justify-between mb-4 sm:mb-6 pb-2.5 border-b border-brand-gold/15">
@@ -357,7 +357,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
 
       {/* Contenedor interactivo del riel con flechas de navegación y pausa interactiva */}
       <div
-        className="relative group/carousel"
+        className="relative w-full max-w-full overflow-hidden group/carousel"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={() => setIsPaused(true)}
@@ -368,7 +368,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
           type="button"
           onClick={scrollLeft}
           aria-label="Ver productos anteriores"
-          className="absolute left-1 sm:-left-3 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 bg-white/90 border border-stone-200 text-stone-700 shadow-md hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 flex items-center justify-center transition-all z-20 cursor-pointer active:scale-95 opacity-90 sm:opacity-0 sm:group-hover/carousel:opacity-100 focus:opacity-100"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-white/95 border border-stone-200 text-stone-700 shadow-md hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 flex items-center justify-center transition-all z-20 cursor-pointer active:scale-95 opacity-90 sm:opacity-0 sm:group-hover/carousel:opacity-100 focus:opacity-100"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -378,7 +378,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
           type="button"
           onClick={scrollRight}
           aria-label="Ver siguientes productos"
-          className="absolute right-1 sm:-right-3 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 bg-white/90 border border-stone-200 text-stone-700 shadow-md hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 flex items-center justify-center transition-all z-20 cursor-pointer active:scale-95 opacity-90 sm:opacity-0 sm:group-hover/carousel:opacity-100 focus:opacity-100"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-white/95 border border-stone-200 text-stone-700 shadow-md hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 flex items-center justify-center transition-all z-20 cursor-pointer active:scale-95 opacity-90 sm:opacity-0 sm:group-hover/carousel:opacity-100 focus:opacity-100"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -445,7 +445,7 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
   }, [isMounted, groupedProducts]);
 
   return (
-    <div className="w-full bg-[#FAF8F5] py-6 sm:py-10 space-y-8 sm:space-y-10">
+    <div className="relative w-full max-w-full overflow-hidden bg-[#FAF8F5] py-6 sm:py-10 space-y-8 sm:space-y-10">
       {categories.map((category) => {
         const products = shuffledMap[category.key] || [];
         return (

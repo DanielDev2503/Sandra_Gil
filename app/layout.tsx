@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
@@ -21,6 +21,12 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
   'https://sandragilvelas.com';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -192,7 +198,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans min-h-full flex flex-col bg-[#FBF9F6] text-[#2C2A29] overflow-x-hidden">
+      <body className="font-sans min-h-screen w-full relative flex flex-col bg-[#FAF8F5] text-stone-900 antialiased overflow-x-hidden">
         <CartProvider>
           {children}
           <WhatsAppButton />

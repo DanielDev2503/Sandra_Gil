@@ -1,6 +1,6 @@
 # Sandra Gil · Velas Artesanales & Aromáticas 🕯️
 
-> Plataforma de comercio electrónico de alta fidelidad para **Sandra Gil Velas Artesanales**, especializada en velas decorativas y aromáticas vertidas a mano con cera de soya 100% natural, flores botánicas naturales y cosmética artesanal en Bogotá, Colombia.
+> Plataforma de comercio electrónico de alta fidelidad para **Sandra Gil Velas Artesanales**, especializada en velas decorativas y aromáticas vertidas a mano con cera de soya 100% natural, flores artesanales y cosmética artesanal en Bogotá, Colombia.
 
 ---
 

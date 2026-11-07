@@ -153,7 +153,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
   };
 
   return (
-    <div className="group/card bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300 w-[210px] sm:w-[240px] min-w-[210px] sm:min-w-[240px] shrink-0 flex-shrink-0 snap-start">
+    <div className="group/card bg-white rounded-xl border border-stone-200/70 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-brand-gold/40 transition-all duration-300 w-full flex-1">
       <div>
         {/* 1. Imagen aspect-[4/3] con esquinas redondeadas superiores */}
         <Link
@@ -257,72 +257,48 @@ interface CategoryCarouselProps {
 }
 
 /**
- * Carrusel dinámico con ticker/marquee continuo a 60fps (requestAnimationFrame),
- * pausa interactiva (hover/touch) y flechas de navegación manual.
+ * Carrusel por lotes con 5.5 productos visibles en escritorio (peeking card),
+ * navegación fluida por botones circulares estilo e-commerce y swipe táctil nativo.
  */
 function CategoryCarousel({ category, products }: CategoryCarouselProps) {
-  const railRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // 1. Asegurar densidad visual base
-  const baseList = useMemo(() => {
-    if (products.length === 0) return [];
-    if (products.length < 6) {
-      return [...products, ...products, ...products];
-    }
-    return products;
-  }, [products]);
-
-  // 2. Duplicación simétrica exacta para loop continuo infinito sin cortes
-  const displayProducts = useMemo(() => {
-    if (baseList.length === 0) return [];
-    return [...baseList, ...baseList];
-  }, [baseList]);
-
-  // 3. Motor de desplazamiento continuo lineal a 60 fps (requestAnimationFrame)
-  useEffect(() => {
-    const container = railRef.current;
-    if (!container) return;
-
-    let animationFrameId: number;
-    // Velocidad suave y moderada: ~0.55 píxeles por frame
-    const speed = 0.55;
-
-    const animate = () => {
-      if (!isPaused && container) {
-        container.scrollLeft += speed;
-        const halfWidth = container.scrollWidth / 2;
-        // Al alcanzar la mitad exacta del contenido duplicado, reiniciar a 0 sin salto perceptible
-        if (container.scrollLeft >= halfWidth) {
-          container.scrollLeft = 0;
-        }
-      }
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPaused]);
-
-  // 4. Controles de navegación manual con soporte para loop bidireccional
-  const scrollLeft = () => {
-    const container = railRef.current;
-    if (!container) return;
-    const halfWidth = container.scrollWidth / 2;
-    if (container.scrollLeft <= 10) {
-      container.scrollLeft += halfWidth;
-    }
-    container.scrollBy({ left: -260, behavior: 'smooth' });
+  const checkScrollBounds = () => {
+    if (!carouselRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+    setCanScrollLeft(scrollLeft > 5);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
   };
 
-  const scrollRight = () => {
-    const container = railRef.current;
-    if (!container) return;
-    const halfWidth = container.scrollWidth / 2;
-    if (container.scrollLeft >= halfWidth) {
-      container.scrollLeft = 0;
-    }
-    container.scrollBy({ left: 260, behavior: 'smooth' });
+  useEffect(() => {
+    checkScrollBounds();
+    const el = carouselRef.current;
+    if (!el) return;
+
+    el.addEventListener('scroll', checkScrollBounds, { passive: true });
+    window.addEventListener('resize', checkScrollBounds);
+
+    const timer = setTimeout(checkScrollBounds, 120);
+
+    return () => {
+      clearTimeout(timer);
+      el.removeEventListener('scroll', checkScrollBounds);
+      window.removeEventListener('resize', checkScrollBounds);
+    };
+  }, [products]);
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (!carouselRef.current) return;
+    // Desplazar el 88% del ancho visible para avanzar exactamente el bloque de productos
+    const containerWidth = carouselRef.current.clientWidth;
+    const scrollAmount = direction === 'left' ? -containerWidth * 0.88 : containerWidth * 0.88;
+
+    carouselRef.current.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth',
+    });
   };
 
   if (products.length === 0) return null;
@@ -330,77 +306,73 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   return (
     <section
       aria-labelledby={`heading-${category.key}`}
-      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
     >
-      {/* Cabecera de Sección con enlace para explorar toda la categoría */}
-      <div className="flex items-end justify-between mb-4 sm:mb-6 pb-2.5 border-b border-brand-gold/15">
-        <div>
-          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold font-sans block mb-1">
-            COLECCIÓN ARTESANAL
-          </span>
-          <h2
-            id={`heading-${category.key}`}
-            className="text-2xl sm:text-3xl lg:text-4xl font-serif font-light text-stone-900 tracking-tight"
-          >
-            {category.title}
-          </h2>
-        </div>
+      {/* Cabecera Limpia y Minimalista */}
+      <div className="flex items-center justify-between mb-3 sm:mb-4 px-1 pb-2.5 border-b border-brand-gold/15">
+        <h2
+          id={`heading-${category.key}`}
+          className="text-xl sm:text-2xl md:text-3xl font-serif font-light text-stone-900 tracking-tight"
+        >
+          {category.title}
+        </h2>
 
         <Link
           href={category.href}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-amber-900 hover:text-amber-700 transition-colors group/link pb-1"
+          className="text-xs sm:text-sm font-medium text-stone-600 hover:text-[#B8862D] flex items-center gap-1 transition-colors group"
         >
           <span>Ver todos</span>
-          <ChevronRight className="w-4 h-4 text-brand-gold group-hover/link:translate-x-0.5 transition-transform" />
+          <span className="transition-transform group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
         </Link>
       </div>
 
-      {/* Contenedor interactivo del riel con flechas de navegación y pausa interactiva */}
-      <div
-        className="relative w-full max-w-full overflow-hidden group/carousel"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-      >
-        {/* Botón Flotante Izquierdo */}
-        <button
-          type="button"
-          onClick={scrollLeft}
-          aria-label="Ver productos anteriores"
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-white/95 border border-stone-200 text-stone-700 shadow-md hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 flex items-center justify-center transition-all z-20 cursor-pointer active:scale-95 opacity-90 sm:opacity-0 sm:group-hover/carousel:opacity-100 focus:opacity-100"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
+      {/* Contenedor del Riel con Flechas Circulares Flotantes (Mercado Libre Style) */}
+      <div className="relative group/carousel">
+        {/* Flecha Izquierda */}
+        {canScrollLeft && (
+          <button
+            type="button"
+            onClick={() => handleScroll('left')}
+            aria-label="Ver productos anteriores"
+            className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white text-stone-700 shadow-md border border-stone-200/80 flex items-center justify-center hover:bg-stone-50 hover:text-stone-900 hover:scale-105 active:scale-95 transition-all focus:outline-none cursor-pointer"
+          >
+            <ChevronLeft className="w-5 h-5 text-stone-800" />
+          </button>
+        )}
 
-        {/* Botón Flotante Derecho */}
-        <button
-          type="button"
-          onClick={scrollRight}
-          aria-label="Ver siguientes productos"
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-white/95 border border-stone-200 text-stone-700 shadow-md hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 flex items-center justify-center transition-all z-20 cursor-pointer active:scale-95 opacity-90 sm:opacity-0 sm:group-hover/carousel:opacity-100 focus:opacity-100"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-        {/* Riel Deslizable de Productos con aceleración por GPU */}
+        {/* Riel Deslizable con Efecto Peeking */}
         <div
-          ref={railRef}
-          className="flex gap-4 overflow-x-auto scrollbar-none py-2 px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden will-change-[scroll-position]"
+          ref={carouselRef}
+          className="flex items-stretch gap-3 sm:gap-4 overflow-x-auto scroll-smooth scrollbar-none py-2 px-1 focus:outline-none snap-x snap-mandatory"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {displayProducts.map((product, index) => {
+          {products.map((product) => {
             const isBajoPedido = category.key === 'BAJO_PEDIDO';
-            const loopKey = `${product.id}-loop-${index}`;
-
             return (
-              <CarouselProductCard
-                key={loopKey}
-                product={product}
-                isBajoPedidoCategory={isBajoPedido}
-              />
+              <div
+                key={product.id}
+                className="snap-start flex-shrink-0 w-[68vw] sm:w-[38vw] md:w-[28vw] lg:w-[calc((100%-4*1rem)/5.5)] xl:w-[calc((100%-4*1.25rem)/5.5)] flex flex-col"
+              >
+                <CarouselProductCard
+                  product={product}
+                  isBajoPedidoCategory={isBajoPedido}
+                />
+              </div>
             );
           })}
         </div>
+
+        {/* Flecha Derecha */}
+        {canScrollRight && (
+          <button
+            type="button"
+            onClick={() => handleScroll('right')}
+            aria-label="Ver siguientes productos"
+            className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white text-stone-700 shadow-md border border-stone-200/80 flex items-center justify-center hover:bg-stone-50 hover:text-stone-900 hover:scale-105 active:scale-95 transition-all focus:outline-none cursor-pointer"
+          >
+            <ChevronRight className="w-5 h-5 text-stone-800" />
+          </button>
+        )}
       </div>
     </section>
   );
@@ -445,7 +417,7 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
   }, [isMounted, groupedProducts]);
 
   return (
-    <div className="relative w-full max-w-full overflow-hidden bg-[#FAF8F5] py-6 sm:py-10 space-y-8 sm:space-y-10">
+    <div className="relative w-full max-w-full overflow-hidden bg-[#FAF8F5] py-6 sm:py-8 space-y-6 sm:space-y-8">
       {categories.map((category) => {
         const products = shuffledMap[category.key] || [];
         return (

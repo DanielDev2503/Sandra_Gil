@@ -37,8 +37,11 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo',
     link: '/catalogo',
     kicker: 'Colección Signature',
-    desktopSrc: '/banners/desktop/banner con todos los prods.jpg',
-    mobileSrc: '/banners/mobile/banner con todos los prods.png',
+    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-todos-los-prods.webp',
+    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-todos-los-prods-mobile.webp',
+    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-todos-los-prods.webp',
+    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-todos-los-prods.webp',
+    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-todos-los-prods-mobile.webp',
     alt: 'Colección completa de velas artesanales y botánicas Sandra Gil Bogotá',
   },
   {
@@ -52,8 +55,11 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo?tipo=VELA_ESCULPIDA',
     link: '/catalogo?tipo=VELA_ESCULPIDA',
     kicker: 'Arte & Moldes Botánicos',
-    desktopSrc: '/banners/desktop/banner velas esculpidas.jpg',
-    mobileSrc: '/banners/mobile/banner velas esculpidas.png',
+    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-esculpidas.webp',
+    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-esculpidas-mobile.webp',
+    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-esculpidas.webp',
+    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-esculpidas.webp',
+    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-esculpidas-mobile.webp',
     alt: 'Velas artesanales esculpidas de cera de soya Sandra Gil Bogotá',
   },
   {
@@ -67,8 +73,11 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo?tipo=VELA_ENVASE',
     link: '/catalogo?tipo=VELA_ENVASE',
     kicker: 'Aromaterapia Pura',
-    desktopSrc: '/banners/desktop/banner velas envase.jpg',
-    mobileSrc: '/banners/mobile/banner velas envase.jpg',
+    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-envase.webp',
+    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-envase-mobile.webp',
+    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-envase.webp',
+    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-envase.webp',
+    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-envase-mobile.webp',
     alt: 'Velas aromáticas en envase artesanal de cera de soya',
   },
   {
@@ -82,8 +91,11 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo?tipo=JABON',
     link: '/catalogo?tipo=JABON',
     kicker: 'Cosmética Natural',
-    desktopSrc: '/banners/desktop/banner jabones artesalanes.jpg',
-    mobileSrc: '/banners/mobile/banner jabones artesalanes.png',
+    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-jabones-artesanales.webp',
+    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-jabones-artesanales-mobile.webp',
+    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-jabones-artesanales.webp',
+    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-jabones-artesanales.webp',
+    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-jabones-artesanales-mobile.webp',
     alt: 'Jabones artesanales naturales Sandra Gil Bogotá',
   },
   {
@@ -97,8 +109,11 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/personalizadas',
     link: '/personalizadas',
     kicker: 'Eventos & Recordatorios',
-    desktopSrc: '/banners/desktop/banner velas bajo pedido.jpg',
-    mobileSrc: '/banners/mobile/banner velas bajo pedido.png',
+    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-bajo-pedido.webp',
+    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-bajo-pedido-mobile.webp',
+    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-bajo-pedido.webp',
+    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-bajo-pedido.webp',
+    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-velas-bajo-pedido-mobile.webp',
     alt: 'Velas personalizadas bajo pedido para eventos especiales en Bogotá',
   },
 ];
@@ -138,19 +153,14 @@ export function ResponsiveBannerImage({
       {/* Imagen para Celular (< sm): calibración object-[center_60%] */}
       <div className="block sm:hidden absolute inset-0">
         <Image
-          src={encodeURI(mobileSrc)}
+          src={mobileSrc}
           alt={altText}
           fill
           priority={isFirst}
-          unoptimized
           sizes="100vw"
           className="object-cover object-[center_60%] w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
           onError={() => {
-            if (mobileSrc.endsWith('.png')) {
-              setMobileSrc(mobileSrc.replace(/\.png$/, '.jpg'));
-            } else if (mobileSrc.endsWith('.jpg')) {
-              setMobileSrc(mobileSrc.replace(/\.jpg$/, '.png'));
-            } else if (mobileSrc !== desktopSource) {
+            if (mobileSrc !== desktopSource) {
               setMobileSrc(desktopSource);
             }
           }}
@@ -160,20 +170,12 @@ export function ResponsiveBannerImage({
       {/* Imagen para Tablet y PC (sm:): 1920x620 panorámica con enfoque centrado */}
       <div className="hidden sm:block absolute inset-0">
         <Image
-          src={encodeURI(desktopSrc)}
+          src={desktopSrc}
           alt={altText}
           fill
           priority={isFirst}
-          unoptimized
           sizes="100vw"
           className="object-cover object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
-          onError={() => {
-            if (desktopSrc.endsWith('.png')) {
-              setDesktopSrc(desktopSrc.replace(/\.png$/, '.jpg'));
-            } else if (desktopSrc.endsWith('.jpg')) {
-              setDesktopSrc(desktopSrc.replace(/\.jpg$/, '.png'));
-            }
-          }}
         />
       </div>
     </div>

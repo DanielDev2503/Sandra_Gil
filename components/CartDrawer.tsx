@@ -66,7 +66,7 @@ export default function CartDrawer() {
                 >
                   <div className="relative w-20 h-20 bg-stone-100 rounded-md border border-stone-200/50 shrink-0 overflow-hidden">
                     <SkeletonImage
-                      src={item.url_imagen || '/logo-sandra.png'}
+                      src={item.url_imagen || '/logo-sandra.webp'}
                       alt={`Vela artesanal ${item.nombre} Sandra Gil`}
                       className="w-full h-full object-cover"
                       fill

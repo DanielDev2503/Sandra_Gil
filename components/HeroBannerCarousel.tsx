@@ -121,12 +121,10 @@ export const BANNERS_DATA: BannerSlide[] = [
 const AUTOPLAY_DURATION = 5500; // 5.5s por slide
 
 /**
- * Subcomponente de imagen responsiva con Art Direction nativa de Next.js:
- * En pantallas >= sm (Tablet y Desktop) consume la versión panorámica (1920x620).
- * En pantallas < sm (Mobile) consume la versión móvil con calibración object-[center_60%].
- * Calibración de object-position:
- * - Mobile: object-[center_60%] para conservar tanto la base de los productos como la parte superior.
- * - Desktop: object-center para un encuadre panorámico balanceado.
+ * Subcomponente de imagen responsiva con SSR directo, prioritario para LCP en mobile:
+ * - Slide inicial (isFirst): fetchPriority="high", loading="eager", priority={true}
+ * - Slides posteriores: loading="lazy", priority={false}
+ * - Encuadre calibrado con Tailwind: object-[center_60%] en móvil y sm:object-center en desktop.
  */
 export function ResponsiveBannerImage({
   slide,
@@ -135,49 +133,21 @@ export function ResponsiveBannerImage({
   slide: BannerSlide;
   isFirst?: boolean;
 }) {
-  const desktopSource = slide.desktopSrc || slide.imageDesktop || slide.image || '';
-  const mobileSource = slide.mobileSrc || slide.imageMobile || slide.image || desktopSource;
-
-  const [desktopSrc, setDesktopSrc] = useState(desktopSource);
-  const [mobileSrc, setMobileSrc] = useState(mobileSource);
-
-  useEffect(() => {
-    setDesktopSrc(desktopSource);
-    setMobileSrc(mobileSource);
-  }, [desktopSource, mobileSource]);
-
   const altText = slide.alt || slide.title || slide.titulo;
+  const imageSrc = slide.image || slide.desktopSrc || '';
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#FAF8F5] bg-stone-100">
-      {/* Imagen para Celular (< sm): calibración object-[center_60%] */}
-      <div className="block sm:hidden absolute inset-0">
-        <Image
-          src={mobileSrc}
-          alt={altText}
-          fill
-          priority={isFirst}
-          sizes="100vw"
-          className="object-cover object-[center_60%] w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
-          onError={() => {
-            if (mobileSrc !== desktopSource) {
-              setMobileSrc(desktopSource);
-            }
-          }}
-        />
-      </div>
-
-      {/* Imagen para Tablet y PC (sm:): 1920x620 panorámica con enfoque centrado */}
-      <div className="hidden sm:block absolute inset-0">
-        <Image
-          src={desktopSrc}
-          alt={altText}
-          fill
-          priority={isFirst}
-          sizes="100vw"
-          className="object-cover object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
-        />
-      </div>
+      <Image
+        src={imageSrc}
+        alt={altText}
+        fill
+        priority={isFirst}
+        loading={isFirst ? 'eager' : 'lazy'}
+        fetchPriority={isFirst ? 'high' : 'low'}
+        sizes="100vw"
+        className="object-cover object-[center_60%] sm:object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+      />
     </div>
   );
 }

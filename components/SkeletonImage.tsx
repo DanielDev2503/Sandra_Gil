@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image, { ImageProps } from 'next/image';
 
-export const DEFAULT_FALLBACK_IMAGE = '/logo-sandra.png';
+export const DEFAULT_FALLBACK_IMAGE = '/logo-sandra.webp';
 
 export function formatSupabaseUrl(url?: string | null): string {
   if (!url || typeof url !== 'string' || url.trim() === '' || url.includes('data:image/svg+xml')) {

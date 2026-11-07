@@ -52,11 +52,10 @@ export default function Footer() {
           <div className="space-y-4 md:col-span-1">
             <Link href="/" className="inline-block">
               <Image
-                src="/logo-sandra.png"
+                src="/logo-sandra.webp"
                 alt="Sandra Gil Velas Artesanales"
                 width={100}
                 height={100}
-                unoptimized
                 className="object-contain"
               />
             </Link>

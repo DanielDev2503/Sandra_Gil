@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useMemo, useSyncExternalStore } from 'react';
+import React, { useRef, useState, useEffect, useMemo, useCallback, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -101,7 +101,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
 
   const [selectedAroma, setSelectedAroma] = useState<string>(initialAroma);
 
-  const imageUrl = product.url_imagen || '/logo-sandra.png';
+  const imageUrl = product.url_imagen || '/logo-sandra.webp';
   const effectiveIsBajoPedido = isBajoPedidoCategory || Boolean(product.esBajoPedido);
 
   // Enlace dinámico de WhatsApp para productos bajo pedido con el aroma seleccionado
@@ -165,7 +165,8 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
             src={imageUrl}
             alt={`Vela artesanal ${product.nombre} Sandra Gil`}
             fill
-            sizes="(max-width: 640px) 210px, 240px"
+            loading="lazy"
+            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 28vw, 220px"
             className="object-cover object-center transition-transform duration-500 ease-out group-hover/img:scale-105"
           />
           <div className="absolute inset-0 bg-stone-950/10 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -264,30 +265,40 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const isCheckingRef = useRef(false);
 
-  const checkScrollBounds = () => {
-    if (!carouselRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-    setCanScrollLeft(scrollLeft > 5);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
-  };
+  const checkScrollBounds = useCallback(() => {
+    if (isCheckingRef.current || !carouselRef.current) return;
+    isCheckingRef.current = true;
+
+    requestAnimationFrame(() => {
+      if (carouselRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+        setCanScrollLeft(scrollLeft > 10);
+        setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+      }
+      isCheckingRef.current = false;
+    });
+  }, []);
 
   useEffect(() => {
-    checkScrollBounds();
     const el = carouselRef.current;
     if (!el) return;
 
     el.addEventListener('scroll', checkScrollBounds, { passive: true });
-    window.addEventListener('resize', checkScrollBounds);
+    window.addEventListener('resize', checkScrollBounds, { passive: true });
 
-    const timer = setTimeout(checkScrollBounds, 120);
+    // Evitar layout thrashing sincrónico inicial: diferir la comprobación 300ms tras el montaje
+    const timer = setTimeout(() => {
+      checkScrollBounds();
+    }, 300);
 
     return () => {
       clearTimeout(timer);
       el.removeEventListener('scroll', checkScrollBounds);
       window.removeEventListener('resize', checkScrollBounds);
     };
-  }, [products]);
+  }, [checkScrollBounds, products]);
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;

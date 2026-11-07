@@ -125,13 +125,12 @@ export default function Header() {
             >
               <div className="relative w-10 h-10 md:w-14 md:h-14 shrink-0">
                 <Image
-                  src="/logo-sandra.png"
+                  src="/logo-sandra.webp"
                   alt="Sandra Gil Velas Artesanales"
-                  fill
+                  width={56}
+                  height={56}
                   priority
-                  unoptimized
-                  className="object-contain"
-                  sizes="(max-width: 768px) 40px, 56px"
+                  className="object-contain w-10 h-10 md:w-14 md:h-14"
                 />
               </div>
               <span
@@ -395,11 +394,10 @@ export default function Header() {
             <div className="flex items-center justify-between px-5 py-4 border-b border-stone-200/60">
               <div className="flex items-center gap-2">
                 <Image
-                  src="/logo-sandra.png"
+                  src="/logo-sandra.webp"
                   alt="Sandra Gil"
                   width={36}
                   height={36}
-                  unoptimized
                   className="object-contain"
                 />
                 <span className="font-serif text-sm font-light tracking-wider text-stone-900" aria-hidden="true">SANDRA GIL</span>

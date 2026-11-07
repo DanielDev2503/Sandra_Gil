@@ -226,12 +226,11 @@ export default function HeroSection({ heroProduct = null }: HeroSectionProps) {
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center bg-brand-cream/50 p-8 text-center">
                     <Image
-                      src="/logo-sandra.png"
+                      src="/logo-sandra.webp"
                       alt="Sandra Gil Velas"
                       width={160}
                       height={160}
                       priority
-                      unoptimized
                       className="object-contain opacity-70"
                     />
                     <p className="font-serif text-lg text-stone-700 mt-4">Velas Botánicas Hechas a Mano</p>

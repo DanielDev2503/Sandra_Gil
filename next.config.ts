@@ -32,11 +32,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  compress: true,
   images: {
-    // Desactivar el procesador de Vercel para evitar el bloqueo 402/429 de cuota (máx 5K/mes en Hobby) y servir directo desde Supabase Storage CDN
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
-    formats: ['image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -52,6 +51,15 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        source: '/:all*(svg|jpg|png|webp|avif)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
       {
         source: "/:path*",
         headers: securityHeaders,

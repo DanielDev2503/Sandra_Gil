@@ -16,6 +16,7 @@ import HeroBannerCarousel, {
 export {
   BANNERS_DATA,
   BANNERS_DATA as HERO_SLIDES,
+  BANNERS_DATA as slides,
   ResponsiveBannerImage,
   HeroBannerCarousel,
   type BannerSlide,

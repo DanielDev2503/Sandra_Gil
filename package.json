@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@prisma/client": "^6.19.3",
+    "@supabase/supabase-js": "^2.119.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

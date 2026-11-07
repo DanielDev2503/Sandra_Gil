@@ -550,7 +550,7 @@ export default function ProductDetailShell({
                     }`}
                   >
                     <img
-                      src={product.imagenes?.[0] || product.url_imagen || '/logo-sandra.png'}
+                      src={product.imagenes?.[0] || product.url_imagen || '/logo-sandra.webp'}
                       alt={`Edición Base ${product.nombre}`}
                       className="w-full h-full object-cover"
                     />

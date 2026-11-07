@@ -91,7 +91,7 @@ export default function NosotrosPage() {
 
             <div className="mt-4 sm:mt-6 flex justify-center">
               <Image
-                src="/logo-sandra.png"
+                src="/logo-sandra.webp"
                 alt="Sandra Gil Velas Artesanales"
                 width={85}
                 height={85}

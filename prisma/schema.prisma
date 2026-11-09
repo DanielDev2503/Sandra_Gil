@@ -34,6 +34,7 @@ model Producto {
   url_imagen    String?
   imagenes      String[]            @default([])
   activo        Boolean             @default(true)
+  temporada     String?
   variaciones   VariacionProducto[]
   items         ItemPedido[]
   resenas       Resena[]

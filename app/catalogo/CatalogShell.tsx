@@ -36,6 +36,7 @@ export interface Product {
   url_imagen: string | null;
   imagenes?: string[];
   activo: boolean;
+  temporada?: string | null;
 }
 
 interface CatalogShellProps {
@@ -230,6 +231,16 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             )}
           </div>
 
+          {/* Chip sutil de temporada */}
+          {product.temporada && (
+            <span className="absolute top-2 right-2 z-10 pointer-events-none text-[9px] uppercase tracking-wider font-medium px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-stone-800 shadow-2xs border border-stone-200/50">
+              {product.temporada === 'navidad' && 'Navidad'}
+              {product.temporada === 'otono' && 'Otoño'}
+              {product.temporada === 'amor_amistad' && 'Amor & Amistad'}
+              {product.temporada === 'primavera' && 'Primavera'}
+            </span>
+          )}
+
           {/* Overlay sutil de hover */}
           {hovered && (
             <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-[1px] hidden sm:flex items-center justify-center">
@@ -302,9 +313,8 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             type="button"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-2xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
-              isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
-            }`}
+            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-2xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+              }`}
           >
             Añadir
           </button>
@@ -312,9 +322,8 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             type="button"
             onClick={handleBuyNow}
             disabled={isOutOfStock}
-            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${
-              isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
-            }`}
+            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+              }`}
           >
             Comprar
           </button>
@@ -374,6 +383,17 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     };
   }, [directProducts]);
 
+  // Contadores dinámicos por Temporada (Excluyendo bajo pedido)
+  const temporadaCounts = useMemo(() => {
+    return {
+      TODAS: directProducts.length,
+      navidad: directProducts.filter((p) => p.temporada === 'navidad').length,
+      otono: directProducts.filter((p) => p.temporada === 'otono').length,
+      amor_amistad: directProducts.filter((p) => p.temporada === 'amor_amistad').length,
+      primavera: directProducts.filter((p) => p.temporada === 'primavera').length,
+    };
+  }, [directProducts]);
+
   // Lista dinámica de aromas únicos con conteo
   const aromaList = useMemo(() => {
     const map = new Map<string, number>();
@@ -413,6 +433,13 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       .filter((t) => valid.includes(t));
   }, [rawUrlTipo]);
 
+  const rawUrlTemporada = searchParams.get('temporada') || '';
+  const initialTemporada = useMemo(() => {
+    const valid = ['navidad', 'otono', 'amor_amistad', 'primavera'];
+    if (valid.includes(rawUrlTemporada)) return rawUrlTemporada;
+    return 'TODAS';
+  }, [rawUrlTemporada]);
+
   const rawUrlAroma = searchParams.get('aroma') || '';
   const initialAromas = useMemo(() => (rawUrlAroma ? [rawUrlAroma] : []), [rawUrlAroma]);
 
@@ -420,6 +447,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const initialMaterials = useMemo(() => (rawUrlMaterial ? [rawUrlMaterial] : []), [rawUrlMaterial]);
 
   const [selectedTypes, setSelectedTypes] = useState<string[]>(initialTypes);
+  const [selectedTemporada, setSelectedTemporada] = useState<string>(initialTemporada);
   const [selectedAromas, setSelectedAromas] = useState<string[]>(initialAromas);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>(initialMaterials);
   const [priceRange, setPriceRange] = useState<[number, number]>([minPriceAbsolute, maxPriceAbsolute]);
@@ -430,6 +458,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   // Estado de apertura de acordeones
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     categoria: true,
+    temporada: true,
     precio: true,
     aroma: true,
     material: false,
@@ -449,11 +478,23 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     }
   }, [rawUrlTipo]);
 
+  useEffect(() => {
+    if (rawUrlTemporada) {
+      const valid = ['navidad', 'otono', 'amor_amistad', 'primavera'];
+      if (valid.includes(rawUrlTemporada)) {
+        setSelectedTemporada(rawUrlTemporada);
+      }
+    } else {
+      setSelectedTemporada('TODAS');
+    }
+  }, [rawUrlTemporada]);
+
   // Sincronizar estado local hacia la URL
   const syncUrl = useCallback(
-    (types: string[], aromas: string[], mats: string[]) => {
+    (types: string[], temporada: string, aromas: string[], mats: string[]) => {
       const params = new URLSearchParams();
       if (types.length > 0) params.set('tipo', types.join(','));
+      if (temporada && temporada !== 'TODAS') params.set('temporada', temporada);
       if (aromas.length > 0) params.set('aroma', aromas[0]);
       if (mats.length > 0) params.set('material', mats[0]);
       const qs = params.toString();
@@ -468,7 +509,12 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       ? selectedTypes.filter((t) => t !== typeId)
       : [...selectedTypes, typeId];
     setSelectedTypes(next);
-    syncUrl(next, selectedAromas, selectedMaterials);
+    syncUrl(next, selectedTemporada, selectedAromas, selectedMaterials);
+  };
+
+  const handleSelectTemporada = (tempId: string) => {
+    setSelectedTemporada(tempId);
+    syncUrl(selectedTypes, tempId, selectedAromas, selectedMaterials);
   };
 
   const handleToggleAroma = (aromaName: string) => {
@@ -476,7 +522,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       ? selectedAromas.filter((a) => a !== aromaName)
       : [...selectedAromas, aromaName];
     setSelectedAromas(next);
-    syncUrl(selectedTypes, next, selectedMaterials);
+    syncUrl(selectedTypes, selectedTemporada, next, selectedMaterials);
   };
 
   const handleToggleMaterial = (matName: string) => {
@@ -484,17 +530,18 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       ? selectedMaterials.filter((m) => m !== matName)
       : [...selectedMaterials, matName];
     setSelectedMaterials(next);
-    syncUrl(selectedTypes, selectedAromas, next);
+    syncUrl(selectedTypes, selectedTemporada, selectedAromas, next);
   };
 
   const clearAllFilters = () => {
     setSelectedTypes([]);
+    setSelectedTemporada('TODAS');
     setSelectedAromas([]);
     setSelectedMaterials([]);
     setPriceRange([minPriceAbsolute, maxPriceAbsolute]);
     setSortOrder('relevancia');
     setSearchQuery('');
-    syncUrl([], [], []);
+    syncUrl([], 'TODAS', [], []);
   };
 
   // Bloquear scroll de fondo al abrir el Drawer móvil
@@ -522,6 +569,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     count += selectedTypes.length;
+    if (selectedTemporada !== 'TODAS') count += 1;
     count += selectedAromas.length;
     count += selectedMaterials.length;
     if (priceRange[0] > minPriceAbsolute || priceRange[1] < maxPriceAbsolute) count += 1;
@@ -530,6 +578,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     return count;
   }, [
     selectedTypes,
+    selectedTemporada,
     selectedAromas,
     selectedMaterials,
     priceRange,
@@ -566,6 +615,13 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           return false;
         });
         if (!matchesType) return false;
+      }
+
+      // Filtro por Temporada (Ortogonal)
+      if (selectedTemporada !== 'TODAS') {
+        if (p.temporada !== selectedTemporada) {
+          return false;
+        }
       }
 
       // Filtro por aromas múltiples
@@ -616,6 +672,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     directProducts,
     searchQuery,
     selectedTypes,
+    selectedTemporada,
     selectedAromas,
     selectedMaterials,
     priceRange,
@@ -676,9 +733,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               <span className="w-2 h-2 rounded-full bg-brand-gold" />
             )}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                openSections.categoria ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.categoria ? 'rotate-180' : ''
+                }`}
             />
           </div>
         </button>
@@ -714,6 +770,62 @@ export default function CatalogShell({ products }: CatalogShellProps) {
         )}
       </div>
 
+      {/* SECCIÓN: TEMPORADA */}
+      <div className="border-b border-stone-200/70 pb-4">
+        <button
+          type="button"
+          onClick={() => toggleSection('temporada')}
+          className="w-full flex items-center justify-between py-1 text-left group cursor-pointer"
+        >
+          <span className="font-serif font-medium text-stone-900 text-sm group-hover:text-brand-brown transition">
+            Temporada
+          </span>
+          <div className="flex items-center gap-2">
+            {selectedTemporada !== 'TODAS' && (
+              <span className="w-2 h-2 rounded-full bg-brand-gold" />
+            )}
+            <ChevronDown
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.temporada ? 'rotate-180' : ''
+                }`}
+            />
+          </div>
+        </button>
+
+        {openSections.temporada && (
+          <div className="mt-3 space-y-1.5 pt-1">
+            {[
+              { id: 'TODAS', label: 'Todas las Temporadas' },
+              { id: 'navidad', label: 'Navideña ' },
+              { id: 'otono', label: 'Otoño ' },
+              { id: 'amor_amistad', label: 'Amor & Amistad ' },
+              { id: 'primavera', label: 'Primavera ' },
+            ].map((temp) => {
+              const isSelected = selectedTemporada === temp.id;
+              const count = temporadaCounts[temp.id as keyof typeof temporadaCounts] || 0;
+              return (
+                <button
+                  key={temp.id}
+                  type="button"
+                  onClick={() => handleSelectTemporada(temp.id)}
+                  className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${isSelected
+                      ? 'bg-amber-50 text-amber-950 font-medium border border-amber-200/80 shadow-2xs'
+                      : 'text-stone-600 hover:bg-stone-50 border border-transparent'
+                    }`}
+                >
+                  <span className="truncate">{temp.label}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-amber-200/60 text-amber-900 font-medium' : 'bg-stone-100 text-stone-500'
+                      }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       {/* ACORDEÓN 2: RANGO DE PRECIO */}
       <div className="border-b border-stone-200/70 pb-4">
         <button
@@ -729,9 +841,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               <span className="w-2 h-2 rounded-full bg-brand-gold" />
             )}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                openSections.precio ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.precio ? 'rotate-180' : ''
+                }`}
             />
           </div>
         </button>
@@ -795,9 +906,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </span>
               )}
               <ChevronDown
-                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                  openSections.aroma ? 'rotate-180' : ''
-                }`}
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.aroma ? 'rotate-180' : ''
+                  }`}
               />
             </div>
           </button>
@@ -851,9 +961,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </span>
               )}
               <ChevronDown
-                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                  openSections.material ? 'rotate-180' : ''
-                }`}
+                className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.material ? 'rotate-180' : ''
+                  }`}
               />
             </div>
           </button>
@@ -902,9 +1011,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
           <div className="flex items-center gap-2">
             {sortOrder !== 'relevancia' && <span className="w-2 h-2 rounded-full bg-brand-gold" />}
             <ChevronDown
-              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${
-                openSections.orden ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${openSections.orden ? 'rotate-180' : ''
+                }`}
             />
           </div>
         </button>
@@ -1001,6 +1109,28 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                     </button>
                   );
                 })}
+
+                {/* Chip de Temporada */}
+                {selectedTemporada !== 'TODAS' && (
+                  <button
+                    onClick={() => handleSelectTemporada('TODAS')}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-300/80 rounded-full text-xs text-stone-800 hover:border-red-300 hover:text-red-700 transition"
+                  >
+                    <span>
+                      Temporada:{' '}
+                      {selectedTemporada === 'navidad'
+                        ? 'Navideña 🎄'
+                        : selectedTemporada === 'otono'
+                          ? 'Otoño 🍂'
+                          : selectedTemporada === 'amor_amistad'
+                            ? 'Amor & Amistad 💖'
+                            : selectedTemporada === 'primavera'
+                              ? 'Primavera 🌸'
+                              : selectedTemporada}
+                    </span>
+                    <X className="w-3 h-3 text-stone-400 hover:text-red-600" />
+                  </button>
+                )}
 
                 {/* Chips de Aroma */}
                 {selectedAromas.map((a) => (

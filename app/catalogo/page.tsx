@@ -65,6 +65,7 @@ export default async function CatalogPage() {
       url_imagen: true,
       imagenes: true,
       activo: true,
+      temporada: true,
     },
     orderBy: {
       nombre: 'asc',

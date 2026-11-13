@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Header from '@/components/Header';
-import CartDrawer from '@/components/CartDrawer';
+
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
 import {
@@ -142,7 +142,7 @@ export default function ProductDetailShell({
   relatedProducts = [],
   variaciones = [],
 }: ProductDetailShellProps) {
-  const { addToCart, clearCart } = useCart();
+  const { cart, addToCart, clearCart } = useCart();
   const router = useRouter();
 
   const isVela = product.tipo === 'VELA' || product.tipo === 'VELA_ENVASE' || product.tipo === 'VELA_ESCULPIDA';
@@ -192,9 +192,18 @@ export default function ProductDetailShell({
   const activePrice = selectedVariation?.precio ?? product.precio;
   const activeImage = selectedVariation?.imagen || galleryImages[selectedImage] || product.url_imagen;
 
-  const isLowStock = product.stock > 0 && product.stock <= 15;
-  const isOutOfStock = product.stock <= 0;
+
   const isBajoPedido = product.esBajoPedido;
+  const inCartQty = cart
+    .filter((i) => i.id === product.id)
+    .reduce((acc, i) => acc + i.cantidad, 0);
+  const totalStock = typeof product.stock === 'number' ? product.stock : Infinity;
+  const remainingStock = Math.max(0, totalStock - inCartQty);
+  const isOutOfStock = !isBajoPedido && totalStock <= 0;
+  const isLowStock = !isBajoPedido && totalStock > 0 && totalStock <= 15;
+  const isMaxReached = !isBajoPedido && (quantity >= remainingStock || remainingStock <= 0);
+
+
   const hasVariaciones = variaciones.length > 0;
 
   // Computed average rating
@@ -208,8 +217,11 @@ export default function ProductDetailShell({
     const productForCart = {
       ...product,
       url_imagen: activeImage || product.url_imagen,
+      stock: product.stock,
+      esBajoPedido: product.esBajoPedido,
     };
-    addToCart(productForCart, Math.max(1, quantity), selectedAroma, selectedVariation);
+    const qtyToAdd = !isBajoPedido ? Math.min(Math.max(1, quantity), remainingStock) : Math.max(1, quantity);
+    addToCart(productForCart, qtyToAdd, selectedAroma, selectedVariation);
     router.push('/checkout');
   };
 
@@ -217,8 +229,11 @@ export default function ProductDetailShell({
     const productForCart = {
       ...product,
       url_imagen: activeImage || product.url_imagen,
+      stock: product.stock,
+      esBajoPedido: product.esBajoPedido,
     };
-    addToCart(productForCart, Math.max(1, quantity), selectedAroma, selectedVariation);
+    const qtyToAdd = !isBajoPedido ? Math.min(Math.max(1, quantity), remainingStock) : Math.max(1, quantity);
+    addToCart(productForCart, qtyToAdd, selectedAroma, selectedVariation);
   };
 
   const toggleAccordion = (section: string) => {
@@ -456,8 +471,8 @@ export default function ProductDetailShell({
                       <button
                         type="button"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        disabled={isOutOfStock}
-                        className="p-1 min-w-[28px] text-stone-600 hover:text-stone-900 disabled:opacity-40 cursor-pointer"
+                        disabled={isOutOfStock || remainingStock <= 0 || quantity <= 1}
+                        className="p-1 min-w-[28px] text-stone-600 hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                         aria-label="Disminuir cantidad"
                       >
                         -
@@ -465,9 +480,9 @@ export default function ProductDetailShell({
                       <span className="px-3 text-xs font-medium text-stone-800">{quantity}</span>
                       <button
                         type="button"
-                        onClick={() => setQuantity((q) => q + 1)}
-                        disabled={isOutOfStock}
-                        className="p-1 min-w-[28px] text-stone-600 hover:text-stone-900 disabled:opacity-40 cursor-pointer"
+                        onClick={() => setQuantity((q) => Math.min(q + 1, remainingStock))}
+                        disabled={isOutOfStock || isMaxReached || remainingStock <= 0}
+                        className="p-1 min-w-[28px] text-stone-600 hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                         aria-label="Aumentar cantidad"
                       >
                         +
@@ -475,6 +490,10 @@ export default function ProductDetailShell({
                     </div>
                     {isOutOfStock ? (
                       <span className="text-[10px] text-rose-700 bg-rose-100/70 rounded-full px-2 py-0.5 font-medium">Agotado</span>
+                    ) : remainingStock === 0 ? (
+                      <span className="text-[10px] text-amber-800 bg-amber-100/80 rounded-full px-2.5 py-0.5 font-medium">
+                        Máx. en carrito
+                      </span>
                     ) : isLowStock ? (
                       <span className="text-[10px] text-amber-700 bg-amber-100/60 rounded-full px-2 py-0.5 font-medium animate-pulse">Últimas {product.stock}</span>
                     ) : (
@@ -482,6 +501,13 @@ export default function ProductDetailShell({
                     )}
                   </div>
                 </div>
+              )}
+
+              {/* Aviso discreto cuando ya se tiene el máximo en carrito */}
+              {!isBajoPedido && remainingStock === 0 && !isOutOfStock && (
+                <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200/80 rounded-lg p-2 font-medium">
+                  Ya tienes el máximo disponible ({totalStock} uds.) en tu carrito.
+                </p>
               )}
 
               {/* Botones principales */}
@@ -500,18 +526,18 @@ export default function ProductDetailShell({
                   <button
                     type="button"
                     onClick={handleBuyNow}
-                    disabled={isOutOfStock}
+                    disabled={isOutOfStock || (!isBajoPedido && remainingStock <= 0)}
                     className="w-full rounded-full py-3.5 px-6 font-semibold text-xs sm:text-sm tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center cursor-pointer active:scale-98 disabled:bg-stone-300 disabled:text-stone-500 disabled:cursor-not-allowed"
                   >
-                    Comprar Ahora
+                    {isOutOfStock ? 'Agotado' : 'Comprar Ahora'}
                   </button>
                   <button
                     type="button"
                     onClick={handleAddToCart}
-                    disabled={isOutOfStock}
+                    disabled={isOutOfStock || (!isBajoPedido && remainingStock <= 0)}
                     className="w-full rounded-full py-3.5 px-6 font-semibold text-xs sm:text-sm tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-sm transition-all duration-200 flex items-center justify-center cursor-pointer active:scale-98 disabled:border-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed"
                   >
-                    Añadir al Carrito
+                    {isOutOfStock ? 'Agotado' : !isBajoPedido && remainingStock <= 0 ? 'Sin Stock Disp.' : 'Añadir al Carrito'}
                   </button>
                 </div>
               )}
@@ -852,7 +878,7 @@ export default function ProductDetailShell({
         )}
       </main>
 
-      <CartDrawer />
+
       <Footer />
     </div>
   );

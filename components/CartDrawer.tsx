@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { X, Plus, Minus, Trash2, ShoppingBag, ShieldCheck, Truck, Lock } from 'lucide-react';
 import Link from 'next/link';
@@ -9,10 +9,27 @@ import SkeletonImage from './SkeletonImage';
 export default function CartDrawer() {
   const { cart, updateQuantity, removeFromCart, cartTotal, cartCount, isCartOpen, closeCart } = useCart();
 
+  // Bloquear scroll de fondo y habilitar cierre con tecla Escape cuando el drawer esté activo
+  useEffect(() => {
+    if (!isCartOpen) return;
+
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeCart();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isCartOpen, closeCart]);
+
   if (!isCartOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-label="Carrito de compras">
+    <div className="fixed inset-0 z-[60] overflow-hidden" role="dialog" aria-modal="true" aria-label="Carrito de compras">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/45 backdrop-blur-xs transition-opacity duration-300"
@@ -88,22 +105,30 @@ export default function CartDrawer() {
 
                     <div className="flex items-center justify-between mt-2 pt-1">
                       {/* Quantity Selector */}
-                      <div className="flex items-center border border-stone-300 rounded-full bg-white shadow-2xs px-1">
-                        <button
-                          onClick={() => updateQuantity(item.id, item.cantidad - 1, item.aroma || undefined, item.variacionId)}
-                          aria-label="Disminuir cantidad"
-                          className="px-2.5 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="px-2.5 text-xs font-semibold text-stone-800">{item.cantidad}</span>
-                        <button
-                          onClick={() => updateQuantity(item.id, item.cantidad + 1, item.aroma || undefined, item.variacionId)}
-                          aria-label="Aumentar cantidad"
-                          className="px-2.5 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center border border-stone-300 rounded-full bg-white shadow-2xs px-1">
+                          <button
+                            onClick={() => updateQuantity(item.id, item.cantidad - 1, item.aroma || undefined, item.variacionId)}
+                            aria-label="Disminuir cantidad"
+                            className="px-2.5 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="px-2.5 text-xs font-semibold text-stone-800">{item.cantidad}</span>
+                          <button
+                            onClick={() => updateQuantity(item.id, item.cantidad + 1, item.aroma || undefined, item.variacionId)}
+                            disabled={typeof item.stock === 'number' && !item.esBajoPedido && item.cantidad >= item.stock}
+                            aria-label="Aumentar cantidad"
+                            className="px-2.5 py-1 text-stone-500 hover:text-stone-900 hover:bg-stone-50 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+                        {typeof item.stock === 'number' && !item.esBajoPedido && item.cantidad >= item.stock && (
+                          <span className="text-[10px] text-amber-800 font-medium font-sans">
+                            Máx. disponible ({item.stock} uds.)
+                          </span>
+                        )}
                       </div>
 
                       {/* Price and delete button */}

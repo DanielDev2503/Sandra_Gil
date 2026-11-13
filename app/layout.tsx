@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -202,6 +203,7 @@ export default function RootLayout({
         <CartProvider>
           {children}
           <WhatsAppButton />
+          <CartDrawer />
         </CartProvider>
         <Analytics />
       </body>

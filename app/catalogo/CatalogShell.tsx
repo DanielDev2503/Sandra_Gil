@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import Header from '@/components/Header';
-import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
 import {
@@ -144,7 +143,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
   const [selectedAroma, setSelectedAroma] = useState<string>(initialAroma);
 
   const soap = isSoapProduct(product);
-  const isOutOfStock = product.stock <= 0;
+  const isOutOfStock = !product.esBajoPedido && typeof product.stock === 'number' && product.stock <= 0;
   const isLowStock = product.stock > 0 && product.stock <= 10;
   const displayImage =
     product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : product.url_imagen;
@@ -1288,7 +1287,6 @@ export default function CatalogShell({ products }: CatalogShellProps) {
         </div>
       )}
 
-      <CartDrawer />
       <Footer />
     </div>
   );

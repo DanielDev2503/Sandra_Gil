@@ -354,8 +354,12 @@ export default function Header() {
           {/* Right: Cart + Mobile Hamburger Button */}
           <div className="flex items-center space-x-1 sm:space-x-2">
             <button
-              onClick={openCart}
-              className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-amber-500 hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                openCart();
+              }}
+              className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-[#B8862D] hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer z-50"
               aria-label="Abrir carrito de compras"
             >
               <ShoppingBag className="w-5 h-5 text-stone-800" />

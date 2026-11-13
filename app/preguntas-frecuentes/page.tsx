@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
-import CartDrawer from '@/components/CartDrawer';
+
 import Footer from '@/components/Footer';
 import FAQClient from './FAQClient';
 import { prisma } from '@/lib/db';
@@ -115,7 +115,7 @@ export default async function FAQPage() {
         <FAQClient initialFaqs={faqs} />
       </main>
 
-      <CartDrawer />
+
       <Footer />
     </div>
   );

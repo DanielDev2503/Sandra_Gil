@@ -3,7 +3,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ExpressShippingForm from './ExpressShippingForm';
 import {
-  Zap,
   MapPin,
   CircleDollarSign,
   Truck,
@@ -74,8 +73,7 @@ export default function ExpressShippingPage() {
         {/* Header / Hero Section (Sin párrafo redundante) */}
         <section className="bg-gradient-to-b from-[#F5EDD8] via-[#FAF6ED] to-brand-cream py-8 sm:py-12 border-b border-brand-gold/20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-3">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-100/90 border border-amber-300/70 rounded-full shadow-xs">
-              <Zap className="w-4 h-4 text-amber-600 fill-amber-500 shrink-0" />
+            <div className="inline-flex items-center px-3.5 py-1.5 bg-amber-100/90 border border-amber-300/70 rounded-full shadow-xs">
               <span className="text-[10px] sm:text-xs font-bold text-amber-900 uppercase tracking-widest">
                 Servicio Prioritario Bogotá
               </span>

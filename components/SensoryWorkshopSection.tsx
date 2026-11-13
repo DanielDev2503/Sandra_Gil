@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, MessageCircle, Gift, Users, ArrowRight, Heart } from 'lucide-react';
+import { Sparkles, Gift, Users, Heart } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 
 const WA_NUMBER = '573175752029';
@@ -68,56 +68,124 @@ export default function SensoryWorkshopSection() {
           </p>
         </div>
 
-        {/* 3 Experience Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {EXPERIENCES.map((exp, idx) => {
+        {/* ── ASYMMETRIC EDITORIAL GRID (RITMO ASIMÉTRICO LOOKBOOK) ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+          {/* COLUMNA IZQUIERDA HERO (7 de 12 cols): Experiencia Destacada 01 */}
+          {(() => {
+            const exp = EXPERIENCES[0];
             const Icon = exp.icon;
             const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(exp.waMessage)}`;
 
             return (
               <motion.div
-                key={exp.title}
-                initial={{ opacity: 0, y: 25 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.6, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                className="group bg-white rounded-2xl p-6 sm:p-8 border border-brand-gold/20 hover:border-brand-gold/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="lg:col-span-7 group flex flex-col justify-between border-t border-[#B8862D]/40 pt-6 sm:pt-8"
               >
                 <div>
-                  {/* Icon */}
-                  <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-brand-gold/30 flex items-center justify-center text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300">
-                    <Icon className="w-6 h-6" />
+                  {/* Top Editorial Row: Giant Golden Numeral & Delicate Icon */}
+                  <div className="flex items-baseline justify-between mb-3">
+                    <span className="font-serif text-[#B8862D]/35 text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight select-none">
+                      01
+                    </span>
+                    <Icon className="w-5 h-5 text-[#B8862D]/70 stroke-[1.5]" aria-hidden="true" />
                   </div>
 
-                  <span className="text-[10px] uppercase tracking-widest text-brand-gold font-bold font-sans block mb-1">
+                  <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#B8862D] font-semibold font-sans block mb-2">
                     {exp.subtitle}
                   </span>
 
-                  <h3 className="font-serif text-xl font-medium text-stone-900 mb-3 group-hover:text-brand-brown transition-colors">
+                  <h3 className="font-serif text-2xl sm:text-3xl text-stone-900 font-normal leading-tight tracking-tight mb-3 group-hover:text-[#B8862D] transition-colors">
                     {exp.title}
                   </h3>
 
-                  <p className="text-stone-600 text-xs sm:text-sm font-light leading-relaxed font-sans">
+                  <p className="text-sm sm:text-base text-stone-600 font-light leading-relaxed mb-5 font-sans max-w-xl">
                     {exp.description}
                   </p>
+
+                  {/* Editorial Callout */}
+                  <div className="border-l-2 border-[#B8862D]/40 pl-3.5 py-1 mb-6 bg-amber-50/30 rounded-r-md">
+                    <p className="font-serif italic text-xs sm:text-sm text-stone-700">
+                      Personalización de aromas, etiquetas de diseño, cuarzos y flores en cera para momentos irrepetibles.
+                    </p>
+                  </div>
                 </div>
 
-                {/* Direct WhatsApp CTA Button */}
-                <div className="mt-8 pt-5 border-t border-stone-100">
+                {/* Editorial CTA */}
+                <div className="pt-2">
                   <a
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3.5 min-h-[44px] bg-amber-50/80 hover:bg-amber-100 text-amber-900 border border-amber-300/80 hover:border-amber-400 text-xs uppercase tracking-wider font-semibold rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-xs group/btn"
+                    className="group/cta inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B8862D] hover:text-[#91651D] transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4 text-amber-700 transition-colors" />
                     <span>{exp.ctaText}</span>
-                    <ArrowRight className="w-3.5 h-3.5 opacity-60 group-hover/btn:translate-x-1 transition-transform" />
+                    <span className="transition-transform duration-200 group-hover/cta:translate-x-1" aria-hidden="true">&rarr;</span>
                   </a>
                 </div>
               </motion.div>
             );
-          })}
+          })()}
+
+          {/* COLUMNA DERECHA ESCALONADA (5 de 12 cols): Experiencias 02 y 03 en Stack Asimétrico */}
+          <div className="lg:col-span-5 space-y-8 sm:space-y-10">
+            {EXPERIENCES.slice(1).map((exp, idx) => {
+              const Icon = exp.icon;
+              const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(exp.waMessage)}`;
+              const editorialNumber = String(idx + 2).padStart(2, '0');
+              const isOffset = idx === 1;
+
+              return (
+                <motion.div
+                  key={exp.title}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.6, delay: (idx + 1) * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                  className={`group flex flex-col justify-between border-t border-stone-200/80 pt-6 sm:pt-7 ${
+                    isOffset ? 'lg:pl-6 xl:pl-8 border-l-0 lg:border-l lg:border-stone-200/40' : ''
+                  }`}
+                >
+                  <div>
+                    {/* Editorial Numeral & Icon */}
+                    <div className="flex items-baseline justify-between mb-2.5">
+                      <span className="font-serif text-[#B8862D]/35 text-3xl sm:text-4xl font-light tracking-tight select-none">
+                        {editorialNumber}
+                      </span>
+                      <Icon className="w-4 h-4 text-[#B8862D]/70 stroke-[1.5]" aria-hidden="true" />
+                    </div>
+
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#B8862D] font-semibold font-sans block mb-1">
+                      {exp.subtitle}
+                    </span>
+
+                    <h3 className="font-serif text-lg sm:text-xl text-stone-900 font-normal leading-snug mb-2 group-hover:text-[#B8862D] transition-colors">
+                      {exp.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed mb-4 font-sans">
+                      {exp.description}
+                    </p>
+                  </div>
+
+                  {/* Editorial CTA */}
+                  <div className="pt-1">
+                    <a
+                      href={waUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/cta inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B8862D] hover:text-[#91651D] transition-colors"
+                    >
+                      <span>{exp.ctaText}</span>
+                      <span className="transition-transform duration-200 group-hover/cta:translate-x-1" aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
       </div>

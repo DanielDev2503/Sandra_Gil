@@ -272,15 +272,6 @@ export default function HeroBannerCarousel() {
             const kicker = slide.kicker || 'Colección Artesanal';
             const ctaText = slide.ctaText || 'Explorar Colección';
 
-            const mobileButtonText =
-              title === 'Velas Bajo Pedido' || title === 'Velas Personalizadas & Bajo Pedido'
-                ? 'Cotizar Bajo Pedido'
-                : title === 'Colección Botánica & Cera de Soya'
-                ? 'Ver Catálogo Completo'
-                : title.startsWith('Ver ')
-                ? title
-                : `Ver ${title}`;
-
             return (
               <div
                 key={slide.id}
@@ -306,49 +297,60 @@ export default function HeroBannerCarousel() {
                   />
                 </Link>
 
-                {/* Contenido Editorial Izquierdo para Desktop (>= sm) */}
-                <div className="hidden sm:flex absolute inset-y-0 left-0 items-center z-20 pl-8 sm:pl-12 lg:pl-16 max-w-md lg:max-w-xl pointer-events-none">
-                  <div className="pointer-events-auto space-y-3 lg:space-y-4 bg-white/40 lg:bg-transparent backdrop-blur-xs lg:backdrop-blur-none p-6 lg:p-0 rounded-3xl">
+                {/* Contenido Editorial Izquierdo en Cuadro para Desktop */}
+                <div className="hidden sm:flex absolute inset-y-0 left-0 items-center z-20 pl-6 sm:pl-10 lg:pl-14 pointer-events-none">
+                  <div className="pointer-events-auto max-w-sm lg:max-w-md bg-[#FAF8F5]/90 backdrop-blur-md border border-stone-200/80 shadow-xl rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-8 space-y-2.5 lg:space-y-3.5 transition-all">
                     {/* Kicker superior */}
-                    <span className="inline-block text-[11px] lg:text-xs font-semibold uppercase tracking-[0.25em] text-amber-700 bg-amber-50/80 border border-amber-200/60 rounded-full px-3.5 py-1">
+                    <span className="inline-block text-[10px] lg:text-xs font-semibold uppercase tracking-[0.2em] text-[#B8862D] bg-amber-50/90 border border-amber-200/70 rounded-full px-3 py-0.5">
                       {kicker}
                     </span>
 
                     {/* Título de la categoría */}
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-stone-900 leading-[1.1] tracking-tight drop-shadow-xs">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-[1.15] tracking-tight">
                       {title}
                     </h2>
 
                     {/* Subtítulo / Descripción */}
                     {description && (
-                      <p className="text-xs sm:text-sm lg:text-base text-stone-700 font-light leading-relaxed max-w-sm lg:max-w-md line-clamp-2 lg:line-clamp-3">
+                      <p className="text-xs lg:text-sm text-stone-700 font-light leading-relaxed line-clamp-2 lg:line-clamp-3">
                         {description}
                       </p>
                     )}
 
-                    {/* Botón de Acción Principal (Pill) */}
-                    <div className="pt-2">
+                    {/* Botón de Acción Principal */}
+                    <div className="pt-1.5">
                       <Link
                         href={link}
                         tabIndex={isActive ? 0 : -1}
-                        className="inline-flex items-center gap-2.5 rounded-full px-6 lg:px-8 py-3 lg:py-3.5 text-xs lg:text-sm font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                        className="inline-flex items-center gap-2 rounded-full px-5 lg:px-7 py-2.5 lg:py-3 text-xs font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] shadow-sm hover:shadow transition-all duration-200 active:scale-95"
                       >
-                        <span>{ctaText}</span>
+                        <span>{ctaText || 'Explorar Catálogo'}</span>
                         <span aria-hidden="true">&rarr;</span>
                       </Link>
                     </div>
                   </div>
                 </div>
 
-                {/* Botón Compacto Exclusivo para Móvil (< sm) */}
-                <div className="sm:hidden absolute bottom-3 left-3 z-20 max-w-[calc(100%-80px)]">
+                {/* Degradado suave inferior en móvil */}
+                <div className="sm:hidden absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/65 via-black/25 to-transparent pointer-events-none z-10" />
+
+                {/* Bloque Compacto Móvil: Título del Tipo de Producto + Botón Genérico */}
+                <div className="sm:hidden absolute bottom-2.5 left-3 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-85px)]">
+                  {/* Subtítulo / Tipo de producto visible y discreto */}
+                  <span className="font-serif text-white text-sm font-medium leading-tight tracking-wide drop-shadow-sm truncate w-full">
+                    {title}
+                  </span>
+
+                  {/* Botón genérico compacto */}
                   <Link
                     href={link}
                     tabIndex={isActive ? 0 : -1}
-                    className="inline-flex items-center gap-2 rounded-full py-2 px-4 bg-stone-900/90 backdrop-blur-md text-white text-xs font-semibold shadow-lg border border-white/20 active:scale-95 transition-all truncate"
+                    className="inline-flex items-center gap-1.5 rounded-full py-1.5 px-3.5 bg-[#B8862D] hover:bg-[#A37424] text-white text-[11px] font-semibold uppercase tracking-wider shadow-md active:scale-95 transition-all"
                   >
-                    <span className="truncate">{mobileButtonText}</span>
-                    <span aria-hidden="true" className="text-amber-400 font-bold">&rarr;</span>
+                    <span>
+                      {link === '/personalizadas' ? 'Ver Personalizadas' : 'Explorar Catálogo'}
+                    </span>
+                    <span aria-hidden="true">&rarr;</span>
                   </Link>
                 </div>
               </div>
@@ -380,7 +382,7 @@ export default function HeroBannerCarousel() {
         <div
           role="tablist"
           aria-label="Control de diapositivas"
-          className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-1 sm:gap-2 bg-stone-950/45 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20 shadow-md"
+          className="absolute bottom-2.5 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-1 sm:gap-2 bg-stone-950/45 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20 shadow-md"
         >
           {BANNERS_DATA.map((slide, idx) => {
             const isCurrent = idx === currentIndex;

@@ -103,6 +103,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
 
   const imageUrl = product.url_imagen || '/logo-sandra.webp';
   const effectiveIsBajoPedido = isBajoPedidoCategory || Boolean(product.esBajoPedido);
+  const isOutOfStock = !effectiveIsBajoPedido && typeof product.stock === 'number' && product.stock <= 0;
 
   // Enlace dinámico de WhatsApp para productos bajo pedido con el aroma seleccionado
   const waAromaSuffix = selectedAroma ? ` con aroma: ${selectedAroma}` : '';
@@ -113,6 +114,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isOutOfStock) return;
     const effectiveAroma = selectedAroma || AROMAS[0];
     if (!selectedAroma) {
       setSelectedAroma(effectiveAroma);
@@ -124,6 +126,8 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
         precio: product.precio,
         url_imagen: imageUrl,
         aroma: effectiveAroma,
+        stock: product.stock,
+        esBajoPedido: effectiveIsBajoPedido,
       },
       1,
       effectiveAroma
@@ -133,6 +137,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isOutOfStock) return;
     clearCart();
     const effectiveAroma = selectedAroma || AROMAS[0];
     if (!selectedAroma) {
@@ -145,6 +150,8 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
         precio: product.precio,
         url_imagen: imageUrl,
         aroma: effectiveAroma,
+        stock: product.stock,
+        esBajoPedido: effectiveIsBajoPedido,
       },
       1,
       effectiveAroma
@@ -228,19 +235,26 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
               <span className="font-serif text-sm sm:text-base font-semibold tracking-tight text-[#B8862D]">
                 ${product.precio ? product.precio.toLocaleString('es-CO') : '0'} COP
               </span>
+              {isOutOfStock && (
+                <span className="text-[9px] text-red-500 font-bold uppercase tracking-wider">
+                  Agotado
+                </span>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-1.5">
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs"
+                disabled={isOutOfStock}
+                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs disabled:border-stone-200 disabled:text-stone-400 disabled:bg-stone-50 disabled:cursor-not-allowed"
               >
                 Añadir
               </button>
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs"
+                disabled={isOutOfStock}
+                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed"
               >
                 Comprar
               </button>

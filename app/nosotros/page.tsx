@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
-import CartDrawer from '@/components/CartDrawer';
+
 import Footer from '@/components/Footer';
 import { Sparkles, Leaf, Heart, Flame, GraduationCap } from 'lucide-react';
 import Image from 'next/image';
@@ -173,36 +173,50 @@ export default function NosotrosPage() {
           </div>
         </section>
 
-        {/* ── PILARES ────────────────────────────────────── */}
-        <section className="py-6 sm:py-8 md:py-10 bg-brand-cream border-b border-stone-200/40">
+        {/* ── PILARES (ASYMMETRIC STAGGERED LOOKBOOK) ──────── */}
+        <section className="py-8 sm:py-12 md:pt-14 md:pb-20 bg-[#FAF8F5] border-b border-stone-200/50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="text-xs uppercase tracking-[0.2em] text-brand-gold font-semibold">
+            <div className="text-center mb-8 sm:mb-14">
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#B8862D] font-semibold">
                 Lo que Nos Define
               </span>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-light text-stone-900 mt-0.5 sm:mt-1">
+              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900 mt-1">
                 Nuestros Pilares
               </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-2 sm:mt-2.5" />
+              <div className="w-12 h-[1px] bg-[#B8862D]/60 mx-auto mt-3" />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-              {PILLARS.map((pillar) => {
+            {/* Rejilla Asimétrica Escalonada de 2 Columnas */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-x-14 md:gap-y-12 max-w-5xl mx-auto">
+              {PILLARS.map((pillar, idx) => {
                 const Icon = pillar.icon;
+                const editorialNumber = String(idx + 1).padStart(2, '0');
+                const isOffset = idx % 2 === 1;
+
                 return (
                   <div
                     key={pillar.title}
-                    className="bg-white p-4 sm:p-5 rounded-lg border border-brand-gold/15 shadow-xs hover:shadow-md transition-shadow duration-300 text-center"
+                    className={`group flex flex-col justify-between border-t border-[#B8862D]/35 pt-6 sm:pt-7 ${
+                      isOffset ? 'md:translate-y-8 md:border-stone-300/80' : ''
+                    }`}
                   >
-                    <div className="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center mx-auto mb-2.5 sm:mb-3">
-                      <Icon className="w-5 h-5 text-brand-gold" />
+                    <div>
+                      {/* Editorial Numeral & Minimal Icon */}
+                      <div className="flex items-baseline justify-between mb-3">
+                        <span className="font-serif text-[#B8862D]/30 text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight select-none">
+                          {editorialNumber}
+                        </span>
+                        <Icon className="w-4 h-4 text-[#B8862D]/70 stroke-[1.5]" aria-hidden="true" />
+                      </div>
+
+                      <h3 className="font-serif text-lg sm:text-xl text-stone-900 mb-2 font-normal leading-snug group-hover:text-[#B8862D] transition-colors">
+                        {pillar.title}
+                      </h3>
+
+                      <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed font-sans max-w-md">
+                        {pillar.description}
+                      </p>
                     </div>
-                    <h3 className="font-serif text-sm sm:text-base font-medium text-stone-800 mb-1">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-xs text-stone-500 leading-relaxed font-sans">
-                      {pillar.description}
-                    </p>
                   </div>
                 );
               })}
@@ -272,7 +286,7 @@ export default function NosotrosPage() {
         </section>
       </main>
 
-      <CartDrawer />
+
       <Footer />
     </div>
   );

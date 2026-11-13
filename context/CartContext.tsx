@@ -12,12 +12,22 @@ export interface CartItem {
   aroma?: string | null;
   variacionId?: string | null;
   variacionNombre?: string | null;
+  stock?: number | null;
+  esBajoPedido?: boolean | null;
 }
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (
-    product: { id: string; nombre: string; precio: number | null; url_imagen: string | null; aroma?: string | null },
+    product: {
+      id: string;
+      nombre: string;
+      precio: number | null;
+      url_imagen: string | null;
+      aroma?: string | null;
+      stock?: number | null;
+      esBajoPedido?: boolean | null;
+    },
     cantidad?: number,
     selectedAroma?: string,
     variacion?: { id: string; nombre: string; imagen: string; precio: number | null } | null
@@ -87,7 +97,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addToCart = (
-    product: { id: string; nombre: string; precio: number | null; url_imagen: string | null; aroma?: string | null },
+    product: {
+      id: string;
+      nombre: string;
+      precio: number | null;
+      url_imagen: string | null;
+      aroma?: string | null;
+      stock?: number | null;
+      esBajoPedido?: boolean | null;
+    },
     cantidad = 1,
     selectedAroma?: string,
     variacion?: { id: string; nombre: string; imagen: string; precio: number | null } | null
@@ -100,35 +118,81 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const finalImage = variacion?.imagen || product.url_imagen || '';
     const finalVariacionId = variacion?.id ?? null;
     const finalVariacionNombre = variacion?.nombre ?? null;
+    const isBajoPedido = Boolean(product.esBajoPedido);
+    const hasNumericStock = typeof product.stock === 'number';
+    const maxAvailable = hasNumericStock ? Math.max(0, product.stock!) : Infinity;
+
+    // Si el producto está agotado de antemano y no es bajo pedido
+    if (!isBajoPedido && hasNumericStock && maxAvailable <= 0) {
+      showToast(`"${product.nombre}" está agotado`);
+      return;
+    }
+
+    let toastFeedback = `"${product.nombre}" añadido al carrito`;
 
     setCart((prevCart) => {
+      // 1. Calcular cuántas unidades de este mismo producto ya existen en el carrito
+      const existingProductQty = prevCart
+        .filter((item) => item.id === product.id)
+        .reduce((sum, item) => sum + item.cantidad, 0);
+
+      // 2. Si no es bajo pedido, validar límite contra stock real
+      if (!isBajoPedido && hasNumericStock) {
+        if (existingProductQty >= maxAvailable) {
+          toastFeedback = `Has alcanzado el límite de stock disponible (${maxAvailable} uds.)`;
+          return prevCart;
+        }
+      }
+
+      // 3. Cantidad efectiva que se puede añadir sin sobrepasar el stock
+      const allowedToAdd = (!isBajoPedido && hasNumericStock)
+        ? Math.min(cantidad, maxAvailable - existingProductQty)
+        : cantidad;
+
+      if (allowedToAdd <= 0) {
+        toastFeedback = `Has alcanzado el límite de stock disponible (${maxAvailable} uds.)`;
+        return prevCart;
+      }
+
+      if (!isBajoPedido && hasNumericStock && existingProductQty + allowedToAdd >= maxAvailable) {
+        toastFeedback = `Añadido al carrito (límite de ${maxAvailable} uds. alcanzado)`;
+      } else {
+        toastFeedback = `"${product.nombre}" añadido al carrito`;
+      }
+
       const existingIndex = prevCart.findIndex((item) =>
         cartItemMatches(item, product.id, finalAroma, finalVariacionId)
       );
+
       if (existingIndex > -1) {
         const updated = [...prevCart];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          cantidad: updated[existingIndex].cantidad + cantidad,
+          cantidad: updated[existingIndex].cantidad + allowedToAdd,
+          stock: product.stock,
+          esBajoPedido: product.esBajoPedido,
         };
         return updated;
       }
+
       return [
         ...prevCart,
         {
           id: product.id,
           nombre: product.nombre,
           precio: effectivePrice,
-          cantidad,
+          cantidad: allowedToAdd,
           url_imagen: finalImage,
           aroma: finalAroma,
           variacionId: finalVariacionId,
           variacionNombre: finalVariacionNombre,
+          stock: product.stock,
+          esBajoPedido: product.esBajoPedido,
         },
       ];
     });
 
-    showToast(`"${product.nombre}" añadido al carrito`);
+    showToast(toastFeedback);
     openCart();
   };
 
@@ -143,13 +207,36 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       removeFromCart(productId, aroma, variacionId);
       return;
     }
-    setCart((prevCart) =>
-      prevCart.map((item) =>
+    setCart((prevCart) => {
+      const targetItem = prevCart.find((item) =>
         cartItemMatches(item, productId, aroma, variacionId)
-          ? { ...item, cantidad }
+      );
+      if (!targetItem) return prevCart;
+
+      let finalQty = cantidad;
+      if (typeof targetItem.stock === 'number' && !targetItem.esBajoPedido) {
+        const otherLinesQty = prevCart
+          .filter(
+            (item) =>
+              item.id === productId &&
+              !cartItemMatches(item, productId, aroma, variacionId)
+          )
+          .reduce((sum, item) => sum + item.cantidad, 0);
+
+        const maxAvailableForThisItem = Math.max(0, targetItem.stock - otherLinesQty);
+        finalQty = Math.min(cantidad, maxAvailableForThisItem);
+
+        if (cantidad > maxAvailableForThisItem) {
+          showToast(`Límite de stock disponible (${targetItem.stock} uds.) alcanzado`);
+        }
+      }
+
+      return prevCart.map((item) =>
+        cartItemMatches(item, productId, aroma, variacionId)
+          ? { ...item, cantidad: finalQty }
           : item
-      )
-    );
+      );
+    });
   };
 
   const clearCart = () => {

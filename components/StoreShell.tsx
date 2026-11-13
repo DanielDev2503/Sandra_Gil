@@ -7,7 +7,6 @@ import Header from './Header';
 import HeroBannerCarousel from './HeroBannerCarousel';
 import HomeTypeCarousels, { GroupedProducts } from './HomeTypeCarousels';
 import SensoryWorkshopSection from './SensoryWorkshopSection';
-import CartDrawer from './CartDrawer';
 import Footer from './Footer';
 import CandleGlowPulse from './CandleGlowPulse';
 
@@ -203,8 +202,6 @@ export default function StoreShell({
         </section>
       </main>
 
-      {/* Cart Drawer */}
-      <CartDrawer />
 
       {/* Brand Footer */}
       <Footer />

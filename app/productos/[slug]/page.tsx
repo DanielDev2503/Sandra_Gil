@@ -56,11 +56,22 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
   const isVela = product.tipo === 'VELA' || product.tipo === 'VELA_ENVASE' || product.tipo === 'VELA_ESCULPIDA';
   const isJabon = product.tipo === 'JABON';
-  const title = isJabon
+  const tipoNorm = product.tipo?.toLowerCase();
+  const isPebetero = tipoNorm === 'pebetero';
+  const isWaxMelt = tipoNorm === 'waxmell';
+  const title = isJabon || tipoNorm === 'jabon'
     ? `${product.nombre} | Jabón Artesanal Botánico Natural`
+    : isPebetero
+    ? `${product.nombre} | Pebetero Artesanal`
+    : isWaxMelt
+    ? `${product.nombre} | Waxmell Artesanal de Cera de Soya`
     : `${product.nombre} | Vela Artesanal de Cera de Soya`;
-  const rawDesc = product.descripcion || (isJabon
+  const rawDesc = product.descripcion || (isJabon || tipoNorm === 'jabon'
     ? 'Jabón artesanal botánico formulado con extractos naturales y aceites nutritivos en Bogotá.'
+    : isPebetero
+    ? 'Pebetero artesanal diseñado para difundir aromas naturales de forma elegante y segura en Bogotá.'
+    : isWaxMelt
+    ? 'Waxmell artesanal de cera de soya natural para aromatizar espacios sin pabilo en Bogotá.'
     : 'Vela artesanal vertida a mano con cera de soya natural y esencias exclusivas en Bogotá.');
   const description = rawDesc.length > 155 ? `${rawDesc.substring(0, 152)}...` : rawDesc;
   const imageUrl = product.imagenes && product.imagenes.length > 0 ? product.imagenes[0] : (product.url_imagen || '/logo-sandra.png');
@@ -257,7 +268,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       '@type': 'Brand',
       name: 'Sandra Gil',
     },
-    material: product.material || (isJabon ? 'Glicerina vegetal y extractos botánicos' : '100% Cera de Soya Natural'),
+    material: product.material || (isJabon || product.tipo?.toLowerCase() === 'jabon' ? 'Glicerina vegetal y extractos botánicos' : product.tipo?.toLowerCase() === 'pebetero' ? 'Cerámica artesanal' : '100% Cera de Soya Natural'),
     offers: {
       '@type': 'Offer',
       url: `${baseUrl}/productos/${product.slug}`,

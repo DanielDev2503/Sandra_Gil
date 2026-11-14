@@ -26,6 +26,8 @@ export interface GroupedProducts {
   VELA_ENVASE: CarouselProduct[];
   VELA_ESCULPIDA: CarouselProduct[];
   JABON: CarouselProduct[];
+  pebetero: CarouselProduct[];
+  waxmell: CarouselProduct[];
   BAJO_PEDIDO: CarouselProduct[];
 }
 
@@ -54,6 +56,16 @@ const CATEGORIES_METADATA: CategoryMeta[] = [
     key: 'JABON',
     title: 'Jabones Artesanales',
     href: '/catalogo?tipo=JABON',
+  },
+  {
+    key: 'pebetero',
+    title: 'Pebeteros',
+    href: '/catalogo?tipo=pebetero',
+  },
+  {
+    key: 'waxmell',
+    title: 'Waxmell',
+    href: '/catalogo?tipo=waxmell',
   },
   {
     key: 'BAJO_PEDIDO',
@@ -420,12 +432,14 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
           VELA_ESCULPIDA: groupedProducts.VELA_ESCULPIDA || [],
           VELA_ENVASE: groupedProducts.VELA_ENVASE || [],
           JABON: groupedProducts.JABON || [],
+          pebetero: groupedProducts.pebetero || [],
+          waxmell: groupedProducts.waxmell || [],
           BAJO_PEDIDO: groupedProducts.BAJO_PEDIDO || [],
         },
       };
     }
 
-    // 1. Barajar el orden vertical de las 4 categorías con Fisher-Yates
+    // 1. Barajar el orden vertical de las categorías con Fisher-Yates
     const randomizedCategories = fisherYatesShuffle(CATEGORIES_METADATA);
 
     // 2. Barajar los productos de cada categoría
@@ -445,6 +459,7 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
     <div className="relative w-full max-w-full overflow-hidden bg-[#FAF8F5] py-6 sm:py-8 space-y-6 sm:space-y-8">
       {categories.map((category) => {
         const products = shuffledMap[category.key] || [];
+        if (products.length === 0) return null;
         return (
           <CategoryCarousel
             key={category.key}

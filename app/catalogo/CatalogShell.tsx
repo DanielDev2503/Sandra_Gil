@@ -18,7 +18,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import SkeletonImage from '@/components/SkeletonImage';
 import { AROMAS } from '@/lib/aromas';
 
-export type TipoProducto = 'VELA' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON';
+export type TipoProducto = 'VELA' | 'VELA_ENVASE' | 'VELA_ESCULPIDA' | 'JABON' | 'pebetero' | 'waxmell';
 
 export interface Product {
   id: string;
@@ -82,7 +82,7 @@ export function isSoapProduct(product: {
   if (product.tipo) {
     const normTipo = normalize(product.tipo);
     if (normTipo.includes('jabon') || normTipo.includes('soap')) return true;
-    if (normTipo.includes('vela') || normTipo.includes('candle')) return false;
+    if (normTipo.includes('vela') || normTipo.includes('candle') || normTipo === 'pebetero' || normTipo === 'waxmell') return false;
   }
   const text = normalize(`${product.nombre || ''} ${product.material || ''} ${product.descripcion || ''}`);
   return text.includes('jabon') || text.includes('soap');
@@ -100,7 +100,7 @@ export function isCandleProduct(product: {
   if (product.tipo) {
     const normTipo = normalize(product.tipo);
     if (normTipo.includes('vela') || normTipo.includes('candle')) return true;
-    if (normTipo.includes('jabon') || normTipo.includes('soap')) return false;
+    if (normTipo.includes('jabon') || normTipo.includes('soap') || normTipo === 'pebetero' || normTipo === 'waxmell') return false;
   }
   const text = normalize(`${product.nombre || ''} ${product.material || ''} ${product.descripcion || ''}`);
   if (text.includes('vela') || text.includes('candle')) return true;
@@ -114,7 +114,21 @@ const CATEGORY_DEFINITIONS = [
   { id: 'VELA_ENVASE', label: 'Velas en Envase' },
   { id: 'VELA_ESCULPIDA', label: 'Velas Esculpidas' },
   { id: 'JABON', label: 'Jabones Artesanales' },
+  { id: 'pebetero', label: 'Pebeteros' },
+  { id: 'waxmell', label: 'Waxmell' },
 ] as const;
+
+function parseValidUrlTypes(raw: string): string[] {
+  if (!raw) return [];
+  const validIds: string[] = CATEGORY_DEFINITIONS.map((c) => c.id);
+  return raw
+    .split(',')
+    .map((t) => {
+      const trimmed = t.trim();
+      return validIds.find((id) => id.toLowerCase() === trimmed.toLowerCase()) ?? '';
+    })
+    .filter(Boolean);
+}
 
 interface CatalogProductCardProps {
   product: Product;
@@ -223,9 +237,13 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
                   ? 'Vela en Envase'
                   : product.tipo === 'VELA_ESCULPIDA' || product.tipo === 'VELA'
                     ? 'Vela Esculpida'
-                    : soap
-                      ? 'Jabón Botánico'
-                      : 'Vela Artesanal'}
+                    : product.tipo?.toLowerCase() === 'pebetero'
+                      ? 'Pebetero'
+                      : product.tipo?.toLowerCase() === 'waxmell'
+                        ? 'Waxmell'
+                        : soap
+                          ? 'Jabón Botánico'
+                          : 'Vela Artesanal'}
               </span>
             )}
           </div>
@@ -364,9 +382,16 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     let envase = 0;
     let esculpida = 0;
     let jabon = 0;
+    let pebetero = 0;
+    let waxmell = 0;
 
     for (const p of directProducts) {
-      if (p.tipo === 'VELA_ENVASE') {
+      const tipoLower = p.tipo?.toLowerCase();
+      if (tipoLower === 'pebetero') {
+        pebetero++;
+      } else if (tipoLower === 'waxmell') {
+        waxmell++;
+      } else if (p.tipo === 'VELA_ENVASE') {
         envase++;
       } else if (p.tipo === 'JABON' || isSoapProduct(p)) {
         jabon++;
@@ -379,6 +404,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       VELA_ENVASE: envase,
       VELA_ESCULPIDA: esculpida,
       JABON: jabon,
+      pebetero,
+      waxmell,
     };
   }, [directProducts]);
 
@@ -423,14 +450,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   // ── 3. ESTADO DE FILTROS SINCRONIZADO CON URL ───────────────────────
   const rawUrlTipo = searchParams.get('tipo') || '';
-  const initialTypes = useMemo(() => {
-    if (!rawUrlTipo) return [];
-    const valid = ['VELA_ENVASE', 'VELA_ESCULPIDA', 'JABON'];
-    return rawUrlTipo
-      .split(',')
-      .map((t) => t.trim())
-      .filter((t) => valid.includes(t));
-  }, [rawUrlTipo]);
+  const initialTypes = useMemo(() => parseValidUrlTypes(rawUrlTipo), [rawUrlTipo]);
 
   const rawUrlTemporada = searchParams.get('temporada') || '';
   const initialTemporada = useMemo(() => {
@@ -471,9 +491,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   // Sincronizar cambios de la URL hacia el estado local
   useEffect(() => {
     if (rawUrlTipo) {
-      const valid = ['VELA_ENVASE', 'VELA_ESCULPIDA', 'JABON'];
-      const parsed = rawUrlTipo.split(',').filter((t) => valid.includes(t.trim()));
-      setSelectedTypes(parsed);
+      setSelectedTypes(parseValidUrlTypes(rawUrlTipo));
     }
   }, [rawUrlTipo]);
 
@@ -600,6 +618,9 @@ export default function CatalogShell({ products }: CatalogShellProps) {
       // Filtro por tipo/categoría múltiple
       if (selectedTypes.length > 0) {
         const matchesType = selectedTypes.some((t) => {
+          const tipoLower = p.tipo?.toLowerCase();
+          if (t === 'pebetero') return tipoLower === 'pebetero';
+          if (t === 'waxmell') return tipoLower === 'waxmell';
           if (t === 'VELA_ENVASE') return p.tipo === 'VELA_ENVASE';
           if (t === 'VELA_ESCULPIDA') {
             return (

@@ -10,6 +10,7 @@ interface AromaDropdownSelectorProps {
   onSelectAroma: (aroma: string) => void;
   productName?: string;
   isJabon?: boolean;
+  tipoProducto?: string | null;
   showNotice?: boolean;
   showOlfactoryCard?: boolean;
   className?: string;
@@ -20,8 +21,16 @@ export default function AromaDropdownSelector({
   selectedAroma,
   onSelectAroma,
   isJabon = false,
+  tipoProducto = null,
   className = '',
 }: AromaDropdownSelectorProps) {
+  const getTipoNombreSingular = () => {
+    const norm = tipoProducto?.toLowerCase();
+    if (norm === 'jabon' || isJabon) return 'Jabón';
+    if (norm === 'pebetero') return 'Pebetero';
+    if (norm === 'waxmell') return 'Waxmell';
+    return 'Vela';
+  };
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -99,9 +108,7 @@ export default function AromaDropdownSelector({
           <span className="flex items-center gap-1.5">
             <Wind className="w-4 h-4 text-brand-gold shrink-0" />
             <span>
-              {isJabon
-                ? `Selecciona el Aroma de tu Jabón (${aromas.length} disponibles):`
-                : `Selecciona el Aroma de tu Vela (${aromas.length} disponibles):`}
+              {`Selecciona el Aroma de tu ${getTipoNombreSingular()} (${aromas.length} disponibles):`}
             </span>
           </span>
         </label>

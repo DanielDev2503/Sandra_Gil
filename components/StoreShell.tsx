@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Sparkles, Star, MessageCircle } from 'lucide-react';
 import Header from './Header';
 import HeroBannerCarousel from './HeroBannerCarousel';
-import HomeTypeCarousels, { GroupedProducts } from './HomeTypeCarousels';
+import HomeTypeCarousels, { GroupedProducts, ColeccionCarousel } from './HomeTypeCarousels';
 import SensoryWorkshopSection from './SensoryWorkshopSection';
 import Footer from './Footer';
 import CandleGlowPulse from './CandleGlowPulse';
@@ -26,11 +26,13 @@ interface ResenaItem {
 
 interface StoreShellProps {
   groupedProducts: GroupedProducts;
+  colecciones?: ColeccionCarousel[];
   resenas?: ResenaItem[];
 }
 
 export default function StoreShell({
   groupedProducts,
+  colecciones,
   resenas = [],
 }: StoreShellProps) {
   return (
@@ -43,7 +45,7 @@ export default function StoreShell({
         <HeroBannerCarousel />
 
         {/* 2. Dynamic Carousels by Product Type (Randomized on each reload) */}
-        <HomeTypeCarousels groupedProducts={groupedProducts} />
+        <HomeTypeCarousels groupedProducts={groupedProducts} colecciones={colecciones} />
 
         {/* 4. SECCIÓN DE ALTO TICKET: "Velas Personalizadas y Eventos" */}
         <section className="bg-[#2C2A29] text-[#FAF8F5] py-8 sm:py-12 relative overflow-hidden border-b border-stone-800">

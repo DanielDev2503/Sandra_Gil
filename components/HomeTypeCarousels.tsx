@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useMemo, useCallback, useSyncExternalStore } from 'react';
+import React, { useRef, useState, useEffect, useMemo, useCallback, useSyncExternalStore, useId } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -31,14 +31,25 @@ export interface GroupedProducts {
   BAJO_PEDIDO: CarouselProduct[];
 }
 
-interface HomeTypeCarouselsProps {
-  groupedProducts: GroupedProducts;
+export interface ColeccionCarousel {
+  id: string;
+  nombre: string;
+  productos: CarouselProduct[];
 }
 
-interface CategoryMeta {
-  key: keyof GroupedProducts;
+interface HomeTypeCarouselsProps {
+  groupedProducts: GroupedProducts;
+  colecciones?: ColeccionCarousel[];
+}
+
+interface CarouselSectionMeta {
+  key: string;
   title: string;
   href: string;
+}
+
+interface CategoryMeta extends CarouselSectionMeta {
+  key: keyof GroupedProducts;
 }
 
 const CATEGORIES_METADATA: CategoryMeta[] = [
@@ -100,6 +111,7 @@ interface CarouselProductCardProps {
 function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductCardProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
+  const aromaSelectId = useId();
 
   const initialAroma = useMemo(() => {
     if (product.aroma) {
@@ -200,11 +212,11 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
           </Link>
 
           {/* Selector de aroma inline compacto */}
-          <label htmlFor={`carousel-aroma-${product.id}`} className="sr-only">
+          <label htmlFor={aromaSelectId} className="sr-only">
             Seleccionar Aroma
           </label>
           <select
-            id={`carousel-aroma-${product.id}`}
+            id={aromaSelectId}
             value={selectedAroma}
             onChange={(e) => setSelectedAroma(e.target.value)}
             className="w-full text-[10px] sm:text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1 px-2.5 text-stone-700 focus:outline-none focus:border-amber-400 mb-2 truncate cursor-pointer"
@@ -279,7 +291,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
 }
 
 interface CategoryCarouselProps {
-  category: CategoryMeta;
+  category: CarouselSectionMeta;
   products: CarouselProduct[];
 }
 
@@ -415,7 +427,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   );
 }
 
-export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarouselsProps) {
+export default function HomeTypeCarousels({ groupedProducts, colecciones }: HomeTypeCarouselsProps) {
   // Detección de montaje segura contra desincronización de hidratación (React 18 & 19)
   const isMounted = useSyncExternalStore(
     emptySubscribe,
@@ -457,6 +469,19 @@ export default function HomeTypeCarousels({ groupedProducts }: HomeTypeCarousels
 
   return (
     <div className="relative w-full max-w-full overflow-hidden bg-[#FAF8F5] py-6 sm:py-8 space-y-6 sm:space-y-8">
+      {/* ── COLECCIONES CURADAS DESDE ADMIN (SIEMPRE DE PRIMERO, SIN ALEATORIEDAD) ── */}
+      {colecciones && colecciones.length > 0 && colecciones.map((coleccion) => (
+        <CategoryCarousel
+          key={coleccion.id}
+          category={{
+            key: `coleccion-${coleccion.id}`,
+            title: coleccion.nombre,
+            href: '/catalogo',
+          }}
+          products={coleccion.productos}
+        />
+      ))}
+
       {categories.map((category) => {
         const products = shuffledMap[category.key] || [];
         if (products.length === 0) return null;

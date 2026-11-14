@@ -40,6 +40,7 @@ model Producto {
   variaciones   VariacionProducto[]
   items         ItemPedido[]
   resenas       Resena[]
+  colecciones   ColeccionProducto[]
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt @default(now())
 }
@@ -131,4 +132,27 @@ model FAQ {
 
   @@index([activo, orden])
   @@index([categoria])
+}
+
+model Coleccion {
+  id        String              @id @default(cuid())
+  nombre    String
+  orden     Int                 @default(0)
+  activa    Boolean             @default(true)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  productos ColeccionProducto[]
+
+  @@index([activa, orden])
+}
+
+model ColeccionProducto {
+  id          String    @id @default(cuid())
+  coleccionId String
+  productoId  String
+  orden       Int       @default(0)
+  coleccion   Coleccion @relation(fields: [coleccionId], references: [id], onDelete: Cascade)
+  producto    Producto  @relation(fields: [productoId], references: [id], onDelete: Cascade)
+
+  @@unique([coleccionId, productoId])
 }

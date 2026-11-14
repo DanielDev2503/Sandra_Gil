@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   // Consulta optimizada a Prisma: únicamente productos activos y campos estrictamente necesarios
-  const [rawProducts, resenas] = await Promise.all([
+  const [rawProducts, resenas, rawColecciones] = await Promise.all([
     prisma.producto.findMany({
       where: { activo: true },
       select: {
@@ -64,7 +64,48 @@ export default async function Home() {
       orderBy: { creado_en: 'desc' },
       take: 6,
     }),
+    prisma.coleccion.findMany({
+      where: { activa: true },
+      orderBy: [
+        { orden: 'asc' },
+        { createdAt: 'desc' },
+      ],
+      select: {
+        id: true,
+        nombre: true,
+        orden: true,
+        productos: {
+          orderBy: { orden: 'asc' },
+          where: {
+            producto: { activo: true },
+          },
+          select: {
+            producto: {
+              select: {
+                id: true,
+                nombre: true,
+                slug: true,
+                precio: true,
+                url_imagen: true,
+                tipo: true,
+                esBajoPedido: true,
+                aroma: true,
+                stock: true,
+              },
+            },
+          },
+        },
+      },
+    }),
   ]);
+
+  const coleccionesCuradas = rawColecciones
+    .map((c) => ({
+      id: c.id,
+      nombre: c.nombre,
+      productos: c.productos.map((cp) => cp.producto),
+    }))
+    .filter((c) => c.productos.length > 0);
 
   // Clasificación estricta: aislar productos bajo pedido para evitar duplicidades
   const isBajoPedido = (p: { esBajoPedido?: boolean | null }) => Boolean(p.esBajoPedido);
@@ -194,6 +235,7 @@ export default async function Home() {
       />
       <StoreShell
         groupedProducts={groupedProducts}
+        colecciones={coleccionesCuradas}
         resenas={resenas}
       />
     </>

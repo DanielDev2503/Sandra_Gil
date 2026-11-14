@@ -148,6 +148,9 @@ export default function ProductDetailShell({
   const isVela = product.tipo === 'VELA' || product.tipo === 'VELA_ENVASE' || product.tipo === 'VELA_ESCULPIDA';
   const isJabon = product.tipo === 'JABON';
   const isSoap = isJabon;
+  const tipoNorm = product.tipo?.toLowerCase();
+  const isPebetero = tipoNorm === 'pebetero';
+  const isWaxMelt = tipoNorm === 'waxmell';
 
   const aromasList: string[] = useMemo(() => {
     if (availableAromas && availableAromas.length > 0) {
@@ -360,7 +363,7 @@ export default function ProductDetailShell({
               <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full shadow-xs border border-stone-100 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-brand-gold shrink-0" />
                 <span className="text-[10px] font-bold text-stone-700 uppercase tracking-widest font-sans">
-                  {isSoap ? 'Jabón Artesanal' : isBajoPedido ? 'Elaboración Bajo Pedido' : 'Hecho a Mano en Bogotá'}
+                  {isSoap ? 'Jabón Artesanal' : isPebetero ? 'Pebetero Artesanal' : isWaxMelt ? 'Waxmell Artesanal' : isBajoPedido ? 'Elaboración Bajo Pedido' : 'Hecho a Mano en Bogotá'}
                 </span>
               </div>
             </div>
@@ -398,7 +401,7 @@ export default function ProductDetailShell({
             <div>
               {/* 1. TÍTULO DEL PRODUCTO */}
               <span className="text-xs uppercase tracking-widest text-brand-gold font-bold font-sans block mb-1">
-                {isSoap ? 'Cosmética Artesanal Natural' : isBajoPedido ? 'Vela Personalizada · Bajo Pedido' : 'Colección Artesanal Exclusiva'}
+                {isSoap ? 'Cosmética Artesanal Natural' : isPebetero ? 'Pebeteros & Difusores' : isWaxMelt ? 'Aromaterapia sin Pabilo' : isBajoPedido ? 'Vela Personalizada · Bajo Pedido' : 'Colección Artesanal Exclusiva'}
               </span>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif text-stone-900 tracking-tight mb-1">
                 {product.nombre}
@@ -551,6 +554,7 @@ export default function ProductDetailShell({
                 onSelectAroma={setSelectedAroma}
                 productName={product.nombre}
                 isJabon={isJabon}
+                tipoProducto={product.tipo}
               />
             </div>
 
@@ -645,7 +649,7 @@ export default function ProductDetailShell({
             </div>
 
             {/* 10. CONSEJOS DE CUIDADO & SEGURIDAD (Solo Velas) */}
-            {!isJabon && (
+            {tipoNorm !== 'jabon' && tipoNorm !== 'pebetero' && tipoNorm !== 'waxmell' && (
               <div className="mb-6 border border-stone-200 rounded-sm overflow-hidden bg-white font-sans text-sm">
                 <div>
                   <button
@@ -838,7 +842,7 @@ export default function ProductDetailShell({
                       />
                       <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full shadow-xs border border-stone-100">
                         <span className="text-[9px] font-bold text-stone-600 uppercase tracking-wider">
-                          {soap ? 'Jabón' : p.esBajoPedido ? 'Especial' : 'Vela'}
+                          {soap ? 'Jabón' : p.tipo?.toLowerCase() === 'pebetero' ? 'Pebetero' : p.tipo?.toLowerCase() === 'waxmell' ? 'Waxmell' : p.esBajoPedido ? 'Especial' : 'Vela'}
                         </span>
                       </div>
                     </Link>

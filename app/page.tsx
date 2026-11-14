@@ -74,19 +74,29 @@ export default async function Home() {
   const productosJabones = rawProducts.filter(
     (p) => !isBajoPedido(p) && (p.tipo === 'JABON' || (p.nombre && p.nombre.toLowerCase().includes('jabon')))
   );
+  const productosPebeteros = rawProducts.filter(
+    (p) => !isBajoPedido(p) && p.tipo?.toLowerCase() === 'pebetero'
+  );
+  const productosWaxMelts = rawProducts.filter(
+    (p) => !isBajoPedido(p) && p.tipo?.toLowerCase() === 'waxmell'
+  );
   const productosVelasEsculpidas = rawProducts.filter(
     (p) =>
       !isBajoPedido(p) &&
+      p.tipo?.toLowerCase() !== 'pebetero' &&
+      p.tipo?.toLowerCase() !== 'waxmell' &&
       (p.tipo === 'VELA_ESCULPIDA' ||
         p.tipo === 'VELA' ||
         (!p.tipo && !p.nombre.toLowerCase().includes('jabon')))
   );
 
-  // Agrupación estricta de productos por tipo para los 4 carruseles del Home
+  // Agrupación estricta de productos por tipo para los carruseles del Home
   const groupedProducts = {
     VELA_ENVASE: productosVelasEnvase,
     VELA_ESCULPIDA: productosVelasEsculpidas,
     JABON: productosJabones,
+    pebetero: productosPebeteros,
+    waxmell: productosWaxMelts,
     BAJO_PEDIDO: productosBajoPedido,
   };
 

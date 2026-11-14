@@ -5,6 +5,7 @@ import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -165,13 +166,23 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
         />
+      </head>
+      <body className="font-sans min-h-screen w-full relative flex flex-col bg-[#FAF8F5] text-stone-900 antialiased overflow-x-hidden">
+        <CartProvider>
+          {children}
+          <WhatsAppButton />
+          <CartDrawer />
+        </CartProvider>
+        <Analytics />
         {/* Google Customer Reviews - Insignia de Tienda (Store Widget) */}
-        <script
+        <Script
           id="merchantWidgetScript"
           src="https://www.gstatic.com/shopping/merchant/merchantwidget.js"
-          defer
+          strategy="afterInteractive"
         />
-        <script
+        <Script
+          id="merchantWidgetInit"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               var merchantWidgetScript = document.getElementById('merchantWidgetScript');
@@ -198,14 +209,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body className="font-sans min-h-screen w-full relative flex flex-col bg-[#FAF8F5] text-stone-900 antialiased overflow-x-hidden">
-        <CartProvider>
-          {children}
-          <WhatsAppButton />
-          <CartDrawer />
-        </CartProvider>
-        <Analytics />
       </body>
     </html>
   );

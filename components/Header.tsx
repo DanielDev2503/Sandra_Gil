@@ -177,11 +177,10 @@ export default function Header() {
                       id="catalog-menu-button"
                       aria-haspopup="true"
                       aria-expanded={catalogDropdownOpen}
-                      className={`min-h-[44px] inline-flex items-center gap-1.5 transition-colors duration-200 uppercase tracking-wider ${
-                        isCatalogoActive
+                      className={`min-h-[44px] inline-flex items-center gap-1.5 transition-colors duration-200 uppercase tracking-wider ${isCatalogoActive
                           ? 'text-amber-500 font-medium'
                           : 'text-stone-700 hover:text-amber-500 group-hover:text-amber-500 font-normal'
-                      }`}
+                        }`}
                     >
                       <span className="relative py-1">
                         {link.label}
@@ -190,11 +189,10 @@ export default function Header() {
                         )}
                       </span>
                       <ChevronDown
-                        className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 ${
-                          isCatalogoActive
+                        className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 ${isCatalogoActive
                             ? 'text-amber-500'
                             : 'text-stone-400 group-hover:text-amber-500'
-                        }`}
+                          }`}
                         aria-hidden="true"
                       />
                     </Link>
@@ -203,11 +201,10 @@ export default function Header() {
                     <div
                       role="menu"
                       aria-labelledby="catalog-menu-button"
-                      className={`absolute left-0 top-full pt-2 w-60 z-50 transition-all duration-200 ease-out ${
-                        catalogDropdownOpen
+                      className={`absolute left-0 top-full pt-2 w-60 z-50 transition-all duration-200 ease-out ${catalogDropdownOpen
                           ? 'opacity-100 translate-y-0 visible pointer-events-auto'
                           : 'opacity-0 -translate-y-1 invisible pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:visible group-focus-within:pointer-events-auto'
-                      }`}
+                        }`}
                     >
                       <div className="bg-[#FAF8F5]/98 backdrop-blur-md border border-stone-200/80 rounded-2xl shadow-xl shadow-stone-900/10 p-2 text-stone-700">
                         {/* Opción 1: Ver Todo el Catálogo (Enlace directo superior sin emojis) */}
@@ -247,11 +244,10 @@ export default function Header() {
                           <div
                             role="menu"
                             aria-label="Submenú de Velas"
-                            className={`absolute left-full top-0 pl-2 w-64 z-50 transition-all duration-200 ease-out before:absolute before:-left-2 before:top-0 before:w-4 before:h-full before:content-[''] ${
-                              velasFlyoutOpen
+                            className={`absolute left-full top-0 pl-2 w-64 z-50 transition-all duration-200 ease-out before:absolute before:-left-2 before:top-0 before:w-4 before:h-full before:content-[''] ${velasFlyoutOpen
                                 ? 'opacity-100 translate-x-0 visible pointer-events-auto'
                                 : 'opacity-0 -translate-x-1 invisible pointer-events-none group-hover/sub:opacity-100 group-hover/sub:translate-x-0 group-hover/sub:visible group-hover/sub:pointer-events-auto group-focus-within/sub:opacity-100 group-focus-within/sub:translate-x-0 group-focus-within/sub:visible group-focus-within/sub:pointer-events-auto'
-                            }`}
+                              }`}
                           >
                             <div className="bg-[#FAF8F5]/98 backdrop-blur-md border border-stone-200/80 rounded-2xl shadow-xl shadow-stone-900/10 p-2 space-y-1">
                               {/* Velas Esculpidas */}
@@ -323,6 +319,32 @@ export default function Header() {
                         >
                           Jabones Artesanales
                         </Link>
+
+                        {/* Opción 4: Pebeteros */}
+                        <Link
+                          href="/catalogo?tipo=pebetero"
+                          role="menuitem"
+                          onClick={() => {
+                            setCatalogDropdownOpen(false);
+                            setVelasFlyoutOpen(false);
+                          }}
+                          className="block px-3.5 py-2.5 rounded-xl text-xs font-medium uppercase tracking-wider text-stone-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                        >
+                          Pebeteros
+                        </Link>
+
+                        {/* Opción 5: Waxmell */}
+                        <Link
+                          href="/catalogo?tipo=waxmell"
+                          role="menuitem"
+                          onClick={() => {
+                            setCatalogDropdownOpen(false);
+                            setVelasFlyoutOpen(false);
+                          }}
+                          className="block px-3.5 py-2.5 rounded-xl text-xs font-medium uppercase tracking-wider text-stone-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                        >
+                          Waxmell
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -334,11 +356,10 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`transition-colors duration-200 min-h-[44px] inline-flex items-center ${
-                    isActive
+                  className={`transition-colors duration-200 min-h-[44px] inline-flex items-center ${isActive
                       ? 'text-amber-500 font-medium'
                       : 'text-stone-700 hover:text-amber-500 font-normal'
-                  }`}
+                    }`}
                 >
                   <span className="relative py-1">
                     {link.label}
@@ -442,17 +463,15 @@ export default function Header() {
                         type="button"
                         onClick={() => setMobileCatalogoOpen((prev) => !prev)}
                         aria-expanded={mobileCatalogoOpen}
-                        className={`w-full flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 cursor-pointer ${
-                          isCatalogoActive
+                        className={`w-full flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 cursor-pointer ${isCatalogoActive
                             ? 'bg-amber-50 text-amber-600 font-medium'
                             : 'text-stone-700 hover:bg-stone-100 hover:text-amber-500 font-normal'
-                        }`}
+                          }`}
                       >
                         <span>{link.label}</span>
                         <ChevronDown
-                          className={`w-4 h-4 transition-transform duration-200 text-stone-500 ${
-                            mobileCatalogoOpen ? 'rotate-180 text-amber-600' : ''
-                          }`}
+                          className={`w-4 h-4 transition-transform duration-200 text-stone-500 ${mobileCatalogoOpen ? 'rotate-180 text-amber-600' : ''
+                            }`}
                         />
                       </button>
 
@@ -501,6 +520,24 @@ export default function Header() {
                           >
                             Jabones Artesanales
                           </Link>
+
+                          <div className="pt-2 pb-0.5 px-3 text-[10px] uppercase font-bold tracking-wider text-amber-800/80">
+                            Aromaterapia
+                          </div>
+                          <Link
+                            href="/catalogo?tipo=pebetero"
+                            onClick={closeMobileMenu}
+                            className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
+                          >
+                            Pebeteros
+                          </Link>
+                          <Link
+                            href="/catalogo?tipo=waxmell"
+                            onClick={closeMobileMenu}
+                            className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
+                          >
+                            Waxmell
+                          </Link>
                         </div>
                       )}
                     </div>
@@ -513,11 +550,10 @@ export default function Header() {
                     key={link.href}
                     href={link.href}
                     onClick={closeMobileMenu}
-                    className={`flex items-center px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 ${
-                      isActive
+                    className={`flex items-center px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 ${isActive
                         ? 'bg-amber-50 text-amber-600 font-medium'
                         : 'text-stone-700 hover:bg-stone-100 hover:text-amber-500 font-normal'
-                    }`}
+                      }`}
                   >
                     <span>{link.label}</span>
                   </Link>

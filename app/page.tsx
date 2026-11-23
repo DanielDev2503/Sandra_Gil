@@ -253,15 +253,15 @@ export default async function Home() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }}
-      />
       <StoreShell
         groupedProducts={groupedProducts}
         colecciones={coleccionesCuradas}
         categoryOrder={[...categoryOrder]}
         resenas={resenas}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }}
       />
     </>
   );

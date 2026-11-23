@@ -103,14 +103,13 @@ function getColeccionHref(nombre: string): string {
 interface CarouselProductCardProps {
   product: CarouselProduct;
   isBajoPedidoCategory: boolean;
-  imagesReady: boolean;
 }
 
 /**
  * Tarjeta de producto de altura compacta con selector de aroma inline
  * idéntica en diseño y experiencia a la del catálogo.
  */
-function CarouselProductCard({ product, isBajoPedidoCategory, imagesReady }: CarouselProductCardProps) {
+function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductCardProps) {
   const { addToCart, clearCart } = useCart();
   const router = useRouter();
   const aromaSelectId = useId();
@@ -196,16 +195,14 @@ function CarouselProductCard({ product, isBajoPedidoCategory, imagesReady }: Car
           className="relative aspect-[4/3] w-full block overflow-hidden bg-stone-100 rounded-t-xl group/img"
           aria-label={`Ver detalles de ${product.nombre}`}
         >
-          {imagesReady && (
-            <Image
-              src={imageUrl}
-              alt={`Vela artesanal ${product.nombre} Sandra Gil`}
-              fill
-              loading="lazy"
-              sizes="(max-width: 640px) 18vw, (max-width: 1024px) 16vw, 180px"
-              className="object-cover object-center transition-transform duration-500 ease-out group-hover/img:scale-105"
-            />
-          )}
+          <Image
+            src={imageUrl}
+            alt={`Vela artesanal ${product.nombre} Sandra Gil`}
+            fill
+            loading="lazy"
+            sizes="(max-width: 640px) 18vw, (max-width: 1024px) 16vw, 180px"
+            className="object-cover object-center transition-transform duration-500 ease-out group-hover/img:scale-105"
+          />
           <div className="absolute inset-0 bg-stone-950/10 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </Link>
 
@@ -314,14 +311,13 @@ function CarouselProductCard({ product, isBajoPedidoCategory, imagesReady }: Car
 interface CategoryCarouselProps {
   category: CarouselSectionMeta;
   products: CarouselProduct[];
-  imagesReady: boolean;
 }
 
 /**
  * Carrusel por lotes con 5.5 productos visibles en escritorio (peeking card),
  * navegación fluida por botones circulares estilo e-commerce y swipe táctil nativo.
  */
-function CategoryCarousel({ category, products, imagesReady }: CategoryCarouselProps) {
+function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(products.length > 2);
@@ -426,7 +422,6 @@ function CategoryCarousel({ category, products, imagesReady }: CategoryCarouselP
                 <CarouselProductCard
                   product={product}
                   isBajoPedidoCategory={isBajoPedido}
-                  imagesReady={imagesReady}
                 />
               </div>
             );
@@ -502,23 +497,6 @@ export default function HomeTypeCarousels({
   }, [colecciones, categories, groupedProducts]);
 
   const [visibleCarousels, setVisibleCarousels] = useState(1);
-  const [imagesReady, setImagesReady] = useState(false);
-
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const trigger = () => {
-      timer = setTimeout(() => setImagesReady(true), 120);
-    };
-    if (document.readyState === 'complete') {
-      trigger();
-    } else {
-      window.addEventListener('load', trigger, { once: true });
-    }
-    return () => {
-      window.removeEventListener('load', trigger);
-      if (timer) clearTimeout(timer);
-    };
-  }, []);
 
   useEffect(() => {
     if (visibleCarousels >= allSections.length) return;
@@ -542,7 +520,6 @@ export default function HomeTypeCarousels({
           key={section.key}
           category={section.category}
           products={section.products}
-          imagesReady={imagesReady}
         />
       ))}
     </div>

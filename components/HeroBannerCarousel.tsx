@@ -161,8 +161,9 @@ export function ResponsiveBannerImage({
       alt={altText}
       fill
       quality={85}
-      priority={false}
+      priority={isFirst}
       loading={isFirst ? 'eager' : 'lazy'}
+      fetchPriority={isFirst ? 'high' : undefined}
       sizes="(max-width: 639px) 100vw, (max-width: 1400px) 1200px, 1920px"
       className="object-cover object-[center_60%] sm:object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
     />
@@ -174,7 +175,6 @@ export default function HeroBannerCarousel() {
   const [isPaused, setIsPaused] = useState(false);
   const [loadedSlides, setLoadedSlides] = useState<number[]>([0]);
   const [autoplayReady, setAutoplayReady] = useState(false);
-  const [bannerImagesReady, setBannerImagesReady] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const totalSlides = BANNERS_DATA.length;
@@ -210,22 +210,6 @@ export default function HeroBannerCarousel() {
   }, [currentIndex, goToSlide]);
 
   // Esperar antes de iniciar el autoplay automático para que el Slide 0 permanezca visible al cargar
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const trigger = () => {
-      timer = setTimeout(() => setBannerImagesReady(true), 120);
-    };
-    if (document.readyState === 'complete') {
-      trigger();
-    } else {
-      window.addEventListener('load', trigger, { once: true });
-    }
-    return () => {
-      window.removeEventListener('load', trigger);
-      if (timer) clearTimeout(timer);
-    };
-  }, []);
-
   useEffect(() => {
     if (autoplayReady) return;
     const delayTimer = setTimeout(() => {
@@ -300,7 +284,6 @@ export default function HeroBannerCarousel() {
       aria-roledescription="carousel"
       aria-label="Banners destacados Sandra Gil Velas Artesanales"
       className="relative w-full bg-[#FAF8F5] border-b border-brand-gold/15 outline-none"
-      tabIndex={0}
       onKeyDown={handleKeyDown}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -313,7 +296,7 @@ export default function HeroBannerCarousel() {
       </h1>
 
       {/* Contenedor responsivo con relación de aspecto fluida anti-CLS:
-          - Mobile (< sm): aspect-[16/8] (altura compacta y panorámica, evita cortes en móvil).
+          - Mobile (< sm): aspect-[16/9] (altura compacta y panorámica, evita cortes en móvil).
           - Tablet (sm:): sm:aspect-[16/6] (proporción intermedia balanceada).
           - Desktop (lg:): lg:aspect-[1920/620] (composición amplia y vertical para respirar).
       */}
@@ -325,9 +308,8 @@ export default function HeroBannerCarousel() {
       >
         {/* Riel deslizante continuo de slides */}
         <div
-          className="flex w-full transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+          className={`flex w-full ${autoplayReady || currentIndex > 0 ? 'transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]' : ''}`}
           style={currentIndex === 0 ? undefined : { transform: `translateX(-${currentIndex * 100}%)` }}
-          aria-live="polite"
         >
           {slidesToRender.map((slide, index) => {
             const isActive = index === currentIndex;
@@ -352,10 +334,10 @@ export default function HeroBannerCarousel() {
                   href={link}
                   prefetch={false}
                   tabIndex={isActive ? 0 : -1}
-                  className="block relative w-full aspect-[16/8] sm:aspect-[16/6] lg:aspect-[1920/620] cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
+                  className="block relative w-full aspect-[16/9] sm:aspect-[16/6] lg:aspect-[1920/620] cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
                 >
                   {/* Montar solo Slide 0 al inicio y slides adicionales bajo demanda */}
-                  {bannerImagesReady && (isFirst || loadedSlides.includes(index)) ? (
+                  {isFirst || loadedSlides.includes(index) ? (
                     <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
                   ) : (
                     <div className="w-full h-full bg-[#FAF8F5]" aria-hidden="true" />
@@ -369,8 +351,8 @@ export default function HeroBannerCarousel() {
                 </Link>
 
                 {/* Contenido Editorial Izquierdo en Cuadro (Mobile + Desktop) */}
-                <div className="flex absolute inset-y-0 left-0 items-center z-20 pl-3 sm:pl-10 lg:pl-14 pointer-events-none">
-                  <div className="pointer-events-auto max-w-[290px] sm:max-w-sm lg:max-w-md bg-[#FAF8F5]/92 backdrop-blur-md border border-stone-200/80 shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5 transition-all">
+                <div className="flex absolute inset-y-0 left-0 items-start pt-3 sm:items-center sm:pt-0 z-20 pl-3 sm:pl-10 lg:pl-14 pointer-events-none">
+                  <div className="pointer-events-auto max-w-[265px] sm:max-w-sm lg:max-w-md bg-[#FAF8F5]/95 border border-stone-200/80 shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5 transition-all">
                     {/* Kicker superior */}
                     <span className="inline-block text-[9px] sm:text-[10px] lg:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-2.5 sm:px-3 py-0.5">
                       {kicker}
@@ -431,7 +413,7 @@ export default function HeroBannerCarousel() {
         <div
           role="tablist"
           aria-label="Control de diapositivas"
-          className="absolute bottom-2.5 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-0.5 sm:gap-1 bg-stone-950/55 backdrop-blur-md px-2 py-1 sm:px-2.5 sm:py-1 rounded-full border border-white/20 shadow-md"
+          className="absolute bottom-2.5 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-0.5 sm:gap-1 bg-stone-950/75 px-2 py-1 sm:px-2.5 sm:py-1 rounded-full border border-white/20 shadow-md"
         >
           {BANNERS_DATA.map((slide, idx) => {
             const isCurrent = idx === currentIndex;
@@ -458,15 +440,15 @@ export default function HeroBannerCarousel() {
         </div>
 
         {/* Barra de progreso de slide sutil en el borde inferior (GPU transform) */}
-        <div
-          key={currentIndex}
-          className={`absolute bottom-0 left-0 w-full origin-left h-[2.5px] bg-brand-gold z-30 ${
-            isPaused || !autoplayReady ? 'opacity-0' : 'opacity-80'
-          }`}
-          style={{
-            animation: !isPaused && autoplayReady ? `bannerProgress ${AUTOPLAY_DURATION}ms linear` : 'none',
-          }}
-        />
+        {autoplayReady && !isPaused && (
+          <div
+            key={currentIndex}
+            className="absolute bottom-0 left-0 w-full origin-left h-[2.5px] bg-brand-gold z-30 opacity-80"
+            style={{
+              animation: `bannerProgress ${AUTOPLAY_DURATION}ms linear`,
+            }}
+          />
+        )}
       </div>
     </section>
   );

@@ -22,7 +22,7 @@ export default function CandleGlowPulse({
       {/* Animated Warm Glow Backdrop */}
       <span
         aria-hidden="true"
-        className={`absolute rounded-full bg-gradient-to-r from-amber-400 via-brand-gold to-amber-600 blur-[6px] pointer-events-none animate-pulse ${sizeClasses}`}
+        className={`absolute rounded-full bg-gradient-to-r from-amber-400/75 via-brand-gold/65 to-amber-600/75 blur-[6px] pointer-events-none ${sizeClasses}`}
       />
       {/* Core Flame / Icon */}
       <span className="relative z-10 flex items-center justify-center">

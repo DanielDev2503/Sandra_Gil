@@ -65,20 +65,18 @@ export default function SkeletonImage({
   const imgSrc = formatted === DEFAULT_FALLBACK_IMAGE ? fallbackSrc : formatted;
 
   return (
-    <picture className="contents">
-      <Image
-        src={imgSrc}
-        alt={alt}
-        fill={fill}
-        sizes={fill ? sizes : undefined}
-        priority={false}
-        loading={priority ? 'eager' : 'lazy'}
-        fetchPriority={priority ? 'high' : undefined}
-        unoptimized={imgSrc.startsWith('data:')}
-        className={className}
-        {...props}
-      />
-    </picture>
+    <Image
+      src={imgSrc}
+      alt={alt}
+      fill={fill}
+      sizes={fill ? sizes : undefined}
+      priority={false}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : undefined}
+      unoptimized={imgSrc.startsWith('data:')}
+      className={className}
+      {...props}
+    />
   );
 }
 

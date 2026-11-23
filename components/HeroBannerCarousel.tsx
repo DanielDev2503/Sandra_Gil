@@ -154,25 +154,18 @@ export function ResponsiveBannerImage({
 }) {
   const altText = slide.alt || slide.title || slide.titulo;
   const imageSrc = slide.image || slide.desktopSrc || '';
-  const mobileRaw = slide.mobileSrc || slide.imageMobile || imageSrc;
-  const encodedMobile = encodeURIComponent(mobileRaw);
-  const mobileSrcSet = `/_next/image?url=${encodedMobile}&w=640&q=75 640w, /_next/image?url=${encodedMobile}&w=828&q=75 828w`;
 
   return (
-    <picture className="block w-full h-full">
-      <source media="(max-width: 639px)" srcSet={mobileSrcSet} sizes="100vw" />
-      <Image
-        src={imageSrc}
-        alt={altText}
-        fill
-        quality={85}
-        priority={false}
-        loading={isFirst ? 'eager' : 'lazy'}
-        fetchPriority={isFirst ? 'high' : 'low'}
-        sizes="(max-width: 639px) 100vw, (max-width: 1400px) 1200px, 1920px"
-        className="object-cover object-[center_60%] sm:object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
-      />
-    </picture>
+    <Image
+      src={imageSrc}
+      alt={altText}
+      fill
+      quality={85}
+      priority={false}
+      loading={isFirst ? 'eager' : 'lazy'}
+      sizes="(max-width: 639px) 100vw, (max-width: 1400px) 1200px, 1920px"
+      className="object-cover object-[center_60%] sm:object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+    />
   );
 }
 
@@ -181,6 +174,7 @@ export default function HeroBannerCarousel() {
   const [isPaused, setIsPaused] = useState(false);
   const [loadedSlides, setLoadedSlides] = useState<number[]>([0]);
   const [autoplayReady, setAutoplayReady] = useState(false);
+  const [bannerImagesReady, setBannerImagesReady] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const totalSlides = BANNERS_DATA.length;
@@ -216,6 +210,22 @@ export default function HeroBannerCarousel() {
   }, [currentIndex, goToSlide]);
 
   // Esperar antes de iniciar el autoplay automático para que el Slide 0 permanezca visible al cargar
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const trigger = () => {
+      timer = setTimeout(() => setBannerImagesReady(true), 120);
+    };
+    if (document.readyState === 'complete') {
+      trigger();
+    } else {
+      window.addEventListener('load', trigger, { once: true });
+    }
+    return () => {
+      window.removeEventListener('load', trigger);
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
+
   useEffect(() => {
     if (autoplayReady) return;
     const delayTimer = setTimeout(() => {
@@ -345,7 +355,7 @@ export default function HeroBannerCarousel() {
                   className="block relative w-full aspect-[16/8] sm:aspect-[16/6] lg:aspect-[1920/620] cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
                 >
                   {/* Montar solo Slide 0 al inicio y slides adicionales bajo demanda */}
-                  {isFirst || loadedSlides.includes(index) ? (
+                  {bannerImagesReady && (isFirst || loadedSlides.includes(index)) ? (
                     <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
                   ) : (
                     <div className="w-full h-full bg-[#FAF8F5]" aria-hidden="true" />
@@ -360,7 +370,7 @@ export default function HeroBannerCarousel() {
 
                 {/* Contenido Editorial Izquierdo en Cuadro (Mobile + Desktop) */}
                 <div className="flex absolute inset-y-0 left-0 items-center z-20 pl-3 sm:pl-10 lg:pl-14 pointer-events-none">
-                  <div className="pointer-events-auto max-w-[250px] sm:max-w-sm lg:max-w-md bg-[#FAF8F5]/92 backdrop-blur-md border border-stone-200/80 shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5 transition-all">
+                  <div className="pointer-events-auto max-w-[290px] sm:max-w-sm lg:max-w-md bg-[#FAF8F5]/92 backdrop-blur-md border border-stone-200/80 shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5 transition-all">
                     {/* Kicker superior */}
                     <span className="inline-block text-[9px] sm:text-[10px] lg:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-2.5 sm:px-3 py-0.5">
                       {kicker}
@@ -373,7 +383,7 @@ export default function HeroBannerCarousel() {
 
                     {/* Subtítulo / Descripción */}
                     {description && (
-                      <p className="text-[11px] sm:text-xs lg:text-sm text-stone-700 font-light leading-snug sm:leading-relaxed line-clamp-2 lg:line-clamp-3">
+                      <p className="text-xs sm:text-sm text-stone-700 font-light leading-snug sm:leading-relaxed">
                         {description}
                       </p>
                     )}
@@ -402,7 +412,7 @@ export default function HeroBannerCarousel() {
           type="button"
           onClick={prevSlide}
           aria-label="Ver banner anterior"
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 hidden sm:flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
         >
           <ChevronLeft className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-stone-700" />
         </button>
@@ -412,7 +422,7 @@ export default function HeroBannerCarousel() {
           type="button"
           onClick={nextSlide}
           aria-label="Ver siguiente banner"
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 hidden sm:flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
         >
           <ChevronRight className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-stone-700" />
         </button>

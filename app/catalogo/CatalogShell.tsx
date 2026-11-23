@@ -223,7 +223,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             alt={product.nombre}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             fill
-            sizes="(max-width: 640px) 23vw, (max-width: 1024px) 18vw, 200px"
+            sizes="(max-width: 640px) 18vw, (max-width: 1024px) 16vw, 180px"
             priority={priority}
           />
 
@@ -1133,8 +1133,19 @@ export default function CatalogShell({ products, initialSearchParams }: CatalogS
 
       {/* ── CONTENEDOR PRINCIPAL: TOOLBAR + SIDEBAR + PRODUCTOS ─────────── */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 flex-1 w-full">
-        {/* Encabezado H1 accesible para blindar SEO local sin saturar la UI */}
-        <h1 className="sr-only">Catálogo de Productos Artesanales Sandra Gil Bogotá</h1>
+        {/* Encabezado editorial compacto del catálogo */}
+        <div className="mb-5 pb-4 border-b border-stone-200/70 space-y-2">
+          <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#855E16] font-semibold bg-white border border-amber-200/70 rounded-full px-3 py-0.5 shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#855E16] shrink-0" aria-hidden="true" />
+            <span>Colección Artesanal 100% Cera de Soya</span>
+          </span>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-tight">
+            Catálogo de <span className="italic font-normal text-[#855E16]">Velas Artesanales</span>
+          </h1>
+          <p className="text-sm sm:text-base text-stone-600 font-light leading-relaxed max-w-2xl">
+            Explora nuestra colección de velas aromáticas en envase, velas esculpidas, jabones botánicos, pebeteros y wax melts elaborados a mano en Bogotá con cera de soya 100% natural, flores artesanales y aromas exclusivos para transformar e iluminar cada uno de tus espacios.
+          </p>
+        </div>
 
         {/* Barra superior limpia: Contador General y Botón de Filtros Móvil */}
         <div className="flex items-center justify-between pb-3.5 border-b border-stone-200/60 mb-5 gap-4">
@@ -1295,11 +1306,11 @@ export default function CatalogShell({ products, initialSearchParams }: CatalogS
               <>
                 {/* Cuadrícula de 4 Columnas en Desktop (`lg:grid-cols-4` o `lg:grid-cols-3 xl:grid-cols-4`) y 2 en Móvil (`grid-cols-2`) */}
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-3.5 xl:gap-4">
-                  {filteredAndSortedProducts.slice(0, visibleCount).map((product, idx) => (
+                  {filteredAndSortedProducts.slice(0, visibleCount).map((product) => (
                     <CatalogProductCard
                       key={product.id}
                       product={product}
-                      priority={idx === 0}
+                      priority={false}
                     />
                   ))}
                 </div>

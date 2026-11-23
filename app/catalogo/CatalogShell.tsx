@@ -14,7 +14,7 @@ import {
   Search,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import SkeletonImage from '@/components/SkeletonImage';
 import { AROMAS } from '@/lib/aromas';
 
@@ -40,6 +40,12 @@ export interface Product {
 
 interface CatalogShellProps {
   products: Product[];
+  initialSearchParams?: {
+    tipo?: string;
+    temporada?: string;
+    aroma?: string;
+    material?: string;
+  };
 }
 
 /**
@@ -217,7 +223,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             alt={product.nombre}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             fill
-            sizes="(max-width: 640px) 35vw, (max-width: 1024px) 22vw, 200px"
+            sizes="(max-width: 640px) 23vw, (max-width: 1024px) 18vw, 200px"
             priority={priority}
           />
 
@@ -368,13 +374,13 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
 
 export { CatalogProductCard as ProductCard };
 
-export default function CatalogShell({ products }: CatalogShellProps) {
+export default function CatalogShell({ products, initialSearchParams }: CatalogShellProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // ── 1. FILTRADO ESTRICTO EN EL SHELL: EXCLUSIÓN DE BAJO PEDIDO ───────
@@ -467,20 +473,20 @@ export default function CatalogShell({ products }: CatalogShellProps) {
   }, [directProducts]);
 
   // ── 3. ESTADO DE FILTROS SINCRONIZADO CON URL ───────────────────────
-  const rawUrlTipo = searchParams.get('tipo') || '';
+  const rawUrlTipo = initialSearchParams?.tipo || '';
   const initialTypes = useMemo(() => parseValidUrlTypes(rawUrlTipo), [rawUrlTipo]);
 
-  const rawUrlTemporada = searchParams.get('temporada') || '';
+  const rawUrlTemporada = initialSearchParams?.temporada || '';
   const initialTemporada = useMemo(() => {
     const valid = ['navidad', 'otono', 'amor_amistad', 'primavera'];
     if (valid.includes(rawUrlTemporada)) return rawUrlTemporada;
     return 'TODAS';
   }, [rawUrlTemporada]);
 
-  const rawUrlAroma = searchParams.get('aroma') || '';
+  const rawUrlAroma = initialSearchParams?.aroma || '';
   const initialAromas = useMemo(() => (rawUrlAroma ? [rawUrlAroma] : []), [rawUrlAroma]);
 
-  const rawUrlMaterial = searchParams.get('material') || '';
+  const rawUrlMaterial = initialSearchParams?.material || '';
   const initialMaterials = useMemo(() => (rawUrlMaterial ? [rawUrlMaterial] : []), [rawUrlMaterial]);
 
   const [selectedTypes, setSelectedTypes] = useState<string[]>(initialTypes);
@@ -717,36 +723,40 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     sortOrder,
   ]);
 
-  // Carga progresiva de tarjetas para mantener DOM liviano en render inicial
+  // Carga progresiva de tarjetas solo después de interacción para mantener DOM liviano y CLS 0 en carga inicial
   useEffect(() => {
-    if (visibleCount >= filteredAndSortedProducts.length) return;
+    if (hasInteracted || visibleCount >= filteredAndSortedProducts.length) return;
 
-    const loadMore = () => {
+    const onFirstInteraction = () => {
+      setHasInteracted(true);
       setVisibleCount((prev) => Math.min(prev + 24, filteredAndSortedProducts.length));
     };
 
     const events: (keyof WindowEventMap)[] = ['scroll', 'wheel', 'touchmove', 'pointerdown', 'keydown'];
-    events.forEach((ev) => window.addEventListener(ev, loadMore, { once: true, passive: true }));
-
-    const sentinel = loadMoreRef.current;
-    let observer: IntersectionObserver | null = null;
-    if (sentinel && typeof IntersectionObserver !== 'undefined') {
-      observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            loadMore();
-          }
-        },
-        { rootMargin: '150px' }
-      );
-      observer.observe(sentinel);
-    }
+    events.forEach((ev) => window.addEventListener(ev, onFirstInteraction, { once: true, passive: true }));
 
     return () => {
-      events.forEach((ev) => window.removeEventListener(ev, loadMore));
-      observer?.disconnect();
+      events.forEach((ev) => window.removeEventListener(ev, onFirstInteraction));
     };
-  }, [visibleCount, filteredAndSortedProducts.length]);
+  }, [hasInteracted, visibleCount, filteredAndSortedProducts.length]);
+
+  useEffect(() => {
+    if (!hasInteracted) return;
+    const sentinel = loadMoreRef.current;
+    if (!sentinel || visibleCount >= filteredAndSortedProducts.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setVisibleCount((prev) => Math.min(prev + 24, filteredAndSortedProducts.length));
+        }
+      },
+      { rootMargin: '150px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasInteracted, visibleCount, filteredAndSortedProducts.length]);
 
   // ── 5. COMPONENTE DE CONTENIDO DE FILTROS (REUTILIZABLE DESKTOP Y MÓVIL) ──
   const FilterContent = (

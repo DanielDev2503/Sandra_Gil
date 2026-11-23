@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Star, MessageCircle } from 'lucide-react';
@@ -78,6 +76,7 @@ export default function StoreShell({
                 <div className="pt-2 flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
                   <Link
                     href="/personalizadas"
+                    prefetch={false}
                     className="px-8 py-4 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md text-center flex items-center justify-center gap-2"
                   >
                     <span>Cotizar Velas para Eventos →</span>

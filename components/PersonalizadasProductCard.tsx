@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SkeletonImage from '@/components/SkeletonImage';
 import { MessageCircle, Sparkles } from 'lucide-react';
@@ -55,7 +55,7 @@ export default function PersonalizadasProductCard({
             className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
             fill
             priority={priority}
-            sizes="(max-width: 640px) 35vw, (max-width: 1024px) 22vw, 180px"
+            sizes="(max-width: 640px) 23vw, (max-width: 1024px) 18vw, 180px"
           />
 
           {/* Badge superior discreto */}
@@ -124,16 +124,15 @@ export default function PersonalizadasProductCard({
 }
 
 /**
- * Grilla progresiva para velas bajo pedido: renderiza las primeras 6 tarjetas al inicio
- * y expande el resto al primer scroll o interacción para proteger LCP en móvil.
+ * Grilla progresiva para velas bajo pedido: renderiza las primeras 12 tarjetas al inicio
+ * y expande el resto únicamente al primer scroll o interacción para mantener CLS 0.
  */
 export function PersonalizadasProductGrid({
   products,
 }: {
   products: PersonalizadaProductItem[];
 }) {
-  const [visibleCount, setVisibleCount] = useState(6);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {
     if (visibleCount >= products.length) return;
@@ -145,35 +144,16 @@ export function PersonalizadasProductGrid({
     const events: (keyof WindowEventMap)[] = ['scroll', 'wheel', 'touchmove', 'pointerdown', 'keydown'];
     events.forEach((ev) => window.addEventListener(ev, expandAll, { once: true, passive: true }));
 
-    let observer: IntersectionObserver | null = null;
-    if (sentinelRef.current && typeof IntersectionObserver !== 'undefined') {
-      observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            expandAll();
-          }
-        },
-        { rootMargin: '150px' }
-      );
-      observer.observe(sentinelRef.current);
-    }
-
     return () => {
       events.forEach((ev) => window.removeEventListener(ev, expandAll));
-      observer?.disconnect();
     };
   }, [visibleCount, products.length]);
 
   return (
-    <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5 lg:gap-4">
-        {products.slice(0, visibleCount).map((product, idx) => (
-          <PersonalizadasProductCard key={product.id} product={product} priority={idx === 0} />
-        ))}
-      </div>
-      {visibleCount < products.length && (
-        <div ref={sentinelRef} className="h-4 w-full" aria-hidden="true" />
-      )}
-    </>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5 lg:gap-4">
+      {products.slice(0, visibleCount).map((product, idx) => (
+        <PersonalizadasProductCard key={product.id} product={product} priority={idx === 0} />
+      ))}
+    </div>
   );
 }

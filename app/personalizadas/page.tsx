@@ -76,7 +76,7 @@ export default async function PersonalizadasPage() {
                   Velas <span className="italic font-normal text-[#855E16]">Bajo Pedido</span>
                 </h1>
 
-                <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
+                <p className="text-sm sm:text-base text-stone-600 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
                   Creamos piezas únicas personalizadas a tu gusto: elige el aroma, el tamaño, las flores en cera y el mensaje. Elaboradas a mano con cera de soya 100% natural.
                 </p>
               </div>

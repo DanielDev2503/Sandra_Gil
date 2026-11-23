@@ -120,6 +120,7 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link
               href="/"
+              prefetch={false}
               className="flex items-center gap-2.5 group"
               aria-label="Sandra Gil Velas Artesanales - Inicio"
             >
@@ -129,7 +130,6 @@ export default function Header() {
                   alt="Sandra Gil Velas Artesanales"
                   width={56}
                   height={56}
-                  loading="eager"
                   className="object-contain w-10 h-10 md:w-14 md:h-14"
                 />
               </div>
@@ -174,6 +174,7 @@ export default function Header() {
                   >
                     <Link
                       href="/catalogo"
+                      prefetch={false}
                       id="catalog-menu-button"
                       aria-haspopup="true"
                       aria-expanded={catalogDropdownOpen}
@@ -210,6 +211,7 @@ export default function Header() {
                         {/* Opción 1: Ver Todo el Catálogo (Enlace directo superior sin emojis) */}
                         <Link
                           href="/catalogo"
+                          prefetch={false}
                           role="menuitem"
                           onClick={() => {
                             setCatalogDropdownOpen(false);
@@ -253,6 +255,7 @@ export default function Header() {
                               {/* Velas Esculpidas */}
                               <Link
                                 href="/catalogo?tipo=VELA_ESCULPIDA"
+                                prefetch={false}
                                 role="menuitem"
                                 onClick={() => {
                                   setCatalogDropdownOpen(false);
@@ -271,6 +274,7 @@ export default function Header() {
                               {/* Velas en Envase */}
                               <Link
                                 href="/catalogo?tipo=VELA_ENVASE"
+                                prefetch={false}
                                 role="menuitem"
                                 onClick={() => {
                                   setCatalogDropdownOpen(false);
@@ -289,6 +293,7 @@ export default function Header() {
                               {/* Velas Bajo Pedido (Sin badge "A MEDIDA") */}
                               <Link
                                 href="/personalizadas"
+                                prefetch={false}
                                 role="menuitem"
                                 onClick={() => {
                                   setCatalogDropdownOpen(false);
@@ -310,6 +315,7 @@ export default function Header() {
                         {/* Opción 3: Jabones Artesanales (Sin emojis ni texto secundario "botánicos") */}
                         <Link
                           href="/catalogo?tipo=JABON"
+                          prefetch={false}
                           role="menuitem"
                           onClick={() => {
                             setCatalogDropdownOpen(false);
@@ -323,6 +329,7 @@ export default function Header() {
                         {/* Opción 4: Pebeteros */}
                         <Link
                           href="/catalogo?tipo=pebetero"
+                          prefetch={false}
                           role="menuitem"
                           onClick={() => {
                             setCatalogDropdownOpen(false);
@@ -336,6 +343,7 @@ export default function Header() {
                         {/* Opción 5: Waxmell */}
                         <Link
                           href="/catalogo?tipo=waxmell"
+                          prefetch={false}
                           role="menuitem"
                           onClick={() => {
                             setCatalogDropdownOpen(false);
@@ -356,6 +364,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={false}
                   className={`transition-colors duration-200 min-h-[44px] inline-flex items-center ${isActive
                       ? 'text-[#855E16] font-medium'
                       : 'text-stone-700 hover:text-[#855E16] font-normal'
@@ -479,6 +488,7 @@ export default function Header() {
                         <div className="pl-4 pr-1 py-1 space-y-1 border-l-2 border-amber-200/70 ml-4">
                           <Link
                             href="/catalogo"
+                            prefetch={false}
                             onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md text-xs font-semibold text-stone-800 hover:bg-amber-50 hover:text-amber-900"
                           >
@@ -490,6 +500,7 @@ export default function Header() {
                           </div>
                           <Link
                             href="/catalogo?tipo=VELA_ESCULPIDA"
+                            prefetch={false}
                             onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
                           >
@@ -497,6 +508,7 @@ export default function Header() {
                           </Link>
                           <Link
                             href="/catalogo?tipo=VELA_ENVASE"
+                            prefetch={false}
                             onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
                           >
@@ -504,6 +516,7 @@ export default function Header() {
                           </Link>
                           <Link
                             href="/personalizadas"
+                            prefetch={false}
                             onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
                           >
@@ -515,6 +528,7 @@ export default function Header() {
                           </div>
                           <Link
                             href="/catalogo?tipo=JABON"
+                            prefetch={false}
                             onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
                           >
@@ -526,6 +540,7 @@ export default function Header() {
                           </div>
                           <Link
                             href="/catalogo?tipo=pebetero"
+                            prefetch={false}
                             onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
                           >
@@ -533,6 +548,7 @@ export default function Header() {
                           </Link>
                           <Link
                             href="/catalogo?tipo=waxmell"
+                            prefetch={false}
                             onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md text-xs text-stone-700 hover:bg-amber-50 hover:text-amber-800"
                           >
@@ -549,6 +565,7 @@ export default function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    prefetch={false}
                     onClick={closeMobileMenu}
                     className={`flex items-center px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 ${isActive
                         ? 'bg-amber-50 text-[#855E16] font-medium'

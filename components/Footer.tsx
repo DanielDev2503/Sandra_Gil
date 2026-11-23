@@ -50,13 +50,13 @@ export default function Footer() {
 
           {/* Column 1: Brand */}
           <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="inline-block">
+            <Link href="/" prefetch={false} className="inline-block">
               <Image
                 src="/logo-sandra.webp"
                 alt="Sandra Gil Velas Artesanales"
-                width={100}
-                height={100}
-                className="object-contain"
+                width={56}
+                height={56}
+                className="object-contain w-14 h-14"
               />
             </Link>
             <p className="text-xs text-stone-400 max-w-xs leading-relaxed">
@@ -78,6 +78,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
+                      prefetch={false}
                       className={`transition-colors duration-200 ${
                         active
                           ? 'text-amber-400 font-medium'
@@ -102,6 +103,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
+                      prefetch={false}
                       className={`transition-colors duration-200 ${
                         active
                           ? 'text-amber-400 font-medium'

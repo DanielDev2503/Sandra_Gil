@@ -112,28 +112,28 @@ export default async function Home() {
     .map((c) => ({
       id: c.id,
       nombre: c.nombre,
-      productos: c.productos.map((cp) => cp.producto).slice(0, 8),
+      productos: c.productos.map((cp) => cp.producto).slice(0, 6),
     }))
     .filter((c) => c.productos.length > 0);
 
   // Clasificación estricta: aislar productos bajo pedido para evitar duplicidades
   const isBajoPedido = (p: { esBajoPedido?: boolean | null }) => Boolean(p.esBajoPedido);
 
-  const productosBajoPedido = fisherYatesShuffle(rawProducts.filter(isBajoPedido)).slice(0, 8);
+  const productosBajoPedido = fisherYatesShuffle(rawProducts.filter(isBajoPedido)).slice(0, 6);
   const productosVelasEnvase = fisherYatesShuffle(
     rawProducts.filter((p) => !isBajoPedido(p) && p.tipo === 'VELA_ENVASE')
-  ).slice(0, 8);
+  ).slice(0, 6);
   const productosJabones = fisherYatesShuffle(
     rawProducts.filter(
       (p) => !isBajoPedido(p) && (p.tipo === 'JABON' || (p.nombre && p.nombre.toLowerCase().includes('jabon')))
     )
-  ).slice(0, 8);
+  ).slice(0, 6);
   const productosPebeteros = fisherYatesShuffle(
     rawProducts.filter((p) => !isBajoPedido(p) && p.tipo?.toLowerCase() === 'pebetero')
-  ).slice(0, 8);
+  ).slice(0, 6);
   const productosWaxMelts = fisherYatesShuffle(
     rawProducts.filter((p) => !isBajoPedido(p) && p.tipo?.toLowerCase() === 'waxmell')
-  ).slice(0, 8);
+  ).slice(0, 6);
   const productosVelasEsculpidas = fisherYatesShuffle(
     rawProducts.filter(
       (p) =>
@@ -144,9 +144,9 @@ export default async function Home() {
           p.tipo === 'VELA' ||
           (!p.tipo && !p.nombre.toLowerCase().includes('jabon')))
     )
-  ).slice(0, 8);
+  ).slice(0, 6);
 
-  // Agrupación estricta de productos por tipo para los carruseles del Home (cap a 8 por carrusel)
+  // Agrupación estricta de productos por tipo para los carruseles del Home (cap a 6 por carrusel)
   const groupedProducts = {
     VELA_ENVASE: productosVelasEnvase,
     VELA_ESCULPIDA: productosVelasEsculpidas,

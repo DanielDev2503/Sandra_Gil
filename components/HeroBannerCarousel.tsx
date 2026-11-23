@@ -154,19 +154,25 @@ export function ResponsiveBannerImage({
 }) {
   const altText = slide.alt || slide.title || slide.titulo;
   const imageSrc = slide.image || slide.desktopSrc || '';
+  const mobileRaw = slide.mobileSrc || slide.imageMobile || imageSrc;
+  const encodedMobile = encodeURIComponent(mobileRaw);
+  const mobileSrcSet = `/_next/image?url=${encodedMobile}&w=640&q=75 640w, /_next/image?url=${encodedMobile}&w=828&q=75 828w`;
 
   return (
-    <Image
-      src={imageSrc}
-      alt={altText}
-      fill
-      quality={85}
-      priority={isFirst}
-      loading={isFirst ? 'eager' : 'lazy'}
-      fetchPriority={isFirst ? 'high' : 'low'}
-      sizes="100vw"
-      className="object-cover object-[center_60%] sm:object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
-    />
+    <picture className="block w-full h-full">
+      <source media="(max-width: 639px)" srcSet={mobileSrcSet} sizes="100vw" />
+      <Image
+        src={imageSrc}
+        alt={altText}
+        fill
+        quality={85}
+        priority={false}
+        loading={isFirst ? 'eager' : 'lazy'}
+        fetchPriority={isFirst ? 'high' : 'low'}
+        sizes="(max-width: 639px) 100vw, (max-width: 1400px) 1200px, 1920px"
+        className="object-cover object-[center_60%] sm:object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+      />
+    </picture>
   );
 }
 
@@ -276,6 +282,8 @@ export default function HeroBannerCarousel() {
     touchEndX.current = null;
   };
 
+  const slidesToRender = autoplayReady || currentIndex > 0 ? BANNERS_DATA : [BANNERS_DATA[0]];
+
   return (
     <section
       role="region"
@@ -311,7 +319,7 @@ export default function HeroBannerCarousel() {
           style={currentIndex === 0 ? undefined : { transform: `translateX(-${currentIndex * 100}%)` }}
           aria-live="polite"
         >
-          {BANNERS_DATA.map((slide, index) => {
+          {slidesToRender.map((slide, index) => {
             const isActive = index === currentIndex;
             const isFirst = index === 0;
             const title = slide.title || slide.titulo;
@@ -350,67 +358,39 @@ export default function HeroBannerCarousel() {
                   />
                 </Link>
 
-                {/* Contenido Editorial Izquierdo en Cuadro para Desktop */}
-                <div className="hidden sm:flex absolute inset-y-0 left-0 items-center z-20 pl-6 sm:pl-10 lg:pl-14 pointer-events-none">
-                  <div className="pointer-events-auto max-w-sm lg:max-w-md bg-[#FAF8F5]/90 backdrop-blur-md border border-stone-200/80 shadow-xl rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-8 space-y-2.5 lg:space-y-3.5 transition-all">
+                {/* Contenido Editorial Izquierdo en Cuadro (Mobile + Desktop) */}
+                <div className="flex absolute inset-y-0 left-0 items-center z-20 pl-3 sm:pl-10 lg:pl-14 pointer-events-none">
+                  <div className="pointer-events-auto max-w-[250px] sm:max-w-sm lg:max-w-md bg-[#FAF8F5]/92 backdrop-blur-md border border-stone-200/80 shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5 transition-all">
                     {/* Kicker superior */}
-                    <span className="inline-block text-[10px] lg:text-xs font-semibold uppercase tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-3 py-0.5">
+                    <span className="inline-block text-[9px] sm:text-[10px] lg:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-2.5 sm:px-3 py-0.5">
                       {kicker}
                     </span>
 
                     {/* Título de la categoría */}
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-[1.15] tracking-tight">
+                    <h2 className="text-base sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-[1.15] tracking-tight">
                       {title}
                     </h2>
 
                     {/* Subtítulo / Descripción */}
                     {description && (
-                      <p className="text-xs lg:text-sm text-stone-700 font-light leading-relaxed line-clamp-2 lg:line-clamp-3">
+                      <p className="text-[11px] sm:text-xs lg:text-sm text-stone-700 font-light leading-snug sm:leading-relaxed line-clamp-2 lg:line-clamp-3">
                         {description}
                       </p>
                     )}
 
                     {/* Botón de Acción Principal */}
-                    <div className="pt-1.5">
+                    <div className="pt-0.5 sm:pt-1.5">
                       <Link
                         href={link}
                         prefetch={false}
                         tabIndex={isActive ? 0 : -1}
-                        className="inline-flex items-center gap-2 rounded-full px-5 lg:px-7 py-2.5 lg:py-3 text-xs font-semibold uppercase tracking-wider text-white bg-[#855E16] hover:bg-[#704E11] shadow-sm hover:shadow transition-all duration-200 active:scale-95"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full px-3.5 sm:px-5 lg:px-7 py-1.5 sm:py-2.5 lg:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#855E16] hover:bg-[#704E11] shadow-sm hover:shadow transition-all duration-200 active:scale-95"
                       >
                         <span>{ctaText || 'Explorar Catálogo'}</span>
                         <span aria-hidden="true">&rarr;</span>
                       </Link>
                     </div>
                   </div>
-                </div>
-
-                {/* Degradado suave inferior en móvil */}
-                <div className="sm:hidden absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/65 via-black/25 to-transparent pointer-events-none z-10" />
-
-                {/* Bloque Compacto Móvil: Título del Tipo de Producto + Botón Genérico */}
-                <div className="sm:hidden absolute bottom-2.5 left-3 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-85px)]">
-                  {/* Subtítulo / Tipo de producto visible y discreto */}
-                  <span className="font-serif text-white text-sm font-medium leading-tight tracking-wide drop-shadow-sm truncate w-full">
-                    {title}
-                  </span>
-
-                  {/* Botón genérico compacto */}
-                  <Link
-                    href={link}
-                    prefetch={false}
-                    tabIndex={isActive ? 0 : -1}
-                    className="inline-flex items-center gap-1.5 rounded-full py-1.5 px-3.5 bg-[#855E16] hover:bg-[#704E11] text-white text-[11px] font-semibold uppercase tracking-wider shadow-md active:scale-95 transition-all"
-                  >
-                    <span>
-                      {link === '/personalizadas'
-                        ? 'Ver Personalizadas'
-                        : link === '/catalogo?temporada=navidad'
-                          ? 'Ver Navidad'
-                          : 'Explorar Catálogo'}
-                    </span>
-                    <span aria-hidden="true">&rarr;</span>
-                  </Link>
                 </div>
               </div>
             );

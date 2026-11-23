@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Sparkles, Gift, Users, Heart } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';

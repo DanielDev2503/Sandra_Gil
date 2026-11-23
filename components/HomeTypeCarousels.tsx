@@ -200,7 +200,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
             alt={`Vela artesanal ${product.nombre} Sandra Gil`}
             fill
             loading="lazy"
-            sizes="(max-width: 640px) 35vw, (max-width: 1024px) 22vw, 200px"
+            sizes="(max-width: 640px) 23vw, (max-width: 1024px) 18vw, 200px"
             className="object-cover object-center transition-transform duration-500 ease-out group-hover/img:scale-105"
           />
           <div className="absolute inset-0 bg-stone-950/10 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -496,8 +496,7 @@ export default function HomeTypeCarousels({
     return sections;
   }, [colecciones, categories, groupedProducts]);
 
-  const [visibleCarousels, setVisibleCarousels] = useState(2);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [visibleCarousels, setVisibleCarousels] = useState(1);
 
   useEffect(() => {
     if (visibleCarousels >= allSections.length) return;
@@ -509,22 +508,8 @@ export default function HomeTypeCarousels({
     const events: (keyof WindowEventMap)[] = ['scroll', 'wheel', 'touchmove', 'pointerdown', 'keydown'];
     events.forEach((ev) => window.addEventListener(ev, expandAll, { once: true, passive: true }));
 
-    let observer: IntersectionObserver | null = null;
-    if (sentinelRef.current && typeof IntersectionObserver !== 'undefined') {
-      observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            expandAll();
-          }
-        },
-        { rootMargin: '150px' }
-      );
-      observer.observe(sentinelRef.current);
-    }
-
     return () => {
       events.forEach((ev) => window.removeEventListener(ev, expandAll));
-      observer?.disconnect();
     };
   }, [visibleCarousels, allSections.length]);
 
@@ -537,9 +522,6 @@ export default function HomeTypeCarousels({
           products={section.products}
         />
       ))}
-      {visibleCarousels < allSections.length && (
-        <div ref={sentinelRef} className="h-4 w-full" aria-hidden="true" />
-      )}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import CatalogShell from './CatalogShell';
-import { Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0; // SSR en tiempo real: consulta directa a Supabase en cada petición para reflejar cambios instantáneamente
@@ -43,7 +42,19 @@ const isBajoPedidoItem = (p: { esBajoPedido?: boolean | null; slug?: string | nu
   return BAJO_PEDIDO_SLUGS.includes(p.slug.toLowerCase().trim());
 };
 
-export default async function CatalogPage() {
+export default async function CatalogPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedParams = (await searchParams) || {};
+  const initialSearchParams = {
+    tipo: typeof resolvedParams.tipo === 'string' ? resolvedParams.tipo : '',
+    temporada: typeof resolvedParams.temporada === 'string' ? resolvedParams.temporada : '',
+    aroma: typeof resolvedParams.aroma === 'string' ? resolvedParams.aroma : '',
+    material: typeof resolvedParams.material === 'string' ? resolvedParams.material : '',
+  };
+
   // Consulta a base de datos excluyendo piezas bajo pedido directamente desde Prisma
   const rawProducts = await prisma.producto.findMany({
     where: {
@@ -84,8 +95,6 @@ export default async function CatalogPage() {
     }));
 
   return (
-    <Suspense>
-      <CatalogShell products={products} />
-    </Suspense>
+    <CatalogShell products={products} initialSearchParams={initialSearchParams} />
   );
 }

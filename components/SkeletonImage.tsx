@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image, { ImageProps } from 'next/image';
 
 export const DEFAULT_FALLBACK_IMAGE = '/logo-sandra.webp';
@@ -58,43 +58,27 @@ export default function SkeletonImage({
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
   priority = false,
   fallbackSrc = DEFAULT_FALLBACK_IMAGE,
+  onError: _onError,
   ...props
 }: SkeletonImageProps) {
   const formatted = formatSupabaseUrl(src);
-  const [prevSrc, setPrevSrc] = useState(src);
-  const [imgSrc, setImgSrc] = useState<string>(formatted);
-  const [hasError, setHasError] = useState(formatted === DEFAULT_FALLBACK_IMAGE);
-
-  if (prevSrc !== src) {
-    setPrevSrc(src);
-    setImgSrc(formatted);
-    setHasError(formatted === DEFAULT_FALLBACK_IMAGE);
-  }
-
-  const handleError = () => {
-    if (!hasError) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn(`[SkeletonImage] Failed to load image: ${imgSrc}`);
-      }
-      setHasError(true);
-      setImgSrc(fallbackSrc);
-    }
-  };
+  const imgSrc = formatted === DEFAULT_FALLBACK_IMAGE ? fallbackSrc : formatted;
 
   return (
-    <Image
-      src={imgSrc}
-      alt={alt}
-      fill={fill}
-      sizes={fill ? sizes : undefined}
-      priority={priority}
-      loading={priority ? 'eager' : 'lazy'}
-      fetchPriority={priority ? 'high' : undefined}
-      unoptimized={hasError || imgSrc.startsWith('data:')}
-      className={className}
-      onError={handleError}
-      {...props}
-    />
+    <picture className="contents">
+      <Image
+        src={imgSrc}
+        alt={alt}
+        fill={fill}
+        sizes={fill ? sizes : undefined}
+        priority={false}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : undefined}
+        unoptimized={imgSrc.startsWith('data:')}
+        className={className}
+        {...props}
+      />
+    </picture>
   );
 }
 

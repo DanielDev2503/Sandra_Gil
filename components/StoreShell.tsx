@@ -27,12 +27,14 @@ interface ResenaItem {
 interface StoreShellProps {
   groupedProducts: GroupedProducts;
   colecciones?: ColeccionCarousel[];
+  categoryOrder?: (keyof GroupedProducts)[];
   resenas?: ResenaItem[];
 }
 
 export default function StoreShell({
   groupedProducts,
   colecciones,
+  categoryOrder,
   resenas = [],
 }: StoreShellProps) {
   return (
@@ -44,8 +46,12 @@ export default function StoreShell({
         {/* 1. Hero Banner Carousel editorial e-commerce (MercadoLibre / luxury store style) */}
         <HeroBannerCarousel />
 
-        {/* 2. Dynamic Carousels by Product Type (Randomized on each reload) */}
-        <HomeTypeCarousels groupedProducts={groupedProducts} colecciones={colecciones} />
+        {/* 2. Dynamic Carousels by Product Type */}
+        <HomeTypeCarousels
+          groupedProducts={groupedProducts}
+          colecciones={colecciones}
+          categoryOrder={categoryOrder}
+        />
 
         {/* 4. SECCIÓN DE ALTO TICKET: "Velas Personalizadas y Eventos" */}
         <section className="bg-[#2C2A29] text-[#FAF8F5] py-8 sm:py-12 relative overflow-hidden border-b border-stone-800">
@@ -53,9 +59,9 @@ export default function StoreShell({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 
               <div className="lg:col-span-7 space-y-5 text-center lg:text-left">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-stone-800/80 rounded-full border border-brand-gold/30">
-                  <Sparkles className="w-3 h-3 text-brand-gold" />
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-brand-gold font-bold font-sans">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-stone-800/80 rounded-full border border-amber-300/30">
+                  <Sparkles className="w-3 h-3 text-amber-300" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-amber-300 font-bold font-sans">
                     Recordatorios Exclusivos & Regalos Corporativos
                   </span>
                 </div>
@@ -72,7 +78,7 @@ export default function StoreShell({
                 <div className="pt-2 flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
                   <Link
                     href="/personalizadas"
-                    className="px-8 py-4 bg-brand-gold hover:bg-amber-500 text-stone-900 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md text-center flex items-center justify-center gap-2"
+                    className="px-8 py-4 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md text-center flex items-center justify-center gap-2"
                   >
                     <span>Cotizar Velas para Eventos →</span>
                   </Link>

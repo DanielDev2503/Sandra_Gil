@@ -63,14 +63,14 @@ export default function Footer() {
               Velas decorativas y aromáticas elaboradas a mano con cera de soya natural, flores artesanales y esencias exclusivas.
             </p>
             <div className="flex items-center gap-2 text-xs text-stone-400">
-              <MapPin className="w-4 h-4 text-brand-gold shrink-0" />
+              <MapPin className="w-4 h-4 text-amber-300 shrink-0" />
               <span>Bogotá, Colombia · Envíos locales</span>
             </div>
           </div>
 
           {/* Column 2: Navigation */}
           <div className="space-y-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Tienda</h4>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-amber-300">Tienda</h2>
             <ul className="space-y-2.5 text-xs">
               {TIENDA_LINKS.map((link) => {
                 const active = isLinkActive(link);
@@ -94,7 +94,7 @@ export default function Footer() {
 
           {/* Column 3: Legal */}
           <div className="space-y-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Legal</h4>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-amber-300">Legal</h2>
             <ul className="space-y-2.5 text-xs">
               {LEGAL_LINKS.map((link) => {
                 const active = isLinkActive(link);
@@ -118,7 +118,7 @@ export default function Footer() {
 
           {/* Column 4: Contact */}
           <div className="space-y-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Contáctanos</h4>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-amber-300">Contáctanos</h2>
             <p className="text-xs text-stone-400 leading-relaxed">
               Síguenos en Instagram y escríbenos por WhatsApp para asesoría personalizada, cotización de eventos y pedidos especiales.
             </p>
@@ -156,7 +156,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-300 gap-4">
           <p>© {new Date().getFullYear()} Sandra Gil Velas Artesanales. Todos los derechos reservados.</p>
           <p className="font-sans">
             Hecho a mano en Bogotá, Colombia.

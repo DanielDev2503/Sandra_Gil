@@ -63,14 +63,12 @@ export default function SkeletonImage({
   const formatted = formatSupabaseUrl(src);
   const [prevSrc, setPrevSrc] = useState(src);
   const [imgSrc, setImgSrc] = useState<string>(formatted);
-  const [loaded, setLoaded] = useState(false);
   const [hasError, setHasError] = useState(formatted === DEFAULT_FALLBACK_IMAGE);
 
   if (prevSrc !== src) {
     setPrevSrc(src);
     setImgSrc(formatted);
     setHasError(formatted === DEFAULT_FALLBACK_IMAGE);
-    setLoaded(false);
   }
 
   const handleError = () => {
@@ -80,32 +78,23 @@ export default function SkeletonImage({
       }
       setHasError(true);
       setImgSrc(fallbackSrc);
-      setLoaded(true);
     }
   };
 
   return (
-    <>
-      {/* Skeleton Pulse Placeholder — visible until image loads */}
-      {!loaded && (
-        <div className="absolute inset-0 bg-stone-200 animate-pulse z-0" />
-      )}
-      <Image
-        src={imgSrc}
-        alt={alt}
-        fill={fill}
-        sizes={fill ? sizes : undefined}
-        priority={priority}
-        loading={priority ? undefined : 'lazy'}
-        unoptimized={hasError || imgSrc.startsWith('data:')}
-        className={`${className} transition-opacity duration-500 ease-in-out ${
-          loaded ? 'opacity-100' : 'opacity-0'
-        }`}
-        onLoad={() => setLoaded(true)}
-        onError={handleError}
-        {...props}
-      />
-    </>
+    <Image
+      src={imgSrc}
+      alt={alt}
+      fill={fill}
+      sizes={fill ? sizes : undefined}
+      priority={priority}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : undefined}
+      unoptimized={hasError || imgSrc.startsWith('data:')}
+      className={className}
+      onError={handleError}
+      {...props}
+    />
   );
 }
 

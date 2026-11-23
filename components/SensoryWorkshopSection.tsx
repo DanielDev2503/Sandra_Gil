@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
 import { Sparkles, Gift, Users, Heart } from 'lucide-react';
 import CandleGlowPulse from './CandleGlowPulse';
 
@@ -77,27 +76,23 @@ export default function SensoryWorkshopSection() {
             const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(exp.waMessage)}`;
 
             return (
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="lg:col-span-7 group flex flex-col justify-between border-t border-[#B8862D]/40 pt-6 sm:pt-8"
+              <div
+                className="lg:col-span-7 group flex flex-col justify-between border-t border-[#855E16]/40 pt-6 sm:pt-8"
               >
                 <div>
                   {/* Top Editorial Row: Giant Golden Numeral & Delicate Icon */}
                   <div className="flex items-baseline justify-between mb-3">
-                    <span className="font-serif text-[#B8862D]/35 text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight select-none">
+                    <span className="font-serif text-[#855E16] text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight select-none">
                       01
                     </span>
-                    <Icon className="w-5 h-5 text-[#B8862D]/70 stroke-[1.5]" aria-hidden="true" />
+                    <Icon className="w-5 h-5 text-[#855E16] stroke-[1.5]" aria-hidden="true" />
                   </div>
 
-                  <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#B8862D] font-semibold font-sans block mb-2">
+                  <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#855E16] font-semibold font-sans block mb-2">
                     {exp.subtitle}
                   </span>
 
-                  <h3 className="font-serif text-2xl sm:text-3xl text-stone-900 font-normal leading-tight tracking-tight mb-3 group-hover:text-[#B8862D] transition-colors">
+                  <h3 className="font-serif text-2xl sm:text-3xl text-stone-900 font-normal leading-tight tracking-tight mb-3 group-hover:text-[#855E16] transition-colors">
                     {exp.title}
                   </h3>
 
@@ -106,7 +101,7 @@ export default function SensoryWorkshopSection() {
                   </p>
 
                   {/* Editorial Callout */}
-                  <div className="border-l-2 border-[#B8862D]/40 pl-3.5 py-1 mb-6 bg-amber-50/30 rounded-r-md">
+                  <div className="border-l-2 border-[#855E16]/40 pl-3.5 py-1 mb-6 bg-amber-50/30 rounded-r-md">
                     <p className="font-serif italic text-xs sm:text-sm text-stone-700">
                       Personalización de aromas, etiquetas de diseño, cuarzos y flores en cera para momentos irrepetibles.
                     </p>
@@ -119,13 +114,13 @@ export default function SensoryWorkshopSection() {
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group/cta inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B8862D] hover:text-[#91651D] transition-colors"
+                    className="group/cta inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#855E16] hover:text-[#704E11] transition-colors"
                   >
                     <span>{exp.ctaText}</span>
                     <span className="transition-transform duration-200 group-hover/cta:translate-x-1" aria-hidden="true">&rarr;</span>
                   </a>
                 </div>
-              </motion.div>
+              </div>
             );
           })()}
 
@@ -138,12 +133,8 @@ export default function SensoryWorkshopSection() {
               const isOffset = idx === 1;
 
               return (
-                <motion.div
+                <div
                   key={exp.title}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.6, delay: (idx + 1) * 0.15, ease: [0.22, 1, 0.36, 1] }}
                   className={`group flex flex-col justify-between border-t border-stone-200/80 pt-6 sm:pt-7 ${
                     isOffset ? 'lg:pl-6 xl:pl-8 border-l-0 lg:border-l lg:border-stone-200/40' : ''
                   }`}
@@ -151,17 +142,17 @@ export default function SensoryWorkshopSection() {
                   <div>
                     {/* Editorial Numeral & Icon */}
                     <div className="flex items-baseline justify-between mb-2.5">
-                      <span className="font-serif text-[#B8862D]/35 text-3xl sm:text-4xl font-light tracking-tight select-none">
+                      <span className="font-serif text-[#855E16] text-3xl sm:text-4xl font-light tracking-tight select-none">
                         {editorialNumber}
                       </span>
-                      <Icon className="w-4 h-4 text-[#B8862D]/70 stroke-[1.5]" aria-hidden="true" />
+                      <Icon className="w-4 h-4 text-[#855E16] stroke-[1.5]" aria-hidden="true" />
                     </div>
 
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#B8862D] font-semibold font-sans block mb-1">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#855E16] font-semibold font-sans block mb-1">
                       {exp.subtitle}
                     </span>
 
-                    <h3 className="font-serif text-lg sm:text-xl text-stone-900 font-normal leading-snug mb-2 group-hover:text-[#B8862D] transition-colors">
+                    <h3 className="font-serif text-lg sm:text-xl text-stone-900 font-normal leading-snug mb-2 group-hover:text-[#855E16] transition-colors">
                       {exp.title}
                     </h3>
 
@@ -176,13 +167,13 @@ export default function SensoryWorkshopSection() {
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group/cta inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#B8862D] hover:text-[#91651D] transition-colors"
+                      className="group/cta inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#855E16] hover:text-[#704E11] transition-colors"
                     >
                       <span>{exp.ctaText}</span>
                       <span className="transition-transform duration-200 group-hover/cta:translate-x-1" aria-hidden="true">&rarr;</span>
                     </a>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>

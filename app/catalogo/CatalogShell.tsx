@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
@@ -155,6 +155,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
   }, [product.aroma]);
 
   const [selectedAroma, setSelectedAroma] = useState<string>(initialAroma);
+  const [showOptions, setShowOptions] = useState(false);
 
   const soap = isSoapProduct(product);
   const isOutOfStock = !product.esBajoPedido && typeof product.stock === 'number' && product.stock <= 0;
@@ -226,7 +227,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
                 Agotado
               </span>
             ) : isLowStock ? (
-              <span className="bg-amber-600/95 backdrop-blur-xs text-white px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
+              <span className="bg-amber-700 backdrop-blur-xs text-white px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                 Últimas {product.stock}
               </span>
@@ -283,21 +284,35 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             </label>
             <select
               id={`aroma-${product.id}`}
+              aria-label={`Seleccionar aroma para ${product.nombre}`}
               value={selectedAroma}
+              onFocus={() => setShowOptions(true)}
+              onMouseEnter={() => setShowOptions(true)}
+              onTouchStart={() => setShowOptions(true)}
               onChange={(e) => setSelectedAroma(e.target.value)}
               className="w-full text-[10px] sm:text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1 px-2 text-stone-700 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors cursor-pointer truncate"
             >
               <option value="" disabled>
                 Aroma (28 disp.)...
               </option>
-              {initialAroma && !AROMAS.some((a) => a.toLowerCase() === initialAroma.toLowerCase()) && (
-                <option value={initialAroma}>{initialAroma}</option>
+              {showOptions ? (
+                <>
+                  {initialAroma && !AROMAS.some((a) => a.toLowerCase() === initialAroma.toLowerCase()) && (
+                    <option value={initialAroma}>{initialAroma}</option>
+                  )}
+                  {AROMAS.map((aroma) => (
+                    <option key={aroma} value={aroma}>
+                      {aroma.charAt(0).toUpperCase() + aroma.slice(1)}
+                    </option>
+                  ))}
+                </>
+              ) : (
+                selectedAroma && (
+                  <option value={selectedAroma}>
+                    {selectedAroma.charAt(0).toUpperCase() + selectedAroma.slice(1)}
+                  </option>
+                )
               )}
-              {AROMAS.map((aroma) => (
-                <option key={aroma} value={aroma}>
-                  {aroma.charAt(0).toUpperCase() + aroma.slice(1)}
-                </option>
-              ))}
             </select>
           </div>
         </div>
@@ -306,20 +321,20 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
       {/* 3. Fila de Precio y Botones de Compra */}
       <div className="p-2 sm:p-2.5 pt-0 font-sans">
         <div className="pt-1.5 border-t border-stone-100 flex justify-between items-center mb-1.5">
-          <span className="font-serif text-sm sm:text-base font-semibold tracking-tight text-[#B8862D]">
+          <span className="font-serif text-sm sm:text-base font-semibold tracking-tight text-[#855E16]">
             ${product.precio?.toLocaleString('es-CO')} COP
           </span>
 
           {isOutOfStock ? (
-            <span className="text-[9px] text-red-500 font-bold uppercase tracking-wider">
+            <span className="text-[9px] text-red-700 font-bold uppercase tracking-wider">
               Agotado
             </span>
           ) : isLowStock ? (
-            <span className="text-[9px] text-amber-600 font-medium uppercase tracking-wider">
+            <span className="text-[9px] text-amber-800 font-medium uppercase tracking-wider">
               Últimas {product.stock}
             </span>
           ) : (
-            <span className="text-[9px] text-stone-500 font-medium uppercase tracking-wider">
+            <span className="text-[9px] text-stone-600 font-medium uppercase tracking-wider">
               Stock
             </span>
           )}
@@ -330,7 +345,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             type="button"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-2xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${isOutOfStock ? 'border-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#855E16] hover:text-[#855E16] shadow-2xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${isOutOfStock ? 'border-stone-200 text-stone-600 cursor-not-allowed opacity-50' : ''
               }`}
           >
             Añadir
@@ -339,7 +354,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             type="button"
             onClick={handleBuyNow}
             disabled={isOutOfStock}
-            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${isOutOfStock ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-50' : ''
+            className={`rounded-full py-1 px-2 font-semibold text-[9px] sm:text-xs tracking-wider uppercase text-white bg-[#855E16] hover:bg-[#704E11] active:bg-[#5E420E] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-98 ${isOutOfStock ? 'bg-stone-200 text-stone-600 cursor-not-allowed opacity-50' : ''
               }`}
           >
             Comprar
@@ -358,6 +373,8 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(12);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // ── 1. FILTRADO ESTRICTO EN EL SHELL: EXCLUSIÓN DE BAJO PEDIDO ───────
   const directProducts = useMemo(
@@ -699,6 +716,24 @@ export default function CatalogShell({ products }: CatalogShellProps) {
     sortOrder,
   ]);
 
+  // Carga progresiva de tarjetas para mantener DOM liviano en render inicial
+  useEffect(() => {
+    const sentinel = loadMoreRef.current;
+    if (!sentinel || visibleCount >= filteredAndSortedProducts.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setVisibleCount((prev) => Math.min(prev + 24, filteredAndSortedProducts.length));
+        }
+      },
+      { rootMargin: '600px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [visibleCount, filteredAndSortedProducts.length]);
+
   // ── 5. COMPONENTE DE CONTENIDO DE FILTROS (REUTILIZABLE DESKTOP Y MÓVIL) ──
   const FilterContent = (
     <div className="space-y-6 text-stone-800">
@@ -780,7 +815,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                       {cat.label}
                     </span>
                   </div>
-                  <span className="text-[11px] font-mono text-stone-400 group-hover:text-stone-600 transition">
+                  <span className="text-[11px] font-mono text-stone-600 group-hover:text-stone-800 transition">
                     ({count})
                   </span>
                 </label>
@@ -834,7 +869,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 >
                   <span className="truncate">{temp.label}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-amber-200/60 text-amber-900 font-medium' : 'bg-stone-100 text-stone-500'
+                    className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-amber-200/60 text-amber-900 font-medium' : 'bg-stone-100 text-stone-600'
                       }`}
                   >
                     {count}
@@ -873,7 +908,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               <span className="px-2 py-1 bg-stone-100 rounded border border-stone-200">
                 ${priceRange[0].toLocaleString('es-CO')}
               </span>
-              <span className="text-stone-400">—</span>
+              <span className="text-stone-600">—</span>
               <span className="px-2 py-1 bg-stone-100 rounded border border-stone-200">
                 ${priceRange[1].toLocaleString('es-CO')}
               </span>
@@ -890,7 +925,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
               aria-label="Precio máximo"
             />
 
-            <div className="flex justify-between text-[10px] text-stone-400">
+            <div className="flex justify-between text-[10px] text-stone-600">
               <span>Mín: ${minPriceAbsolute.toLocaleString('es-CO')}</span>
               <span>Máx: ${maxPriceAbsolute.toLocaleString('es-CO')}</span>
             </div>
@@ -952,7 +987,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                         {name}
                       </span>
                     </div>
-                    <span className="text-[11px] font-mono text-stone-400 group-hover:text-stone-600 shrink-0">
+                    <span className="text-[11px] font-mono text-stone-600 group-hover:text-stone-800 shrink-0">
                       ({count})
                     </span>
                   </label>
@@ -1007,7 +1042,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                         {name}
                       </span>
                     </div>
-                    <span className="text-[11px] font-mono text-stone-400 group-hover:text-stone-600 shrink-0">
+                    <span className="text-[11px] font-mono text-stone-600 group-hover:text-stone-800 shrink-0">
                       ({count})
                     </span>
                   </label>
@@ -1110,6 +1145,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
           {/* ── GRILLA PRINCIPAL DE PRODUCTOS A 4 COLUMNAS EN DESKTOP ───── */}
           <main className="lg:col-span-3 space-y-6">
+            <h2 className="sr-only">Productos del Catálogo</h2>
             {/* Chips de Filtros Activos para remoción rápida */}
             {activeFiltersCount > 0 && (
               <div className="flex flex-wrap items-center gap-2 bg-stone-100/70 p-3 rounded-xl border border-stone-200/60">
@@ -1232,16 +1268,21 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                 </button>
               </div>
             ) : (
-              /* Cuadrícula de 4 Columnas en Desktop (`lg:grid-cols-4` o `lg:grid-cols-3 xl:grid-cols-4`) y 2 en Móvil (`grid-cols-2`) */
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-3.5 xl:gap-4">
-                {filteredAndSortedProducts.map((product, idx) => (
-                  <CatalogProductCard
-                    key={product.id}
-                    product={product}
-                    priority={idx < 4}
-                  />
-                ))}
-              </div>
+              <>
+                {/* Cuadrícula de 4 Columnas en Desktop (`lg:grid-cols-4` o `lg:grid-cols-3 xl:grid-cols-4`) y 2 en Móvil (`grid-cols-2`) */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-3.5 xl:gap-4">
+                  {filteredAndSortedProducts.slice(0, visibleCount).map((product, idx) => (
+                    <CatalogProductCard
+                      key={product.id}
+                      product={product}
+                      priority={idx < 2}
+                    />
+                  ))}
+                </div>
+                {visibleCount < filteredAndSortedProducts.length && (
+                  <div ref={loadMoreRef} className="h-10 w-full" aria-hidden="true" />
+                )}
+              </>
             )}
           </main>
         </div>

@@ -37,11 +37,11 @@ export const BANNERS_DATA: BannerSlide[] = [
     enlace: '/catalogo?temporada=navidad',
     link: '/catalogo?temporada=navidad',
     kicker: 'Edición Especial Navidad',
-    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad.webp',
-    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-mobile.webp',
-    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad.webp',
-    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad.webp',
-    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-mobile.webp',
+    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-hd.webp',
+    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-hd-mobile.webp',
+    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-hd.webp',
+    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-hd.webp',
+    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-hd-mobile.webp',
     alt: 'Colección navideña de velas artesanales de cera de soya Sandra Gil Bogotá',
   },
   {
@@ -136,7 +136,8 @@ export const BANNERS_DATA: BannerSlide[] = [
   },
 ];
 
-const AUTOPLAY_DURATION = 5500; // 5.5s por slide
+const AUTOPLAY_DURATION = 8000; // 8s por slide
+const INITIAL_AUTOPLAY_DELAY = 10000; // Diferir primer avance para proteger LCP/trace inicial
 
 /**
  * Subcomponente de imagen responsiva con SSR directo, prioritario para LCP en mobile:
@@ -160,6 +161,7 @@ export function ResponsiveBannerImage({
         src={imageSrc}
         alt={altText}
         fill
+        unoptimized
         priority={isFirst}
         loading={isFirst ? 'eager' : 'lazy'}
         fetchPriority={isFirst ? 'high' : 'low'}
@@ -173,13 +175,33 @@ export function ResponsiveBannerImage({
 export default function HeroBannerCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [loadedSlides, setLoadedSlides] = useState<number[]>([0]);
+  const [autoplayReady, setAutoplayReady] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const totalSlides = BANNERS_DATA.length;
 
+  const markSlideLoaded = useCallback(
+    (index: number) => {
+      const normalized = (index + totalSlides) % totalSlides;
+      const next = (normalized + 1) % totalSlides;
+      setLoadedSlides((prev) => {
+        if (prev.includes(normalized) && prev.includes(next)) return prev;
+        const merged = new Set(prev);
+        merged.add(normalized);
+        merged.add(next);
+        return Array.from(merged);
+      });
+    },
+    [totalSlides]
+  );
+
   const goToSlide = useCallback((index: number) => {
-    setCurrentIndex((index + totalSlides) % totalSlides);
-  }, [totalSlides]);
+    const target = (index + totalSlides) % totalSlides;
+    markSlideLoaded(target);
+    setAutoplayReady(true);
+    setCurrentIndex(target);
+  }, [totalSlides, markSlideLoaded]);
 
   const nextSlide = useCallback(() => {
     goToSlide(currentIndex + 1);
@@ -189,16 +211,26 @@ export default function HeroBannerCarousel() {
     goToSlide(currentIndex - 1);
   }, [currentIndex, goToSlide]);
 
+  // Esperar antes de iniciar el autoplay automático para que el Slide 0 permanezca visible al cargar
+  useEffect(() => {
+    if (autoplayReady) return;
+    const delayTimer = setTimeout(() => {
+      markSlideLoaded(1);
+      setAutoplayReady(true);
+    }, INITIAL_AUTOPLAY_DELAY);
+    return () => clearTimeout(delayTimer);
+  }, [autoplayReady, markSlideLoaded]);
+
   // Autoplay con pausa en hover, foco e inactividad de pestaña
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || !autoplayReady) return;
 
     const interval = setInterval(() => {
       nextSlide();
     }, AUTOPLAY_DURATION);
 
     return () => clearInterval(interval);
-  }, [isPaused, nextSlide]);
+  }, [isPaused, autoplayReady, nextSlide]);
 
   // Pausa cuando la pestaña pierde visibilidad
   useEffect(() => {
@@ -305,8 +337,12 @@ export default function HeroBannerCarousel() {
                   tabIndex={isActive ? 0 : -1}
                   className="block relative w-full h-full cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
                 >
-                  {/* Art Direction responsiva: Mobile 800x600 (object-[center_60%]) vs Desktop 1920x620 */}
-                  <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
+                  {/* Montar solo Slide 0 al inicio y slides adicionales bajo demanda */}
+                  {isFirst || loadedSlides.includes(index) ? (
+                    <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
+                  ) : (
+                    <div className="w-full h-full bg-[#FAF8F5]" aria-hidden="true" />
+                  )}
 
                   {/* Sutil viñeta degradada para legibilidad */}
                   <div
@@ -319,7 +355,7 @@ export default function HeroBannerCarousel() {
                 <div className="hidden sm:flex absolute inset-y-0 left-0 items-center z-20 pl-6 sm:pl-10 lg:pl-14 pointer-events-none">
                   <div className="pointer-events-auto max-w-sm lg:max-w-md bg-[#FAF8F5]/90 backdrop-blur-md border border-stone-200/80 shadow-xl rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-8 space-y-2.5 lg:space-y-3.5 transition-all">
                     {/* Kicker superior */}
-                    <span className="inline-block text-[10px] lg:text-xs font-semibold uppercase tracking-[0.2em] text-[#B8862D] bg-amber-50/90 border border-amber-200/70 rounded-full px-3 py-0.5">
+                    <span className="inline-block text-[10px] lg:text-xs font-semibold uppercase tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-3 py-0.5">
                       {kicker}
                     </span>
 
@@ -340,7 +376,7 @@ export default function HeroBannerCarousel() {
                       <Link
                         href={link}
                         tabIndex={isActive ? 0 : -1}
-                        className="inline-flex items-center gap-2 rounded-full px-5 lg:px-7 py-2.5 lg:py-3 text-xs font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] shadow-sm hover:shadow transition-all duration-200 active:scale-95"
+                        className="inline-flex items-center gap-2 rounded-full px-5 lg:px-7 py-2.5 lg:py-3 text-xs font-semibold uppercase tracking-wider text-white bg-[#855E16] hover:bg-[#704E11] shadow-sm hover:shadow transition-all duration-200 active:scale-95"
                       >
                         <span>{ctaText || 'Explorar Catálogo'}</span>
                         <span aria-hidden="true">&rarr;</span>
@@ -363,7 +399,7 @@ export default function HeroBannerCarousel() {
                   <Link
                     href={link}
                     tabIndex={isActive ? 0 : -1}
-                    className="inline-flex items-center gap-1.5 rounded-full py-1.5 px-3.5 bg-[#B8862D] hover:bg-[#A37424] text-white text-[11px] font-semibold uppercase tracking-wider shadow-md active:scale-95 transition-all"
+                    className="inline-flex items-center gap-1.5 rounded-full py-1.5 px-3.5 bg-[#855E16] hover:bg-[#704E11] text-white text-[11px] font-semibold uppercase tracking-wider shadow-md active:scale-95 transition-all"
                   >
                     <span>
                       {link === '/personalizadas'
@@ -404,7 +440,7 @@ export default function HeroBannerCarousel() {
         <div
           role="tablist"
           aria-label="Control de diapositivas"
-          className="absolute bottom-2.5 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-1 sm:gap-2 bg-stone-950/45 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20 shadow-md"
+          className="absolute bottom-2.5 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-0.5 sm:gap-1 bg-stone-950/55 backdrop-blur-md px-2 py-1 sm:px-2.5 sm:py-1 rounded-full border border-white/20 shadow-md"
         >
           {BANNERS_DATA.map((slide, idx) => {
             const isCurrent = idx === currentIndex;
@@ -416,23 +452,28 @@ export default function HeroBannerCarousel() {
                 aria-selected={isCurrent}
                 aria-label={`Ir al slide ${idx + 1}: ${slide.titulo || slide.title}`}
                 onClick={() => goToSlide(idx)}
-                className={`transition-all duration-300 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold ${
-                  isCurrent
-                    ? 'w-3.5 sm:w-6 h-1.5 sm:h-2 bg-brand-gold shadow-xs'
-                    : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/60 hover:bg-white'
-                }`}
-              />
+                className="w-6 h-6 flex items-center justify-center cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+              >
+                <span
+                  className={`transition-all duration-300 rounded-full block ${
+                    isCurrent
+                      ? 'w-4 sm:w-5 h-1.5 sm:h-2 bg-amber-400 shadow-xs'
+                      : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/75 hover:bg-white'
+                  }`}
+                />
+              </button>
             );
           })}
         </div>
 
-        {/* Barra de progreso de slide sutil en el borde inferior */}
+        {/* Barra de progreso de slide sutil en el borde inferior (GPU transform) */}
         <div
           key={currentIndex}
-          className={`absolute bottom-0 left-0 h-[2.5px] bg-brand-gold z-30 ${isPaused ? 'opacity-0' : 'opacity-80 animate-banner-progress'
-            }`}
+          className={`absolute bottom-0 left-0 w-full origin-left h-[2.5px] bg-brand-gold z-30 ${
+            isPaused || !autoplayReady ? 'opacity-0' : 'opacity-80'
+          }`}
           style={{
-            animation: !isPaused ? `bannerProgress ${AUTOPLAY_DURATION}ms linear` : 'none',
+            animation: !isPaused && autoplayReady ? `bannerProgress ${AUTOPLAY_DURATION}ms linear` : 'none',
           }}
         />
       </div>
@@ -440,10 +481,10 @@ export default function HeroBannerCarousel() {
       <style jsx>{`
         @keyframes bannerProgress {
           from {
-            width: 0%;
+            transform: scaleX(0);
           }
           to {
-            width: 100%;
+            transform: scaleX(1);
           }
         }
       `}</style>

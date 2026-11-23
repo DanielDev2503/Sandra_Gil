@@ -129,7 +129,6 @@ export default function Header() {
                   alt="Sandra Gil Velas Artesanales"
                   width={56}
                   height={56}
-                  priority
                   className="object-contain w-10 h-10 md:w-14 md:h-14"
                 />
               </div>
@@ -152,7 +151,7 @@ export default function Header() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-amber-500 transition-colors duration-200 min-h-[44px] inline-flex items-center font-normal"
+                    className="hover:text-[#855E16] transition-colors duration-200 min-h-[44px] inline-flex items-center font-normal"
                   >
                     {link.label}
                   </a>
@@ -178,20 +177,20 @@ export default function Header() {
                       aria-haspopup="true"
                       aria-expanded={catalogDropdownOpen}
                       className={`min-h-[44px] inline-flex items-center gap-1.5 transition-colors duration-200 uppercase tracking-wider ${isCatalogoActive
-                          ? 'text-amber-500 font-medium'
-                          : 'text-stone-700 hover:text-amber-500 group-hover:text-amber-500 font-normal'
+                          ? 'text-[#855E16] font-medium'
+                          : 'text-stone-700 hover:text-[#855E16] group-hover:text-[#855E16] font-normal'
                         }`}
                     >
                       <span className="relative py-1">
                         {link.label}
                         {isCatalogoActive && (
-                          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full" />
+                          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#855E16] rounded-full" />
                         )}
                       </span>
                       <ChevronDown
                         className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 ${isCatalogoActive
-                            ? 'text-amber-500'
-                            : 'text-stone-400 group-hover:text-amber-500'
+                            ? 'text-[#855E16]'
+                            : 'text-stone-600 group-hover:text-[#855E16]'
                           }`}
                         aria-hidden="true"
                       />
@@ -237,7 +236,7 @@ export default function Header() {
                             className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium uppercase tracking-wider text-stone-700 hover:bg-amber-50 hover:text-amber-900 cursor-pointer transition-colors group-hover/sub:bg-amber-50 group-hover/sub:text-amber-900"
                           >
                             <span>Velas</span>
-                            <ChevronRight className="w-4 h-4 text-stone-400 group-hover/sub:text-amber-700 group-hover/sub:translate-x-0.5 transition-all" />
+                            <ChevronRight className="w-4 h-4 text-stone-600 group-hover/sub:text-amber-700 group-hover/sub:translate-x-0.5 transition-all" />
                           </div>
 
                           {/* Submenú lateral (Flyout) con puente invisible seguro */}
@@ -357,14 +356,14 @@ export default function Header() {
                   key={link.href}
                   href={link.href}
                   className={`transition-colors duration-200 min-h-[44px] inline-flex items-center ${isActive
-                      ? 'text-amber-500 font-medium'
-                      : 'text-stone-700 hover:text-amber-500 font-normal'
+                      ? 'text-[#855E16] font-medium'
+                      : 'text-stone-700 hover:text-[#855E16] font-normal'
                     }`}
                 >
                   <span className="relative py-1">
                     {link.label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full" />
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#855E16] rounded-full" />
                     )}
                   </span>
                 </Link>
@@ -380,7 +379,7 @@ export default function Header() {
                 e.stopPropagation();
                 openCart();
               }}
-              className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-[#B8862D] hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer z-50"
+              className="relative p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-[#855E16] hover:bg-stone-100/80 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer z-50"
               aria-label="Abrir carrito de compras"
             >
               <ShoppingBag className="w-5 h-5 text-stone-800" />
@@ -394,7 +393,7 @@ export default function Header() {
             {/* Mobile hamburger button (visible up to md breakpoint: block md:hidden) */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="block md:hidden p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-amber-500 hover:bg-stone-100/80 rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer"
+              className="block md:hidden p-2.5 min-w-[44px] min-h-[44px] text-stone-700 hover:text-[#855E16] hover:bg-stone-100/80 rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer"
               aria-label="Abrir menú de navegación"
             >
               <Menu className="w-6 h-6" />
@@ -447,7 +446,7 @@ export default function Header() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={closeMobileMenu}
-                      className="flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-100 hover:text-amber-500 transition-all duration-200"
+                      className="flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-100 hover:text-[#855E16] transition-all duration-200"
                     >
                       <span>{link.label}</span>
                       <MessageCircle className="w-4 h-4 text-amber-600" />
@@ -464,13 +463,13 @@ export default function Header() {
                         onClick={() => setMobileCatalogoOpen((prev) => !prev)}
                         aria-expanded={mobileCatalogoOpen}
                         className={`w-full flex items-center justify-between px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 cursor-pointer ${isCatalogoActive
-                            ? 'bg-amber-50 text-amber-600 font-medium'
-                            : 'text-stone-700 hover:bg-stone-100 hover:text-amber-500 font-normal'
+                            ? 'bg-amber-50 text-[#855E16] font-medium'
+                            : 'text-stone-700 hover:bg-stone-100 hover:text-[#855E16] font-normal'
                           }`}
                       >
                         <span>{link.label}</span>
                         <ChevronDown
-                          className={`w-4 h-4 transition-transform duration-200 text-stone-500 ${mobileCatalogoOpen ? 'rotate-180 text-amber-600' : ''
+                          className={`w-4 h-4 transition-transform duration-200 text-stone-600 ${mobileCatalogoOpen ? 'rotate-180 text-[#855E16]' : ''
                             }`}
                         />
                       </button>
@@ -551,8 +550,8 @@ export default function Header() {
                     href={link.href}
                     onClick={closeMobileMenu}
                     className={`flex items-center px-4 py-3.5 min-h-[44px] rounded-lg text-sm transition-all duration-200 ${isActive
-                        ? 'bg-amber-50 text-amber-600 font-medium'
-                        : 'text-stone-700 hover:bg-stone-100 hover:text-amber-500 font-normal'
+                        ? 'bg-amber-50 text-[#855E16] font-medium'
+                        : 'text-stone-700 hover:bg-stone-100 hover:text-[#855E16] font-normal'
                       }`}
                   >
                     <span>{link.label}</span>
@@ -567,7 +566,7 @@ export default function Header() {
                 href={`https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20tus%20velas`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3.5 min-h-[44px] bg-[#B8862D] hover:bg-[#A37424] text-white text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md active:scale-98"
+                className="flex items-center justify-center gap-2 w-full py-3.5 min-h-[44px] bg-[#855E16] hover:bg-[#704E11] text-white text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 shadow-md active:scale-98"
               >
                 <MessageCircle className="w-4 h-4 text-white" />
                 Asesoría por WhatsApp

@@ -20,10 +20,13 @@ export interface PersonalizadaProductItem {
 
 export default function PersonalizadasProductCard({
   product,
+  priority = false,
 }: {
   product: PersonalizadaProductItem;
+  priority?: boolean;
 }) {
   const [selectedAroma, setSelectedAroma] = useState<string>(product.aroma || '');
+  const [showOptions, setShowOptions] = useState(false);
 
   const displayImage =
     product.imagenes && product.imagenes.length > 0
@@ -50,6 +53,7 @@ export default function PersonalizadasProductCard({
             alt={`Vela artesanal personalizada ${product.nombre} Sandra Gil Bogotá`}
             className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
             fill
+            priority={priority}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
           />
 
@@ -71,19 +75,33 @@ export default function PersonalizadasProductCard({
 
         {/* Selector de Aroma Inline Compacto */}
         <select
+          aria-label={`Seleccionar aroma para ${product.nombre}`}
           value={selectedAroma}
+          onFocus={() => setShowOptions(true)}
+          onMouseEnter={() => setShowOptions(true)}
+          onTouchStart={() => setShowOptions(true)}
           onChange={(e) => setSelectedAroma(e.target.value)}
           className="w-full text-[10px] py-1 px-2 rounded-full border border-stone-200 bg-[#FAF8F5] mb-2 truncate text-stone-700 focus:outline-none focus:border-amber-400 cursor-pointer"
         >
           <option value="" disabled>Aroma (28 disp.)...</option>
-          {currentAroma && !AROMAS.some((a) => a.toLowerCase() === currentAroma.toLowerCase()) && (
-            <option value={currentAroma}>{currentAroma}</option>
+          {showOptions ? (
+            <>
+              {currentAroma && !AROMAS.some((a) => a.toLowerCase() === currentAroma.toLowerCase()) && (
+                <option value={currentAroma}>{currentAroma}</option>
+              )}
+              {AROMAS.map((a) => (
+                <option key={a} value={a}>
+                  {a.charAt(0).toUpperCase() + a.slice(1)}
+                </option>
+              ))}
+            </>
+          ) : (
+            selectedAroma && (
+              <option value={selectedAroma}>
+                {selectedAroma.charAt(0).toUpperCase() + selectedAroma.slice(1)}
+              </option>
+            )
           )}
-          {AROMAS.map((a) => (
-            <option key={a} value={a}>
-              {a.charAt(0).toUpperCase() + a.slice(1)}
-            </option>
-          ))}
         </select>
       </div>
 
@@ -93,6 +111,7 @@ export default function PersonalizadasProductCard({
           href={waLink}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Cotizar ${product.nombre} por WhatsApp`}
           className="w-full rounded-full py-1.5 px-2 text-[10px] sm:text-xs font-medium text-amber-950 bg-amber-50/90 border border-amber-300 hover:bg-amber-100 flex items-center justify-center gap-1 transition-colors cursor-pointer active:scale-98 shadow-2xs"
         >
           <MessageCircle className="w-3.5 h-3.5 text-amber-800 shrink-0" />

@@ -174,38 +174,47 @@ export default function RootLayout({
           <CartDrawer />
         </CartProvider>
         <Analytics />
-        {/* Google Customer Reviews - Insignia de Tienda (Store Widget) */}
+        {/* Google Customer Reviews - Insignia de Tienda (diferida tras interacción para optimizar LCP/TBT) */}
         <Script
-          id="merchantWidgetScript"
-          src="https://www.gstatic.com/shopping/merchant/merchantwidget.js"
-          strategy="afterInteractive"
-        />
-        <Script
-          id="merchantWidgetInit"
-          strategy="afterInteractive"
+          id="merchantWidgetDeferred"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
-              var merchantWidgetScript = document.getElementById('merchantWidgetScript');
-              if (merchantWidgetScript) {
-                merchantWidgetScript.addEventListener('load', function () {
-                  if (typeof merchantwidget !== 'undefined') {
-                    merchantwidget.start({
-                      // REQUIRED FIELDS
-                      merchant_id: 5860719569,
-                      // OPTIONAL FIELDS
-                      position: 'LEFT_BOTTOM',
-                      region: 'CO',
-                    });
+              (function () {
+                var loaded = false;
+                function ensureIframeTitle() {
+                  var iframes = document.querySelectorAll('iframe#merchantwidgetiframe, div#google-merchantwidget-iframe-wrapper iframe');
+                  for (var i = 0; i < iframes.length; i++) {
+                    if (!iframes[i].getAttribute('title')) {
+                      iframes[i].setAttribute('title', 'Insignia de Google Customer Reviews');
+                    }
                   }
-                });
-              }
-              if (typeof merchantwidget !== 'undefined') {
-                merchantwidget.start({
-                  merchant_id: 5860719569,
-                  position: 'LEFT_BOTTOM',
-                  region: 'CO',
-                });
-              }
+                }
+                function loadMerchantWidget() {
+                  if (loaded) return;
+                  loaded = true;
+                  var observer = new MutationObserver(ensureIframeTitle);
+                  observer.observe(document.body, { childList: true, subtree: true });
+                  var s = document.createElement('script');
+                  s.src = 'https://www.gstatic.com/shopping/merchant/merchantwidget.js';
+                  s.async = true;
+                  s.onload = function () {
+                    if (typeof merchantwidget !== 'undefined') {
+                      merchantwidget.start({
+                        merchant_id: 5860719569,
+                        position: 'LEFT_BOTTOM',
+                        region: 'CO',
+                      });
+                    }
+                    ensureIframeTitle();
+                  };
+                  document.body.appendChild(s);
+                }
+                var events = ['scroll', 'pointerdown', 'touchstart', 'keydown'];
+                for (var i = 0; i < events.length; i++) {
+                  window.addEventListener(events[i], loadMerchantWidget, { once: true, passive: true });
+                }
+              })();
             `,
           }}
         />

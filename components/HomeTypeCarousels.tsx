@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useMemo, useCallback, useSyncExternalStore, useId } from 'react';
+import React, { useRef, useState, useEffect, useMemo, useCallback, useId } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -40,6 +40,7 @@ export interface ColeccionCarousel {
 interface HomeTypeCarouselsProps {
   groupedProducts: GroupedProducts;
   colecciones?: ColeccionCarousel[];
+  categoryOrder?: (keyof GroupedProducts)[];
 }
 
 interface CarouselSectionMeta {
@@ -85,20 +86,6 @@ const CATEGORIES_METADATA: CategoryMeta[] = [
   },
 ];
 
-/**
- * Algoritmo Fisher-Yates para barajado aleatorio uniforme sin sesgos
- */
-function fisherYatesShuffle<T>(array: T[]): T[] {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
-const emptySubscribe = () => () => { };
-
 function getColeccionHref(nombre: string): string {
   const norm = nombre
     .toLowerCase()
@@ -138,6 +125,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
   }, [product.aroma]);
 
   const [selectedAroma, setSelectedAroma] = useState<string>(initialAroma);
+  const [showOptions, setShowOptions] = useState(false);
 
   const imageUrl = product.url_imagen || '/logo-sandra.webp';
   const effectiveIsBajoPedido = isBajoPedidoCategory || Boolean(product.esBajoPedido);
@@ -231,19 +219,33 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
           </label>
           <select
             id={aromaSelectId}
+            aria-label={`Seleccionar aroma para ${product.nombre}`}
             value={selectedAroma}
+            onFocus={() => setShowOptions(true)}
+            onMouseEnter={() => setShowOptions(true)}
+            onTouchStart={() => setShowOptions(true)}
             onChange={(e) => setSelectedAroma(e.target.value)}
             className="w-full text-[10px] sm:text-xs rounded-full border border-stone-200/90 bg-[#FAF8F5] py-1 px-2.5 text-stone-700 focus:outline-none focus:border-amber-400 mb-2 truncate cursor-pointer"
           >
             <option value="" disabled>Aroma (28 disponibles)...</option>
-            {initialAroma && !AROMAS.some((a) => a.toLowerCase() === initialAroma.toLowerCase()) && (
-              <option value={initialAroma}>{initialAroma}</option>
+            {showOptions ? (
+              <>
+                {initialAroma && !AROMAS.some((a) => a.toLowerCase() === initialAroma.toLowerCase()) && (
+                  <option value={initialAroma}>{initialAroma}</option>
+                )}
+                {AROMAS.map((a) => (
+                  <option key={a} value={a}>
+                    {a.charAt(0).toUpperCase() + a.slice(1)}
+                  </option>
+                ))}
+              </>
+            ) : (
+              selectedAroma && (
+                <option value={selectedAroma}>
+                  {selectedAroma.charAt(0).toUpperCase() + selectedAroma.slice(1)}
+                </option>
+              )
             )}
-            {AROMAS.map((a) => (
-              <option key={a} value={a}>
-                {a.charAt(0).toUpperCase() + a.slice(1)}
-              </option>
-            ))}
           </select>
         </div>
       </div>
@@ -261,6 +263,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`Cotizar ${product.nombre} por WhatsApp`}
               className="bg-amber-50/90 border border-amber-300 text-amber-950 hover:bg-amber-100 rounded-full py-1.5 px-3 text-[10px] sm:text-xs font-medium w-full flex items-center justify-center gap-1 transition-all duration-200 cursor-pointer active:scale-98 shadow-2xs"
             >
               <MessageCircle className="w-3.5 h-3.5 text-amber-800 shrink-0" />
@@ -270,11 +273,11 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
         ) : (
           <div>
             <div className="pt-1.5 border-t border-stone-100 flex justify-between items-center mb-1.5">
-              <span className="font-serif text-sm sm:text-base font-semibold tracking-tight text-[#B8862D]">
+              <span className="font-serif text-sm sm:text-base font-semibold tracking-tight text-[#855E16]">
                 ${product.precio ? product.precio.toLocaleString('es-CO') : '0'} COP
               </span>
               {isOutOfStock && (
-                <span className="text-[9px] text-red-500 font-bold uppercase tracking-wider">
+                <span className="text-[9px] text-red-700 font-bold uppercase tracking-wider">
                   Agotado
                 </span>
               )}
@@ -284,7 +287,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
                 type="button"
                 onClick={handleAddToCart}
                 disabled={isOutOfStock}
-                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs disabled:border-stone-200 disabled:text-stone-400 disabled:bg-stone-50 disabled:cursor-not-allowed"
+                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider bg-white border border-stone-300 text-stone-800 hover:border-[#855E16] hover:text-[#855E16] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs disabled:border-stone-200 disabled:text-stone-600 disabled:bg-stone-50 disabled:cursor-not-allowed"
               >
                 Añadir
               </button>
@@ -292,7 +295,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
                 type="button"
                 onClick={handleBuyNow}
                 disabled={isOutOfStock}
-                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#B8862D] hover:bg-[#A37424] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed"
+                className="rounded-full py-1 px-2.5 text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#855E16] hover:bg-[#704E11] transition-all cursor-pointer flex items-center justify-center active:scale-98 shadow-2xs disabled:bg-stone-200 disabled:text-stone-600 disabled:cursor-not-allowed"
               >
                 Comprar
               </button>
@@ -316,7 +319,7 @@ interface CategoryCarouselProps {
 function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [canScrollRight, setCanScrollRight] = useState(products.length > 2);
   const isCheckingRef = useRef(false);
 
   const checkScrollBounds = useCallback(() => {
@@ -338,19 +341,10 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
     if (!el) return;
 
     el.addEventListener('scroll', checkScrollBounds, { passive: true });
-    window.addEventListener('resize', checkScrollBounds, { passive: true });
-
-    // Evitar layout thrashing sincrónico inicial: diferir la comprobación 300ms tras el montaje
-    const timer = setTimeout(() => {
-      checkScrollBounds();
-    }, 300);
-
     return () => {
-      clearTimeout(timer);
       el.removeEventListener('scroll', checkScrollBounds);
-      window.removeEventListener('resize', checkScrollBounds);
     };
-  }, [checkScrollBounds, products]);
+  }, [checkScrollBounds]);
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;
@@ -382,7 +376,8 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
 
         <Link
           href={category.href}
-          className="text-xs sm:text-sm font-medium text-stone-600 hover:text-[#B8862D] flex items-center gap-1 transition-colors group"
+          aria-label={`Ver todos los productos de ${category.title}`}
+          className="text-xs sm:text-sm font-medium text-stone-600 hover:text-[#855E16] flex items-center gap-1 transition-colors group"
         >
           <span>Ver todos</span>
           <span className="transition-transform group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
@@ -441,45 +436,20 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   );
 }
 
-export default function HomeTypeCarousels({ groupedProducts, colecciones }: HomeTypeCarouselsProps) {
-  // Detección de montaje segura contra desincronización de hidratación (React 18 & 19)
-  const isMounted = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false
-  );
-
-  // Computar el orden de categorías y los productos aleatorios por categoría
-  const { categories, shuffledMap } = useMemo(() => {
-    if (!isMounted) {
-      return {
-        categories: CATEGORIES_METADATA,
-        shuffledMap: {
-          VELA_ESCULPIDA: groupedProducts.VELA_ESCULPIDA || [],
-          VELA_ENVASE: groupedProducts.VELA_ENVASE || [],
-          JABON: groupedProducts.JABON || [],
-          pebetero: groupedProducts.pebetero || [],
-          waxmell: groupedProducts.waxmell || [],
-          BAJO_PEDIDO: groupedProducts.BAJO_PEDIDO || [],
-        },
-      };
+export default function HomeTypeCarousels({
+  groupedProducts,
+  colecciones,
+  categoryOrder,
+}: HomeTypeCarouselsProps) {
+  const categories = useMemo(() => {
+    if (!categoryOrder || categoryOrder.length === 0) {
+      return CATEGORIES_METADATA;
     }
-
-    // 1. Barajar el orden vertical de las categorías con Fisher-Yates
-    const randomizedCategories = fisherYatesShuffle(CATEGORIES_METADATA);
-
-    // 2. Barajar los productos de cada categoría
-    const newShuffledMap: Record<string, CarouselProduct[]> = {};
-    for (const cat of CATEGORIES_METADATA) {
-      const items = groupedProducts[cat.key] || [];
-      newShuffledMap[cat.key] = fisherYatesShuffle(items);
-    }
-
-    return {
-      categories: randomizedCategories,
-      shuffledMap: newShuffledMap,
-    };
-  }, [isMounted, groupedProducts]);
+    const orderMap = new Map(categoryOrder.map((key, idx) => [key, idx]));
+    return [...CATEGORIES_METADATA].sort(
+      (a, b) => (orderMap.get(a.key) ?? 99) - (orderMap.get(b.key) ?? 99)
+    );
+  }, [categoryOrder]);
 
   return (
     <div className="relative w-full max-w-full overflow-hidden bg-[#FAF8F5] py-6 sm:py-8 space-y-6 sm:space-y-8">
@@ -497,7 +467,7 @@ export default function HomeTypeCarousels({ groupedProducts, colecciones }: Home
       ))}
 
       {categories.map((category) => {
-        const products = shuffledMap[category.key] || [];
+        const products = groupedProducts[category.key] || [];
         if (products.length === 0) return null;
         return (
           <CategoryCarousel

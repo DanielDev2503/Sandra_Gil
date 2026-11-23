@@ -409,7 +409,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
         {/* Riel Deslizable con Efecto Peeking */}
         <div
           ref={carouselRef}
-          className="flex items-stretch gap-3 sm:gap-4 overflow-x-auto scroll-smooth scrollbar-none py-2 px-1 focus:outline-none snap-x snap-mandatory"
+          className="flex items-stretch gap-3 sm:gap-4 overflow-x-auto scrollbar-none py-2 px-1 focus:outline-none"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {visibleProducts.map((product) => {
@@ -417,7 +417,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
             return (
               <div
                 key={product.id}
-                className="snap-start flex-shrink-0 w-[68vw] sm:w-[38vw] md:w-[28vw] lg:w-[calc((100%-4*1rem)/5.5)] xl:w-[calc((100%-4*1.25rem)/5.5)] flex flex-col"
+                className="flex-shrink-0 w-[68vw] sm:w-[38vw] md:w-[28vw] lg:w-[calc((100%-4*1rem)/5.5)] xl:w-[calc((100%-4*1.25rem)/5.5)] flex flex-col"
               >
                 <CarouselProductCard
                   product={product}

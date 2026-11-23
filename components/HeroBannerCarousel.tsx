@@ -159,13 +159,14 @@ export function ResponsiveBannerImage({
     <Image
       src={imageSrc}
       alt={altText}
-      fill
-      quality={85}
+      width={1200}
+      height={509}
+      quality={75}
       priority={isFirst}
       loading={isFirst ? 'eager' : 'lazy'}
       fetchPriority={isFirst ? 'high' : undefined}
       sizes="(max-width: 639px) 100vw, (max-width: 1400px) 1200px, 1920px"
-      className="object-cover object-[center_60%] sm:object-center w-full h-full transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+      className="block w-full h-[175px] sm:h-[340px] lg:h-[430px] object-cover object-right sm:object-center transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
     />
   );
 }
@@ -277,6 +278,75 @@ export default function HeroBannerCarousel() {
   };
 
   const slidesToRender = autoplayReady || currentIndex > 0 ? BANNERS_DATA : [BANNERS_DATA[0]];
+  const isMultiSlide = slidesToRender.length > 1;
+
+  const renderSlide = (slide: BannerSlide, index: number) => {
+    const isActive = index === currentIndex;
+    const isFirst = index === 0;
+    const title = slide.title || slide.titulo;
+    const description = slide.description || slide.subtitulo;
+    const link = slide.link || slide.enlace;
+    const kicker = slide.kicker || 'Colección Artesanal';
+    const ctaText = slide.ctaText || 'Explorar Catálogo';
+    const HeadingTag = isFirst ? 'h1' : 'h2';
+
+    return (
+      <div
+        key={slide.id}
+        {...(isMultiSlide
+          ? {
+              role: 'group',
+              'aria-roledescription': 'slide',
+              'aria-label': `Slide ${index + 1} de ${totalSlides}: ${title}`,
+              'aria-hidden': !isActive,
+            }
+          : {})}
+        className={`relative w-full group/slide bg-[#FAF8F5] flex flex-col-reverse sm:block ${isMultiSlide ? 'shrink-0' : ''}`}
+      >
+        {/* Enlace de fondo para la imagen */}
+        <Link
+          href={link}
+          prefetch={false}
+          tabIndex={isActive ? 0 : -1}
+          className="block relative w-full cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5]"
+        >
+          {isFirst || loadedSlides.includes(index) ? (
+            <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
+          ) : (
+            <div className="w-full h-[175px] sm:h-[340px] lg:h-[430px] bg-[#FAF8F5]" aria-hidden="true" />
+          )}
+        </Link>
+
+        {/* Cuadro Indicativo Editorial: arriba en móvil, flotante izquierdo en desktop */}
+        <div className="px-4 pt-3.5 pb-3 sm:p-0 sm:flex sm:absolute sm:inset-y-0 sm:left-0 sm:items-center sm:z-20 sm:pl-10 lg:pl-14 sm:pointer-events-none">
+          <div className="sm:pointer-events-auto sm:max-w-sm lg:max-w-md bg-white sm:bg-[#FAF8F5]/95 border border-stone-200/80 shadow-xs sm:shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3.5 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5">
+            <span className="inline-block text-[10px] lg:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-2.5 sm:px-3 py-0.5">
+              {kicker}
+            </span>
+            <HeadingTag className="text-xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-[1.15] tracking-tight">
+              {title}
+            </HeadingTag>
+            {description && (
+              <p className="text-sm text-stone-700 font-light leading-relaxed">
+                {description}
+              </p>
+            )}
+            <div className="pt-1 sm:pt-1.5">
+              <Link
+                href={link}
+                prefetch={false}
+                tabIndex={isActive ? 0 : -1}
+                className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full px-4 sm:px-5 lg:px-7 py-2 sm:py-2.5 lg:py-3 text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#855E16] hover:bg-[#704E11] shadow-sm hover:shadow transition-all duration-200 active:scale-95"
+              >
+                <span>{ctaText || 'Explorar Catálogo'}</span>
+                <span aria-hidden="true">&rarr;</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section
@@ -290,111 +360,29 @@ export default function HeroBannerCarousel() {
       onFocus={() => setIsPaused(true)}
       onBlur={() => setIsPaused(false)}
     >
-      {/* Encabezado semántico H1 oculto visualmente para blindar SEO local en Bogotá */}
-      <h1 className="sr-only">
-        Sandra Gil | Velas Decorativas y Aromáticas de Cera de Soya en Bogotá - Catálogo y Colecciones
-      </h1>
-
-      {/* Contenedor responsivo con relación de aspecto fluida anti-CLS:
-          - Mobile (< sm): aspect-[16/9] (altura compacta y panorámica, evita cortes en móvil).
-          - Tablet (sm:): sm:aspect-[16/6] (proporción intermedia balanceada).
-          - Desktop (lg:): lg:aspect-[1920/620] (composición amplia y vertical para respirar).
-      */}
       <div
-        className="relative w-full overflow-hidden select-none bg-[#FAF8F5] bg-stone-100"
+        className="relative w-full overflow-hidden bg-[#FAF8F5]"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Riel deslizante continuo de slides */}
-        <div
-          className={`flex w-full ${autoplayReady || currentIndex > 0 ? 'transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]' : ''}`}
-          style={currentIndex === 0 ? undefined : { transform: `translateX(-${currentIndex * 100}%)` }}
-        >
-          {slidesToRender.map((slide, index) => {
-            const isActive = index === currentIndex;
-            const isFirst = index === 0;
-            const title = slide.title || slide.titulo;
-            const description = slide.description || slide.subtitulo;
-            const link = slide.link || slide.enlace;
-            const kicker = slide.kicker || 'Colección Artesanal';
-            const ctaText = slide.ctaText || 'Explorar Colección';
-
-            return (
-              <div
-                key={slide.id}
-                role="group"
-                aria-roledescription="slide"
-                aria-label={`Slide ${index + 1} de ${totalSlides}: ${title}`}
-                aria-hidden={!isActive}
-                className="relative w-full shrink-0 group/slide bg-[#FAF8F5] bg-stone-100"
-              >
-                {/* Enlace de fondo para la imagen (accesible y clickable en toda la composición) */}
-                <Link
-                  href={link}
-                  prefetch={false}
-                  tabIndex={isActive ? 0 : -1}
-                  className="block relative w-full aspect-[16/9] sm:aspect-[16/6] lg:aspect-[1920/620] cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5] bg-stone-100"
-                >
-                  {/* Montar solo Slide 0 al inicio y slides adicionales bajo demanda */}
-                  {isFirst || loadedSlides.includes(index) ? (
-                    <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
-                  ) : (
-                    <div className="w-full h-full bg-[#FAF8F5]" aria-hidden="true" />
-                  )}
-
-                  {/* Sutil viñeta degradada para legibilidad */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-t from-stone-950/30 via-transparent to-transparent pointer-events-none"
-                  />
-                </Link>
-
-                {/* Contenido Editorial Izquierdo en Cuadro (Mobile + Desktop) */}
-                <div className="flex absolute inset-y-0 left-0 items-start pt-3 sm:items-center sm:pt-0 z-20 pl-3 sm:pl-10 lg:pl-14 pointer-events-none">
-                  <div className="pointer-events-auto max-w-[265px] sm:max-w-sm lg:max-w-md bg-[#FAF8F5]/95 border border-stone-200/80 shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5 transition-all">
-                    {/* Kicker superior */}
-                    <span className="inline-block text-[9px] sm:text-[10px] lg:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-2.5 sm:px-3 py-0.5">
-                      {kicker}
-                    </span>
-
-                    {/* Título de la categoría */}
-                    <h2 className="text-base sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-[1.15] tracking-tight">
-                      {title}
-                    </h2>
-
-                    {/* Subtítulo / Descripción */}
-                    {description && (
-                      <p className="text-xs sm:text-sm text-stone-700 font-light leading-snug sm:leading-relaxed">
-                        {description}
-                      </p>
-                    )}
-
-                    {/* Botón de Acción Principal */}
-                    <div className="pt-0.5 sm:pt-1.5">
-                      <Link
-                        href={link}
-                        prefetch={false}
-                        tabIndex={isActive ? 0 : -1}
-                        className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full px-3.5 sm:px-5 lg:px-7 py-1.5 sm:py-2.5 lg:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-white bg-[#855E16] hover:bg-[#704E11] shadow-sm hover:shadow transition-all duration-200 active:scale-95"
-                      >
-                        <span>{ctaText || 'Explorar Catálogo'}</span>
-                        <span aria-hidden="true">&rarr;</span>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {isMultiSlide ? (
+          <div
+            className="flex w-full transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+            style={currentIndex === 0 ? undefined : { transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {slidesToRender.map((slide, index) => renderSlide(slide, index))}
+          </div>
+        ) : (
+          <div className="w-full">{renderSlide(slidesToRender[0], 0)}</div>
+        )}
 
         {/* Botón Flecha Izquierda (Anterior) */}
         <button
           type="button"
           onClick={prevSlide}
           aria-label="Ver banner anterior"
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 hidden sm:flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-stone-800 shadow-md hover:shadow-xl border border-stone-200/60 hidden sm:flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
         >
           <ChevronLeft className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-stone-700" />
         </button>
@@ -404,7 +392,7 @@ export default function HeroBannerCarousel() {
           type="button"
           onClick={nextSlide}
           aria-label="Ver siguiente banner"
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-stone-800 shadow-md hover:shadow-xl backdrop-blur-md border border-stone-200/60 hidden sm:flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-stone-800 shadow-md hover:shadow-xl border border-stone-200/60 hidden sm:flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer opacity-85 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
         >
           <ChevronRight className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-stone-700" />
         </button>

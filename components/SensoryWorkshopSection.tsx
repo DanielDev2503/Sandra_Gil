@@ -37,12 +37,6 @@ const EXPERIENCES = [
 export default function SensoryWorkshopSection() {
   return (
     <section className="bg-[#FAF8F5] py-8 sm:py-12 border-b border-brand-gold/15 relative overflow-hidden">
-      {/* Decorative ambient elements */}
-      <div
-        aria-hidden="true"
-        className="absolute bottom-0 right-0 w-96 h-96 bg-brand-gold/8 rounded-full blur-3xl pointer-events-none"
-      />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Header */}

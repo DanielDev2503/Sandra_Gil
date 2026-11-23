@@ -99,6 +99,20 @@ function fisherYatesShuffle<T>(array: T[]): T[] {
 
 const emptySubscribe = () => () => { };
 
+function getColeccionHref(nombre: string): string {
+  const norm = nombre
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+
+  if (norm.includes('navid')) return '/catalogo?temporada=navidad';
+  if (norm.includes('oton')) return '/catalogo?temporada=otono';
+  if (norm.includes('amor') || norm.includes('amistad')) return '/catalogo?temporada=amor_amistad';
+  if (norm.includes('primavera')) return '/catalogo?temporada=primavera';
+  return '/catalogo';
+}
+
 interface CarouselProductCardProps {
   product: CarouselProduct;
   isBajoPedidoCategory: boolean;
@@ -476,7 +490,7 @@ export default function HomeTypeCarousels({ groupedProducts, colecciones }: Home
           category={{
             key: `coleccion-${coleccion.id}`,
             title: coleccion.nombre,
-            href: '/catalogo',
+            href: getColeccionHref(coleccion.nombre),
           }}
           products={coleccion.productos}
         />

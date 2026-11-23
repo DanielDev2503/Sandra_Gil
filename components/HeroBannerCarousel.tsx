@@ -27,6 +27,24 @@ export interface BannerSlide {
 
 export const BANNERS_DATA: BannerSlide[] = [
   {
+    id: 'coleccion-navidad',
+    slug: 'banner-navidad',
+    titulo: 'Colección Navideña',
+    title: 'Colección Navideña',
+    subtitulo: 'Ilumina tus celebraciones con velas artesanales de temporada',
+    description: 'Ilumina tus celebraciones con diseños navideños hechos a mano en 100% cera de soya y aromas cálidos de temporada.',
+    ctaText: 'Ver Colección Navideña',
+    enlace: '/catalogo?temporada=navidad',
+    link: '/catalogo?temporada=navidad',
+    kicker: 'Edición Especial Navidad',
+    desktopSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad.webp',
+    mobileSrc: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-mobile.webp',
+    image: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad.webp',
+    imageDesktop: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad.webp',
+    imageMobile: 'https://imdyyahjqntkcjdliywt.supabase.co/storage/v1/object/public/productos/banners/banner-navidad-mobile.webp',
+    alt: 'Colección navideña de velas artesanales de cera de soya Sandra Gil Bogotá',
+  },
+  {
     id: 'todos-los-prods',
     slug: 'banner-todos-los-prods',
     titulo: 'Colección Botánica & Cera de Soya',
@@ -348,7 +366,11 @@ export default function HeroBannerCarousel() {
                     className="inline-flex items-center gap-1.5 rounded-full py-1.5 px-3.5 bg-[#B8862D] hover:bg-[#A37424] text-white text-[11px] font-semibold uppercase tracking-wider shadow-md active:scale-95 transition-all"
                   >
                     <span>
-                      {link === '/personalizadas' ? 'Ver Personalizadas' : 'Explorar Catálogo'}
+                      {link === '/personalizadas'
+                        ? 'Ver Personalizadas'
+                        : link === '/catalogo?temporada=navidad'
+                          ? 'Ver Navidad'
+                          : 'Explorar Catálogo'}
                     </span>
                     <span aria-hidden="true">&rarr;</span>
                   </Link>

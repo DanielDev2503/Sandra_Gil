@@ -71,3 +71,13 @@ body {
 .candle-glow-lg {
   box-shadow: 0 10px 50px -10px rgba(184, 138, 50, 0.35);
 }
+
+/* Hero banner progress bar animation */
+@keyframes bannerProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

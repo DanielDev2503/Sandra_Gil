@@ -191,6 +191,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
         {/* 1. Imagen aspect-[4/3] con esquinas redondeadas superiores */}
         <Link
           href={`/productos/${product.slug}`}
+          prefetch={false}
           className="relative aspect-[4/3] w-full block overflow-hidden bg-stone-100 rounded-t-xl group/img"
           aria-label={`Ver detalles de ${product.nombre}`}
         >
@@ -199,7 +200,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
             alt={`Vela artesanal ${product.nombre} Sandra Gil`}
             fill
             loading="lazy"
-            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 28vw, 220px"
+            sizes="(max-width: 640px) 35vw, (max-width: 1024px) 22vw, 200px"
             className="object-cover object-center transition-transform duration-500 ease-out group-hover/img:scale-105"
           />
           <div className="absolute inset-0 bg-stone-950/10 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -207,7 +208,7 @@ function CarouselProductCard({ product, isBajoPedidoCategory }: CarouselProductC
 
         {/* 2. Cuerpo: Título y Selector de Aroma */}
         <div className="p-2.5 sm:p-3 pb-1">
-          <Link href={`/productos/${product.slug}`} className="block group/title">
+          <Link href={`/productos/${product.slug}`} prefetch={false} className="block group/title">
             <h3 className="font-serif text-xs sm:text-sm font-medium text-stone-900 truncate my-1.5 group-hover/title:text-brand-brown transition-colors">
               {product.nombre}
             </h3>
@@ -320,7 +321,9 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(products.length > 2);
+  const [showAllCards, setShowAllCards] = useState(false);
   const isCheckingRef = useRef(false);
+  const visibleProducts = showAllCards ? products : products.slice(0, 6);
 
   const checkScrollBounds = useCallback(() => {
     if (isCheckingRef.current || !carouselRef.current) return;
@@ -347,6 +350,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   }, [checkScrollBounds]);
 
   const handleScroll = (direction: 'left' | 'right') => {
+    setShowAllCards(true);
     if (!carouselRef.current) return;
     // Desplazar el 88% del ancho visible para avanzar exactamente el bloque de productos
     const containerWidth = carouselRef.current.clientWidth;
@@ -363,6 +367,9 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
   return (
     <section
       aria-labelledby={`heading-${category.key}`}
+      onMouseEnter={() => setShowAllCards(true)}
+      onTouchStart={() => setShowAllCards(true)}
+      onFocus={() => setShowAllCards(true)}
       className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
     >
       {/* Cabecera Limpia y Minimalista */}
@@ -376,6 +383,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
 
         <Link
           href={category.href}
+          prefetch={false}
           aria-label={`Ver todos los productos de ${category.title}`}
           className="text-xs sm:text-sm font-medium text-stone-600 hover:text-[#855E16] flex items-center gap-1 transition-colors group"
         >
@@ -404,7 +412,7 @@ function CategoryCarousel({ category, products }: CategoryCarouselProps) {
           className="flex items-stretch gap-3 sm:gap-4 overflow-x-auto scroll-smooth scrollbar-none py-2 px-1 focus:outline-none snap-x snap-mandatory"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {products.map((product) => {
+          {visibleProducts.map((product) => {
             const isBajoPedido = category.key === 'BAJO_PEDIDO';
             return (
               <div
@@ -451,32 +459,87 @@ export default function HomeTypeCarousels({
     );
   }, [categoryOrder]);
 
+  const allSections = useMemo(() => {
+    const sections: Array<{
+      key: string;
+      category: CarouselSectionMeta;
+      products: CarouselProduct[];
+    }> = [];
+
+    if (colecciones && colecciones.length > 0) {
+      for (const coleccion of colecciones) {
+        if (coleccion.productos.length > 0) {
+          sections.push({
+            key: coleccion.id,
+            category: {
+              key: `coleccion-${coleccion.id}`,
+              title: coleccion.nombre,
+              href: getColeccionHref(coleccion.nombre),
+            },
+            products: coleccion.productos,
+          });
+        }
+      }
+    }
+
+    for (const category of categories) {
+      const products = groupedProducts[category.key] || [];
+      if (products.length > 0) {
+        sections.push({
+          key: category.key,
+          category,
+          products,
+        });
+      }
+    }
+
+    return sections;
+  }, [colecciones, categories, groupedProducts]);
+
+  const [visibleCarousels, setVisibleCarousels] = useState(2);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (visibleCarousels >= allSections.length) return;
+
+    const expandAll = () => {
+      setVisibleCarousels(allSections.length);
+    };
+
+    const events: (keyof WindowEventMap)[] = ['scroll', 'wheel', 'touchmove', 'pointerdown', 'keydown'];
+    events.forEach((ev) => window.addEventListener(ev, expandAll, { once: true, passive: true }));
+
+    let observer: IntersectionObserver | null = null;
+    if (sentinelRef.current && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            expandAll();
+          }
+        },
+        { rootMargin: '150px' }
+      );
+      observer.observe(sentinelRef.current);
+    }
+
+    return () => {
+      events.forEach((ev) => window.removeEventListener(ev, expandAll));
+      observer?.disconnect();
+    };
+  }, [visibleCarousels, allSections.length]);
+
   return (
     <div className="relative w-full max-w-full overflow-hidden bg-[#FAF8F5] py-6 sm:py-8 space-y-6 sm:space-y-8">
-      {/* ── COLECCIONES CURADAS DESDE ADMIN (SIEMPRE DE PRIMERO, SIN ALEATORIEDAD) ── */}
-      {colecciones && colecciones.length > 0 && colecciones.map((coleccion) => (
+      {allSections.slice(0, visibleCarousels).map((section) => (
         <CategoryCarousel
-          key={coleccion.id}
-          category={{
-            key: `coleccion-${coleccion.id}`,
-            title: coleccion.nombre,
-            href: getColeccionHref(coleccion.nombre),
-          }}
-          products={coleccion.productos}
+          key={section.key}
+          category={section.category}
+          products={section.products}
         />
       ))}
-
-      {categories.map((category) => {
-        const products = groupedProducts[category.key] || [];
-        if (products.length === 0) return null;
-        return (
-          <CategoryCarousel
-            key={category.key}
-            category={category}
-            products={products}
-          />
-        );
-      })}
+      {visibleCarousels < allSections.length && (
+        <div ref={sentinelRef} className="h-4 w-full" aria-hidden="true" />
+      )}
     </div>
   );
 }

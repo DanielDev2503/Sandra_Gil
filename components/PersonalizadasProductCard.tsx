@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import SkeletonImage from '@/components/SkeletonImage';
 import { MessageCircle, Sparkles } from 'lucide-react';
@@ -45,6 +45,7 @@ export default function PersonalizadasProductCard({
         {/* Imagen cuadrada compacta */}
         <Link
           href={`/productos/${product.slug}`}
+          prefetch={false}
           className="aspect-square w-full rounded-lg overflow-hidden relative mb-2 block bg-stone-100 group/img"
           aria-label={`Ver detalles de ${product.nombre}`}
         >
@@ -54,7 +55,7 @@ export default function PersonalizadasProductCard({
             className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
             fill
             priority={priority}
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
+            sizes="(max-width: 640px) 35vw, (max-width: 1024px) 22vw, 180px"
           />
 
           {/* Badge superior discreto */}
@@ -67,7 +68,7 @@ export default function PersonalizadasProductCard({
         </Link>
 
         {/* Título en una línea para evitar desbordes */}
-        <Link href={`/productos/${product.slug}`} className="block group/title">
+        <Link href={`/productos/${product.slug}`} prefetch={false} className="block group/title">
           <h3 className="font-serif text-xs sm:text-sm text-stone-900 truncate mb-1 group-hover/title:text-brand-brown transition-colors">
             {product.nombre}
           </h3>
@@ -119,5 +120,60 @@ export default function PersonalizadasProductCard({
         </a>
       </div>
     </div>
+  );
+}
+
+/**
+ * Grilla progresiva para velas bajo pedido: renderiza las primeras 6 tarjetas al inicio
+ * y expande el resto al primer scroll o interacción para proteger LCP en móvil.
+ */
+export function PersonalizadasProductGrid({
+  products,
+}: {
+  products: PersonalizadaProductItem[];
+}) {
+  const [visibleCount, setVisibleCount] = useState(6);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (visibleCount >= products.length) return;
+
+    const expandAll = () => {
+      setVisibleCount(products.length);
+    };
+
+    const events: (keyof WindowEventMap)[] = ['scroll', 'wheel', 'touchmove', 'pointerdown', 'keydown'];
+    events.forEach((ev) => window.addEventListener(ev, expandAll, { once: true, passive: true }));
+
+    let observer: IntersectionObserver | null = null;
+    if (sentinelRef.current && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            expandAll();
+          }
+        },
+        { rootMargin: '150px' }
+      );
+      observer.observe(sentinelRef.current);
+    }
+
+    return () => {
+      events.forEach((ev) => window.removeEventListener(ev, expandAll));
+      observer?.disconnect();
+    };
+  }, [visibleCount, products.length]);
+
+  return (
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5 lg:gap-4">
+        {products.slice(0, visibleCount).map((product, idx) => (
+          <PersonalizadasProductCard key={product.id} product={product} priority={idx === 0} />
+        ))}
+      </div>
+      {visibleCount < products.length && (
+        <div ref={sentinelRef} className="h-4 w-full" aria-hidden="true" />
+      )}
+    </>
   );
 }

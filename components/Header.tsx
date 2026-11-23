@@ -129,6 +129,7 @@ export default function Header() {
                   alt="Sandra Gil Velas Artesanales"
                   width={56}
                   height={56}
+                  loading="eager"
                   className="object-contain w-10 h-10 md:w-14 md:h-14"
                 />
               </div>
@@ -372,7 +373,7 @@ export default function Header() {
           </nav>
 
           {/* Right: Cart + Mobile Hamburger Button */}
-          <div className="flex items-center space-x-1 sm:space-x-2">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <button
               type="button"
               onClick={(e) => {

@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { MessageCircle, Sparkles, Clock, Palette } from 'lucide-react';
-import PersonalizadasProductCard from '@/components/PersonalizadasProductCard';
+import { PersonalizadasProductGrid } from '@/components/PersonalizadasProductCard';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -36,19 +36,26 @@ export const revalidate = 0;
 const WA_NUMBER = '573175752029';
 
 export default async function PersonalizadasPage() {
-  const products = await prisma.producto.findMany({
+  const rawProducts = await prisma.producto.findMany({
     where: { activo: true, esBajoPedido: true },
     select: {
       id: true,
       slug: true,
       nombre: true,
-      descripcion: true,
       aroma: true,
       url_imagen: true,
       imagenes: true,
     },
     orderBy: { nombre: 'asc' },
   });
+
+  const products = rawProducts.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    nombre: p.nombre,
+    aroma: p.aroma,
+    url_imagen: p.imagenes && p.imagenes.length > 0 ? p.imagenes[0] : p.url_imagen,
+  }));
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-cream">
@@ -175,11 +182,7 @@ export default async function PersonalizadasPage() {
               </div>
 
               {/* Móvil: 2 cols | Tablet: 3-4 cols | Desktop: 6 cols */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5 lg:gap-4">
-                {products.map((product, idx) => (
-                  <PersonalizadasProductCard key={product.id} product={product} priority={idx < 2} />
-                ))}
-              </div>
+              <PersonalizadasProductGrid products={products} />
             </>
           )}
 

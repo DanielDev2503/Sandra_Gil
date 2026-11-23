@@ -34,12 +34,21 @@ export default function AnnouncementBar() {
   useEffect(() => {
     if (isPaused) return;
 
-    const timer = setInterval(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const startTimeout = setTimeout(() => {
       setCurrentIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
-    }, 4500);
+      interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
+      }, 15000);
+    }, 15000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearTimeout(startTimeout);
+      if (interval) clearInterval(interval);
+    };
   }, [isPaused]);
+
+  const item = ANNOUNCEMENTS[currentIndex];
 
   return (
     <div
@@ -50,34 +59,21 @@ export default function AnnouncementBar() {
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
       onBlur={() => setIsPaused(false)}
-      className="relative h-8 sm:h-9 bg-[#1C1917] text-[#FAF8F5] border-b border-stone-800 flex items-center justify-center overflow-hidden px-3 text-[11px] sm:text-xs font-light tracking-wide font-sans select-none"
+      className="relative h-10 bg-[#1C1917] text-[#FAF8F5] border-b border-stone-800 flex items-center justify-center overflow-hidden px-3 text-[11px] sm:text-xs font-light tracking-wide font-sans select-none"
     >
-      <div className="w-full max-w-7xl mx-auto relative h-full flex items-center justify-center">
-        {ANNOUNCEMENTS.map((item, index) => {
-          const isActive = index === currentIndex;
-          return (
-            <div
-              key={item.id}
-              className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out px-2 text-center ${
-                isActive
-                  ? 'opacity-100 translate-y-0 pointer-events-auto'
-                  : 'opacity-0 translate-y-2 pointer-events-none'
-              }`}
+      <div className="w-full max-w-7xl mx-auto h-full flex items-center justify-center px-2 text-center">
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2 truncate max-w-full">
+          <span className="truncate">{item.text}</span>
+          {item.linkHref && item.linkText && (
+            <Link
+              href={item.linkHref}
+              prefetch={false}
+              className="shrink-0 text-amber-300 hover:text-amber-200 underline underline-offset-2 font-medium transition py-1.5 px-2.5 min-h-[28px] inline-flex items-center gap-0.5 ml-1"
             >
-              <div className="flex items-center justify-center gap-1.5 sm:gap-2 truncate max-w-full">
-                <span className="truncate">{item.text}</span>
-                {item.linkHref && item.linkText && (
-                  <Link
-                    href={item.linkHref}
-                    className="shrink-0 text-amber-300 hover:text-amber-200 underline underline-offset-2 font-medium transition inline-flex items-center gap-0.5 ml-1"
-                  >
-                    <span>{item.linkText}</span>
-                  </Link>
-                )}
-              </div>
-            </div>
-          );
-        })}
+              <span>{item.linkText}</span>
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -72,8 +72,16 @@ export default async function CatalogPage() {
     },
   });
 
-  // Doble filtro consistente de seguridad por slug para blindar que ninguna pieza bajo pedido entre al catálogo
-  const products = rawProducts.filter((p) => !isBajoPedidoItem(p));
+  // Doble filtro consistente de seguridad por slug y reducción de payload serializado hacia el cliente
+  const products = rawProducts
+    .filter((p) => !isBajoPedidoItem(p))
+    .map((p) => ({
+      ...p,
+      url_imagen: p.imagenes && p.imagenes.length > 0 ? p.imagenes[0] : p.url_imagen,
+      imagenes: undefined,
+      dimensiones: null,
+      descripcion: p.descripcion ? p.descripcion.slice(0, 120) : '',
+    }));
 
   return (
     <Suspense>

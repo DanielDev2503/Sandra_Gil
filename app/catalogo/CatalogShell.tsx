@@ -209,6 +209,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
         {/* 1. Imagen con relación aspect-[4/3] y badge de tipo/stock */}
         <Link
           href={`/productos/${product.slug}`}
+          prefetch={false}
           className="relative aspect-[4/3] w-full block overflow-hidden bg-stone-100 rounded-t-xl"
         >
           <SkeletonImage
@@ -216,7 +217,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
             alt={product.nombre}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             fill
-            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 28vw, 220px"
+            sizes="(max-width: 640px) 35vw, (max-width: 1024px) 22vw, 200px"
             priority={priority}
           />
 
@@ -271,7 +272,7 @@ export function CatalogProductCard({ product, priority = false }: CatalogProduct
 
         {/* 2. Cuerpo: Título y Selector de Aroma Inline */}
         <div className="p-2 sm:p-2.5 pb-1">
-          <Link href={`/productos/${product.slug}`} className="block group/title">
+          <Link href={`/productos/${product.slug}`} prefetch={false} className="block group/title">
             <h3 className="font-serif text-xs sm:text-sm font-normal text-stone-900 truncate mb-1 sm:mb-1.5 group-hover/title:text-brand-brown transition duration-200">
               {product.nombre}
             </h3>
@@ -373,7 +374,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [visibleCount, setVisibleCount] = useState(6);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // ── 1. FILTRADO ESTRICTO EN EL SHELL: EXCLUSIÓN DE BAJO PEDIDO ───────
@@ -718,20 +719,33 @@ export default function CatalogShell({ products }: CatalogShellProps) {
 
   // Carga progresiva de tarjetas para mantener DOM liviano en render inicial
   useEffect(() => {
+    if (visibleCount >= filteredAndSortedProducts.length) return;
+
+    const loadMore = () => {
+      setVisibleCount((prev) => Math.min(prev + 24, filteredAndSortedProducts.length));
+    };
+
+    const events: (keyof WindowEventMap)[] = ['scroll', 'wheel', 'touchmove', 'pointerdown', 'keydown'];
+    events.forEach((ev) => window.addEventListener(ev, loadMore, { once: true, passive: true }));
+
     const sentinel = loadMoreRef.current;
-    if (!sentinel || visibleCount >= filteredAndSortedProducts.length) return;
+    let observer: IntersectionObserver | null = null;
+    if (sentinel && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            loadMore();
+          }
+        },
+        { rootMargin: '150px' }
+      );
+      observer.observe(sentinel);
+    }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setVisibleCount((prev) => Math.min(prev + 24, filteredAndSortedProducts.length));
-        }
-      },
-      { rootMargin: '600px' }
-    );
-
-    observer.observe(sentinel);
-    return () => observer.disconnect();
+    return () => {
+      events.forEach((ev) => window.removeEventListener(ev, loadMore));
+      observer?.disconnect();
+    };
   }, [visibleCount, filteredAndSortedProducts.length]);
 
   // ── 5. COMPONENTE DE CONTENIDO DE FILTROS (REUTILIZABLE DESKTOP Y MÓVIL) ──
@@ -1275,7 +1289,7 @@ export default function CatalogShell({ products }: CatalogShellProps) {
                     <CatalogProductCard
                       key={product.id}
                       product={product}
-                      priority={idx < 2}
+                      priority={idx === 0}
                     />
                   ))}
                 </div>

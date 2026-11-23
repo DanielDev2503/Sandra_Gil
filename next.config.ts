@@ -34,7 +34,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   compress: true,
   images: {
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/webp'],
+    qualities: [75, 85],
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {

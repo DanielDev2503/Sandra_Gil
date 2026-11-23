@@ -164,9 +164,8 @@ export function ResponsiveBannerImage({
       quality={75}
       priority={false}
       loading={isFirst ? 'eager' : 'lazy'}
-      fetchPriority={isFirst ? 'high' : undefined}
       sizes="(max-width: 639px) 92vw, (max-width: 1400px) 1200px, 1920px"
-      className="block w-full h-[136px] sm:h-[340px] lg:h-[430px] rounded-xl sm:rounded-none object-cover object-right sm:object-center transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+      className="block w-full h-[124px] sm:h-[340px] lg:h-[430px] rounded-xl sm:rounded-none object-cover object-right sm:object-center transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
     />
   );
 }
@@ -313,7 +312,7 @@ export default function HeroBannerCarousel() {
           {isFirst || loadedSlides.includes(index) ? (
             <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
           ) : (
-            <div className="w-full h-[136px] sm:h-[340px] lg:h-[430px] rounded-xl sm:rounded-none bg-[#FAF8F5]" aria-hidden="true" />
+            <div className="w-full h-[124px] sm:h-[340px] lg:h-[430px] rounded-xl sm:rounded-none bg-[#FAF8F5]" aria-hidden="true" />
           )}
         </Link>
 
@@ -327,7 +326,7 @@ export default function HeroBannerCarousel() {
               {title}
             </HeadingTag>
             {description && (
-              <p className="text-[15px] sm:text-sm text-stone-700 font-light leading-relaxed">
+              <p className="text-base sm:text-sm text-stone-700 font-light leading-[1.7] sm:leading-relaxed">
                 {description}
               </p>
             )}

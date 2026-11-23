@@ -32,7 +32,7 @@ export const BANNERS_DATA: BannerSlide[] = [
     titulo: 'Colección Navideña',
     title: 'Colección Navideña',
     subtitulo: 'Ilumina tus celebraciones con velas artesanales de temporada',
-    description: 'Ilumina tus celebraciones con diseños navideños hechos a mano en 100% cera de soya y aromas cálidos de temporada.',
+    description: 'Ilumina tus celebraciones con nuestra edición navideña de velas aromáticas y decorativas elaboradas a mano en Bogotá con cera de soya 100% natural, flores artesanales y esencias cálidas de temporada perfectas para regalar y transformar tus espacios.',
     ctaText: 'Ver Colección Navideña',
     enlace: '/catalogo?temporada=navidad',
     link: '/catalogo?temporada=navidad',
@@ -162,11 +162,11 @@ export function ResponsiveBannerImage({
       width={1200}
       height={509}
       quality={75}
-      priority={isFirst}
+      priority={false}
       loading={isFirst ? 'eager' : 'lazy'}
       fetchPriority={isFirst ? 'high' : undefined}
-      sizes="(max-width: 639px) 100vw, (max-width: 1400px) 1200px, 1920px"
-      className="block w-full h-[175px] sm:h-[340px] lg:h-[430px] object-cover object-right sm:object-center transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
+      sizes="(max-width: 639px) 92vw, (max-width: 1400px) 1200px, 1920px"
+      className="block w-full h-[136px] sm:h-[340px] lg:h-[430px] rounded-xl sm:rounded-none object-cover object-right sm:object-center transition-transform duration-500 ease-out group-hover/slide:scale-[1.02]"
     />
   );
 }
@@ -308,18 +308,18 @@ export default function HeroBannerCarousel() {
           href={link}
           prefetch={false}
           tabIndex={isActive ? 0 : -1}
-          className="block relative w-full cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5]"
+          className="block relative w-full px-4 pb-3 sm:p-0 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold bg-[#FAF8F5]"
         >
           {isFirst || loadedSlides.includes(index) ? (
             <ResponsiveBannerImage slide={slide} isFirst={isFirst} />
           ) : (
-            <div className="w-full h-[175px] sm:h-[340px] lg:h-[430px] bg-[#FAF8F5]" aria-hidden="true" />
+            <div className="w-full h-[136px] sm:h-[340px] lg:h-[430px] rounded-xl sm:rounded-none bg-[#FAF8F5]" aria-hidden="true" />
           )}
         </Link>
 
         {/* Cuadro Indicativo Editorial: arriba en móvil, flotante izquierdo en desktop */}
-        <div className="px-4 pt-3.5 pb-3 sm:p-0 sm:flex sm:absolute sm:inset-y-0 sm:left-0 sm:items-center sm:z-20 sm:pl-10 lg:pl-14 sm:pointer-events-none">
-          <div className="sm:pointer-events-auto sm:max-w-sm lg:max-w-md bg-white sm:bg-[#FAF8F5]/95 border border-stone-200/80 shadow-xs sm:shadow-xl rounded-xl sm:rounded-2xl lg:rounded-3xl p-3.5 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5">
+        <div className="px-4 pt-3.5 pb-2.5 sm:p-0 sm:flex sm:absolute sm:inset-y-0 sm:left-0 sm:items-center sm:z-20 sm:pl-10 lg:pl-14 sm:pointer-events-none">
+          <div className="sm:pointer-events-auto sm:max-w-sm lg:max-w-md bg-transparent sm:bg-[#FAF8F5]/95 sm:border sm:border-stone-200/80 sm:shadow-xl sm:rounded-2xl lg:rounded-3xl p-0 sm:p-6 lg:p-8 space-y-1.5 sm:space-y-2.5 lg:space-y-3.5">
             <span className="inline-block text-[10px] lg:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#855E16] bg-amber-50/90 border border-amber-200/70 rounded-full px-2.5 sm:px-3 py-0.5">
               {kicker}
             </span>
@@ -327,7 +327,7 @@ export default function HeroBannerCarousel() {
               {title}
             </HeadingTag>
             {description && (
-              <p className="text-sm text-stone-700 font-light leading-relaxed">
+              <p className="text-[15px] sm:text-sm text-stone-700 font-light leading-relaxed">
                 {description}
               </p>
             )}
@@ -401,7 +401,7 @@ export default function HeroBannerCarousel() {
         <div
           role="tablist"
           aria-label="Control de diapositivas"
-          className="absolute bottom-2.5 right-3 sm:bottom-6 sm:right-6 z-20 flex items-center gap-0.5 sm:gap-1 bg-stone-950/75 px-2 py-1 sm:px-2.5 sm:py-1 rounded-full border border-white/20 shadow-md"
+          className="absolute bottom-5 right-6 sm:bottom-6 sm:right-6 z-20 flex items-center gap-0.5 sm:gap-1 bg-stone-950/75 px-2 py-1 sm:px-2.5 sm:py-1 rounded-full border border-white/20 shadow-md"
         >
           {BANNERS_DATA.map((slide, idx) => {
             const isCurrent = idx === currentIndex;

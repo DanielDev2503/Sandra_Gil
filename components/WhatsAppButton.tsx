@@ -1,14 +1,17 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function WhatsAppButton() {
+  const pathname = usePathname();
+  const isProductPage = pathname?.startsWith('/productos/');
   const phoneNumber = '573175752029'; // Sandra Gil business number
   const message = encodeURIComponent('Hola Sandra, estoy viendo la página web y tengo una pregunta sobre las velas...');
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className={`fixed right-5 z-50 ${isProductPage ? 'bottom-24 lg:bottom-5' : 'bottom-5'}`}>
       <a
         href={whatsappUrl}
         target="_blank"

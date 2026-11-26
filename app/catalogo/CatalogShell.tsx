@@ -1134,15 +1134,15 @@ export default function CatalogShell({ products, initialSearchParams }: CatalogS
       {/* ── CONTENEDOR PRINCIPAL: TOOLBAR + SIDEBAR + PRODUCTOS ─────────── */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 flex-1 w-full">
         {/* Encabezado editorial compacto del catálogo */}
-        <div className="mb-5 pb-4 border-b border-stone-200/70 space-y-2">
-          <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#855E16] font-semibold bg-white border border-amber-200/70 rounded-full px-3 py-0.5 shadow-2xs">
+        <div className="mb-3 pb-2 sm:mb-5 sm:pb-4 border-b border-stone-200/70 space-y-2">
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#855E16] font-semibold bg-white border border-amber-200/70 rounded-full px-3 py-0.5 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-[#855E16] shrink-0" aria-hidden="true" />
             <span>Colección Artesanal 100% Cera de Soya</span>
           </span>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-tight">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-tight">
             Catálogo de <span className="italic font-normal text-[#855E16]">Velas Artesanales</span>
           </h1>
-          <p className="text-sm sm:text-base text-stone-600 font-light leading-relaxed max-w-2xl">
+          <p className="hidden sm:block text-sm sm:text-base text-stone-600 font-light leading-relaxed max-w-2xl">
             Explora nuestra colección de velas aromáticas en envase, velas esculpidas, jabones botánicos, pebeteros y wax melts elaborados a mano en Bogotá con cera de soya 100% natural, flores artesanales y aromas exclusivos para transformar e iluminar cada uno de tus espacios.
           </p>
         </div>

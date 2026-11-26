@@ -63,26 +63,26 @@ export default async function PersonalizadasPage() {
 
       <main className="flex-1">
         {/* ── HERO COMPACTO: SPLIT HORIZONTAL ── */}
-        <section className="bg-[#FAF8F5] border-b border-stone-200/70 py-5 sm:py-7">
+        <section className="bg-[#FAF8F5] border-b border-stone-200/70 py-3 sm:py-7">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-5 lg:gap-8 items-center">
               {/* COLUMNA IZQUIERDA: Título y Propuesta de Valor (5 de 12 cols) */}
               <div className="lg:col-span-5 text-center lg:text-left space-y-2">
-                <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#855E16] font-semibold bg-white border border-amber-200/70 rounded-full px-3 py-0.5 shadow-2xs">
+                <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#855E16] font-semibold bg-white border border-amber-200/70 rounded-full px-3 py-0.5 shadow-2xs">
                   <Sparkles className="w-3.5 h-3.5 text-[#855E16] shrink-0" /> Elaboración Artesanal Exclusiva
                 </span>
 
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-tight">
+                <h1 className="text-xl sm:text-3xl lg:text-4xl font-serif text-stone-900 leading-tight">
                   Velas <span className="italic font-normal text-[#855E16]">Bajo Pedido</span>
                 </h1>
 
-                <p className="text-sm sm:text-base text-stone-600 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
+                <p className="hidden sm:block text-sm sm:text-base text-stone-600 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
                   Creamos piezas únicas personalizadas a tu gusto: elige el aroma, el tamaño, las flores en cera y el mensaje. Elaboradas a mano con cera de soya 100% natural.
                 </p>
               </div>
 
               {/* COLUMNA DERECHA: Flujo Asimétrico Editorial de 3 Pasos */}
-              <div className="lg:col-span-7 space-y-3.5">
+              <div className="hidden sm:block lg:col-span-7 space-y-3.5">
                 {/* Paso 01: Acción Primaria Destacada (Full-width en columna derecha) */}
                 <div className="group border-t border-[#855E16]/40 pt-3 sm:pt-3.5">
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-4 mb-1">
@@ -139,12 +139,28 @@ export default async function PersonalizadasPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Pasos compactos en móvil (01 · 02 · 03) */}
+              <ol className="sm:hidden grid grid-cols-3 gap-2 text-center border-t border-stone-200/70 pt-2">
+                <li className="flex flex-col items-center">
+                  <span className="font-serif text-[#855E16] text-lg leading-none">01</span>
+                  <span className="text-[11px] text-stone-700 leading-tight mt-0.5">Escríbenos tu idea</span>
+                </li>
+                <li className="flex flex-col items-center">
+                  <span className="font-serif text-[#855E16] text-lg leading-none">02</span>
+                  <span className="text-[11px] text-stone-700 leading-tight mt-0.5">Diseñamos</span>
+                </li>
+                <li className="flex flex-col items-center">
+                  <span className="font-serif text-[#855E16] text-lg leading-none">03</span>
+                  <span className="text-[11px] text-stone-700 leading-tight mt-0.5">Hecho a mano · 3–7 días</span>
+                </li>
+              </ol>
             </div>
           </div>
         </section>
 
         {/* ── CONTENEDOR PRINCIPAL DE PRODUCTOS ── */}
-        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-12 overflow-x-hidden">
+        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-12 overflow-x-hidden">
           {products.length === 0 ? (
             <div className="text-center py-16 sm:py-24 space-y-5 sm:space-y-6">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto">

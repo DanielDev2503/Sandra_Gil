@@ -233,16 +233,16 @@ export default function NosotrosPage() {
               <div className="absolute bottom-0 right-0 w-48 h-48 bg-brand-gold/10 rounded-full blur-2xl pointer-events-none" />
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-gold/20 backdrop-blur-xs rounded-full border border-brand-gold/40 mb-3 sm:mb-4">
-                  <GraduationCap className="w-4 h-4 text-brand-gold shrink-0" />
-                  <span className="text-[10px] sm:text-[11px] font-bold text-brand-gold uppercase tracking-widest">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-accent/15 backdrop-blur-xs rounded-full border border-brand-accent/40 mb-3 sm:mb-4">
+                  <GraduationCap className="w-4 h-4 text-brand-accent shrink-0" />
+                  <span className="text-[10px] sm:text-[11px] font-bold text-brand-accent uppercase tracking-widest">
                     Experiencia Exclusiva
                   </span>
                 </div>
 
                 <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-light text-[#FAF8F5] leading-tight max-w-2xl mx-auto">
                   ¡Vive la Experiencia Artesanal!{' '}
-                  <span className="italic text-brand-gold font-normal">
+                  <span className="italic text-brand-accent font-normal">
                     Taller Didáctico de Creación de Velas y Aromaterapia
                   </span>
                 </h2>

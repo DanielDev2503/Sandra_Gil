@@ -81,3 +81,30 @@ body {
     transform: scaleX(1);
   }
 }
+
+@keyframes bannerTitleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px);
+    letter-spacing: 0.12em;
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: -0.01em;
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 639.98px) {
+  .banner-title-in {
+    animation: bannerTitleIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner-title-in {
+    animation: none !important;
+  }
+}

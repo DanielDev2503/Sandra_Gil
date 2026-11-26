@@ -310,8 +310,20 @@ export default function ProductDetailShell({
 
   const waLink = `https://wa.me/${WA_NUMBER}?text=Hola%20Sandra,%20me%20interesa%20cotizar%20el%20producto:%20${encodeURIComponent(product.nombre)}`;
 
+  const stockBadge = isOutOfStock ? (
+    <span className="text-[10px] text-rose-700 bg-rose-100/70 rounded-full px-2 py-0.5 font-medium">Agotado</span>
+  ) : remainingStock === 0 ? (
+    <span className="text-[10px] text-amber-800 bg-amber-100/80 rounded-full px-2.5 py-0.5 font-medium">
+      Máx. en carrito
+    </span>
+  ) : isLowStock ? (
+    <span className="text-[10px] text-amber-700 bg-amber-100/60 rounded-full px-2 py-0.5 font-medium animate-pulse">Últimas {product.stock}</span>
+  ) : (
+    <span className="text-[10px] text-emerald-700 bg-emerald-100/60 rounded-full px-2 py-0.5 font-medium">En Stock</span>
+  );
+
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-brand-cream">
+    <div className="flex-1 flex flex-col min-h-screen bg-brand-cream pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0">
       <Header />
 
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-12 flex-1">
@@ -464,7 +476,17 @@ export default function ProductDetailShell({
             />
 
             {/* 6. BOTONES DE ACCIÓN (Comprar / Añadir / WhatsApp) */}
-            <div className="space-y-3 mb-6 p-4 rounded-2xl bg-stone-50/70 border border-stone-200/60 font-sans">
+            {!isBajoPedido && (
+              <div className="lg:hidden flex flex-wrap items-center gap-2 mb-4 font-sans">
+                {stockBadge}
+                {remainingStock === 0 && !isOutOfStock && (
+                  <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200/80 rounded-lg p-2 font-medium w-full">
+                    Ya tienes el máximo disponible ({totalStock} uds.) en tu carrito.
+                  </p>
+                )}
+              </div>
+            )}
+            <div className="hidden lg:block space-y-3 mb-6 p-4 rounded-2xl bg-stone-50/70 border border-stone-200/60 font-sans">
               {/* Selector de cantidad y stock */}
               {!isBajoPedido && (
                 <div className="flex items-center justify-between">
@@ -491,17 +513,7 @@ export default function ProductDetailShell({
                         +
                       </button>
                     </div>
-                    {isOutOfStock ? (
-                      <span className="text-[10px] text-rose-700 bg-rose-100/70 rounded-full px-2 py-0.5 font-medium">Agotado</span>
-                    ) : remainingStock === 0 ? (
-                      <span className="text-[10px] text-amber-800 bg-amber-100/80 rounded-full px-2.5 py-0.5 font-medium">
-                        Máx. en carrito
-                      </span>
-                    ) : isLowStock ? (
-                      <span className="text-[10px] text-amber-700 bg-amber-100/60 rounded-full px-2 py-0.5 font-medium animate-pulse">Últimas {product.stock}</span>
-                    ) : (
-                      <span className="text-[10px] text-emerald-700 bg-emerald-100/60 rounded-full px-2 py-0.5 font-medium">En Stock</span>
-                    )}
+                    {stockBadge}
                   </div>
                 </div>
               )}
@@ -884,6 +896,64 @@ export default function ProductDetailShell({
 
 
       <Footer />
+
+      {/* Fixed Mobile Buy Bar */}
+      <div className="lg:hidden fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] font-sans">
+        {isBajoPedido ? (
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full h-11 rounded-full px-6 font-semibold text-xs tracking-wider uppercase bg-amber-50/90 border border-amber-300/80 text-amber-950 hover:bg-amber-100 transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-98"
+          >
+            <MessageCircle className="w-4 h-4 text-amber-800 shrink-0" />
+            <span>Cotiza por WhatsApp</span>
+          </a>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center h-11 rounded-full border border-stone-300 bg-white shrink-0">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                disabled={isOutOfStock || remainingStock <= 0 || quantity <= 1}
+                className="min-w-[36px] h-full flex items-center justify-center text-stone-600 hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                aria-label="Disminuir cantidad"
+              >
+                -
+              </button>
+              <span className="px-2 text-xs font-medium text-stone-800 min-w-[20px] text-center">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.min(q + 1, remainingStock))}
+                disabled={isOutOfStock || isMaxReached || remainingStock <= 0}
+                className="min-w-[36px] h-full flex items-center justify-center text-stone-600 hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                aria-label="Aumentar cantidad"
+              >
+                +
+              </button>
+            </div>
+
+            <div className="flex-1 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                disabled={isOutOfStock || (!isBajoPedido && remainingStock <= 0)}
+                className="h-11 rounded-full px-3 text-[11px] font-semibold tracking-wider uppercase bg-white border border-stone-300 text-stone-800 hover:border-[#B8862D] hover:text-[#B8862D] shadow-sm transition-all duration-200 flex items-center justify-center cursor-pointer active:scale-98 disabled:border-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed"
+              >
+                {isOutOfStock ? 'Agotado' : !isBajoPedido && remainingStock <= 0 ? 'Sin stock' : 'Añadir'}
+              </button>
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                disabled={isOutOfStock || (!isBajoPedido && remainingStock <= 0)}
+                className="h-11 rounded-full px-3 text-[11px] font-semibold tracking-wider uppercase text-white bg-[#B8862D] hover:bg-[#A37424] active:bg-[#91651D] shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center cursor-pointer active:scale-98 disabled:bg-stone-300 disabled:text-stone-500 disabled:cursor-not-allowed"
+              >
+                {isOutOfStock ? 'Agotado' : 'Comprar'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
